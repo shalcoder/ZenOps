@@ -44,12 +44,6 @@ export function Workbench({ onBack }: { onBack: () => void }) {
 
   const applyAgentActions = (actions: AssistantResponse['uiActions']) => {
     for (const action of actions) {
-      if (['OPEN_SIMULATION', 'OPEN_COMPARISON_VIEW', 'OPEN_RECOMMENDATIONS'].includes(action.action)) {
-        setActiveTab('decide');
-      }
-      if (['OPEN_TIMELINE', 'OPEN_GRAPH'].includes(action.action)) {
-        setActiveTab('investigate');
-      }
       if (action.action === 'HIGHLIGHT_NODE' && action.targetId) {
         const nodeId = action.targetId.startsWith('node_')
           ? action.targetId
