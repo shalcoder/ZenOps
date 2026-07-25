@@ -92,8 +92,10 @@ export function Workbench({ onBack }: { onBack: () => void }) {
       </section>
 
       <div className="workbench-tabs" role="tablist" aria-label="Workbench mode">
-        <button className={activeTab === 'investigate' ? 'active' : ''} onClick={() => setActiveTab('investigate')}>01 · Investigate</button>
-        <button className={activeTab === 'decide' ? 'active' : ''} onClick={() => setActiveTab('decide')}>02 · Decide</button>
+        <div className="workbench-tab-switcher">
+          <button className={activeTab === 'investigate' ? 'active' : ''} onClick={() => setActiveTab('investigate')}>01 · Investigate</button>
+          <button className={activeTab === 'decide' ? 'active' : ''} onClick={() => setActiveTab('decide')}>02 · Decide</button>
+        </div>
         <span className={`contract-badge${data.live ? ' live' : ''}`}>
           {loading ? 'Loading MCP data…' : data.live ? 'Live NitroCloud MCP data' : 'Degraded fallback data'}
         </span>
