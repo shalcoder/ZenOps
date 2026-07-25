@@ -21,6 +21,7 @@ export function Workbench({ onBack }: { onBack: () => void }) {
   const featuredIncident = data.incident;
   const [activeTab, setActiveTab] = useState<'investigate' | 'decide'>('investigate');
   const [agentResponse, setAgentResponse] = useState<AssistantResponse | null>(null);
+  const [assistantOpen, setAssistantOpen] = useState(true);
 
   const scrollToPanel = (panelId: string) => {
     window.requestAnimationFrame(() => {
@@ -99,7 +100,7 @@ export function Workbench({ onBack }: { onBack: () => void }) {
         </span>
       </div>
 
-      <div className="workbench-with-assistant">
+      <div className={`workbench-with-assistant${assistantOpen ? ' assistant-open' : ''}`}>
         <div className="workbench-main">
           {activeTab === 'investigate' ? (
             <>
@@ -118,16 +119,34 @@ export function Workbench({ onBack }: { onBack: () => void }) {
             </>
           )}
         </div>
-        <AssistantPanel
-          onOpenDecision={openComparison}
-          onFocusEvidence={openEvidence}
-          onAgentActions={applyAgentActions}
-          onResponse={(response) => {
-            setAgentResponse(response);
-            focusEvidenceRefs(response.evidenceRefs, response.conclusion);
-          }}
-        />
+        {assistantOpen && (
+          <>
+            <button
+              className="assistant-drawer-backdrop"
+              onClick={() => setAssistantOpen(false)}
+              aria-label="Close decision assistant"
+            />
+            <div className="assistant-dock">
+              <AssistantPanel
+                onClose={() => setAssistantOpen(false)}
+                onOpenDecision={openComparison}
+                onFocusEvidence={openEvidence}
+                onAgentActions={applyAgentActions}
+                onResponse={(response) => {
+                  setAgentResponse(response);
+                  focusEvidenceRefs(response.evidenceRefs, response.conclusion);
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
+      {!assistantOpen && (
+        <button className="assistant-launcher" onClick={() => setAssistantOpen(true)}>
+          <span className="assistant-orb small" aria-hidden="true"><i /><i /></span>
+          Ask decision assistant
+        </button>
+      )}
     </main>
   );
 }

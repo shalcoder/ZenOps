@@ -32,6 +32,7 @@ const prompts = [
 ];
 
 type AssistantPanelProps = {
+  onClose: () => void;
   onOpenDecision: () => void;
   onFocusEvidence: () => void;
   onAgentActions: (actions: AssistantResponse['uiActions']) => void;
@@ -39,6 +40,7 @@ type AssistantPanelProps = {
 };
 
 export function AssistantPanel({
+  onClose,
   onOpenDecision,
   onFocusEvidence,
   onAgentActions,
@@ -115,6 +117,14 @@ export function AssistantPanel({
               ? `${runtime.agentRoles} LLM roles · ${runtime.orchestratorProcesses} orchestrator · ${runtime.toolCount} MCP tools`
               : 'Offline fallback'}
           </span>
+          <button
+            className="assistant-close"
+            onClick={onClose}
+            aria-label="Collapse decision assistant"
+            title="Collapse assistant"
+          >
+            ×
+          </button>
         </header>
 
         <div className="assistant-context-strip">
