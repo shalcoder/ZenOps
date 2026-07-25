@@ -1,0 +1,118 @@
+import { useState } from 'react';
+import { useFocusContext } from '../FocusContext';
+import { businessImpact, recommendations } from '../mockData';
+
+const inr = (value: number) => new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 0,
+}).format(value);
+
+export function RecommendationsPanel() {
+  const { focusEvidenceRefs } = useFocusContext();
+  const [selectedId, setSelectedId] = useState(recommendations[0].id);
+  const [approvalOpen, setApprovalOpen] = useState(false);
+  const [approved, setApproved] = useState(false);
+  const selected = recommendations.find((item) => item.id === selectedId) ?? recommendations[0];
+
+  return (
+    <>
+      <section className="decision-grid">
+        <div className="module-panel recommendations-panel">
+          <header className="module-header">
+            <div>
+              <p className="section-kicker">Modules 05 + 06</p>
+              <h2>Ranked recommendations</h2>
+              <span>Technical effect, feasibility, cost, and business impact</span>
+            </div>
+            <span className="human-gate"><i /> Human approval required</span>
+          </header>
+          <div className="recommendation-list">
+            {recommendations.map((recommendation) => (
+              <article key={recommendation.id} className={`recommendation-card${selectedId === recommendation.id ? ' selected' : ''}`}>
+                <button className="recommendation-select" onClick={() => setSelectedId(recommendation.id)}>
+                  <span className="rank-number">0{recommendation.rank}</span>
+                  <div>
+                    <div className="recommendation-title">
+                      <h3>{recommendation.title}</h3>
+                      {recommendation.rank === 1 && <span>Recommended</span>}
+                    </div>
+                    <p>{recommendation.description}</p>
+                    <div className="recommendation-tags">
+                      <span>Yield {recommendation.predictedYield}%</span>
+                      <span>{Math.round(recommendation.confidence * 100)}% confidence</span>
+                      <span>Cost {recommendation.cost}</span>
+                      <span>Risk {recommendation.risk}</span>
+                    </div>
+                  </div>
+                  <strong className={`impact-score impact-${recommendation.impact.toLowerCase()}`}>{recommendation.impact}<small>impact</small></strong>
+                </button>
+                {selectedId === recommendation.id && (
+                  <div className="recommendation-actions">
+                    <button className="text-button" onClick={() => focusEvidenceRefs(recommendation.evidenceRefs)}>Open evidence ↗</button>
+                    <span>{recommendation.effort}</span>
+                    <button className="primary-button compact" onClick={() => setApprovalOpen(true)}>Review action <span>→</span></button>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <aside className="module-panel impact-panel">
+          <header className="module-header compact-header">
+            <div>
+              <p className="section-kicker">Business impact</p>
+              <h2>Decision value</h2>
+              <span>Selected: {selected.title}</span>
+            </div>
+          </header>
+          <div className="impact-hero">
+            <span>Monthly loss avoided</span>
+            <strong>{inr(businessImpact.monthlySavingsInr)}</strong>
+            <small>from {inr(businessImpact.currentMonthlyLossInr)} exposure</small>
+          </div>
+          <div className="impact-metrics">
+            <span><small>Yield recovery</small><strong>{businessImpact.baselineYield}% → {selected.predictedYield}%</strong></span>
+            <span><small>Downtime reduction</small><strong>{selected.rank === 1 ? businessImpact.downtimeReductionPct : Math.round(businessImpact.downtimeReductionPct * 0.7)}%</strong></span>
+            <span><small>Weekly savings</small><strong>{inr(selected.savingsPerWeekInr)}</strong></span>
+            <span><small>Implementation</small><strong>{selected.effort}</strong></span>
+          </div>
+          <div className="impact-basis">
+            <span>Calculation basis</span>
+            <p>{businessImpact.basis}</p>
+            <code>{selected.evidenceRefs.join(' · ')}</code>
+          </div>
+          {approved && <div className="approval-record"><i>✓</i><div><strong>Decision recorded</strong><p>Approved locally for the demo audit trail. No external system was changed.</p></div></div>}
+        </aside>
+      </section>
+
+      {approvalOpen && (
+        <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setApprovalOpen(false); }}>
+          <section className="approval-modal" role="dialog" aria-modal="true" aria-labelledby="approval-title">
+            <header>
+              <div><span className="human-gate"><i /> Approval gate</span><h2 id="approval-title">Confirm operational action</h2></div>
+              <button className="icon-button" onClick={() => setApprovalOpen(false)} aria-label="Close approval dialog">×</button>
+            </header>
+            <div className="approval-summary">
+              <span>Recommended action</span>
+              <strong>{selected.title}</strong>
+              <p>{selected.description}</p>
+            </div>
+            <dl>
+              <div><dt>Recipient</dt><dd>Shift Manager · Assembly Line 3</dd></div>
+              <div><dt>Affected system</dt><dd>MES dispatch schedule</dd></div>
+              <div><dt>Requested change</dt><dd>Prioritize inter-stage transfer; queue target under 60 minutes</dd></div>
+              <div><dt>Expected result</dt><dd>{selected.predictedYield}% yield · {Math.round(selected.confidence * 100)}% confidence</dd></div>
+            </dl>
+            <div className="approval-warning"><strong>Human authority</strong><p>ForgeOps recommends and explains. This confirmation records approval but does not directly modify plant controls.</p></div>
+            <footer>
+              <button className="secondary-button" onClick={() => setApprovalOpen(false)}>Cancel</button>
+              <button className="primary-button" onClick={() => { setApproved(true); setApprovalOpen(false); }}>Approve & record decision <span>→</span></button>
+            </footer>
+          </section>
+        </div>
+      )}
+    </>
+  );
+}
