@@ -132,7 +132,7 @@ export function AssistantPanel({
           </div>
           <span className="assistant-mode-label">
             {runtime?.online
-              ? `${runtime.agentRoles} LLM roles · ${runtime.orchestratorProcesses} orchestrator · ${runtime.toolCount} MCP tools`
+              ? `${runtime.agentRoles} agent roles · ${runtime.orchestratorProcesses} orchestrator · ${runtime.toolCount} MCP tools`
               : 'Offline fallback'}
           </span>
         </header>
