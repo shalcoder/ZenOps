@@ -134,7 +134,7 @@ time,
 }
 
 .brand-button strong {
-  font-size: 0.95rem;
+  font-size: 0.855rem;
   letter-spacing: 0.12em;
 }
 
@@ -144,7 +144,7 @@ time,
 
 .brand-button small {
   color: var(--muted);
-  font-size: 0.91rem;
+  font-size: 0.909rem;
   letter-spacing: 0.04em;
 }
 
@@ -176,7 +176,7 @@ time,
   align-items: center;
   gap: 16px;
   color: var(--muted-strong);
-  font-size: 1.03rem;
+  font-size: 0.927rem;
 }
 
 .live-indicator {
@@ -195,7 +195,7 @@ time,
 }
 
 .live-indicator.small {
-  font-size: 0.97rem;
+  font-size: 0.873rem;
 }
 
 .header-divider {
@@ -215,7 +215,7 @@ time,
   background: #173139;
   color: var(--teal);
   border: 1px solid #28505a;
-  font-size: 0.95rem;
+  font-size: 0.855rem;
   font-weight: 700;
 }
 
@@ -246,7 +246,7 @@ span.avatar-button {
   color: var(--teal);
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: 0.91rem;
+  font-size: 0.909rem;
   font-weight: 500;
   margin: 0 0 8px;
 }
@@ -284,7 +284,7 @@ span.avatar-button {
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 700;
-  font-size: 1.03rem;
+  font-size: 0.927rem;
   transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
@@ -314,7 +314,7 @@ span.avatar-button {
   min-height: 34px;
   padding: 8px 12px;
   white-space: nowrap;
-  font-size: 0.97rem;
+  font-size: 0.873rem;
 }
 
 .button-icon {
@@ -359,7 +359,7 @@ span.avatar-button {
   justify-content: space-between;
   gap: 10px;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.855rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -367,7 +367,7 @@ span.avatar-button {
 .metric-delta {
   text-transform: none;
   letter-spacing: 0;
-  font-size: 0.93rem;
+  font-size: 0.927rem;
 }
 
 .metric-delta.negative { color: var(--red); }
@@ -377,14 +377,14 @@ span.avatar-button {
 
 .metric-card > strong {
   display: block;
-  font-size: 2.55rem;
+  font-size: 2.295rem;
   letter-spacing: -0.055em;
   line-height: 1;
   margin: 12px 0 15px;
 }
 
 .metric-card > strong span {
-  font-size: 1.1rem;
+  font-size: 0.99rem;
   color: var(--muted-strong);
   margin-left: 2px;
 }
@@ -392,7 +392,7 @@ span.avatar-button {
 .metric-card > small {
   display: block;
   color: var(--muted);
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   margin-top: 13px;
 }
 
@@ -433,7 +433,7 @@ span.avatar-button {
   flex-wrap: wrap;
   gap: 12px;
   color: var(--muted-strong);
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   margin-top: 27px;
 }
 
@@ -495,7 +495,7 @@ span.avatar-button {
 
 .section-heading h2 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 0.945rem;
 }
 
 select,
@@ -509,7 +509,7 @@ textarea {
 select {
   min-height: 34px;
   padding: 7px 30px 7px 10px;
-  font-size: 0.95rem;
+  font-size: 0.855rem;
 }
 
 textarea {
@@ -572,7 +572,7 @@ textarea {
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.91rem;
+  font-size: 0.909rem;
   font-weight: 800;
 }
 
@@ -587,7 +587,7 @@ textarea {
 
 .incident-id {
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.855rem;
 }
 
 .status-label {
@@ -597,12 +597,12 @@ textarea {
 
 .incident-main h3 {
   margin: 0 0 5px;
-  font-size: 1.03rem;
+  font-size: 0.927rem;
 }
 
 .incident-main > p {
   color: var(--muted);
-  font-size: 0.97rem;
+  font-size: 0.873rem;
   line-height: 1.5;
   margin-bottom: 10px;
 }
@@ -612,7 +612,7 @@ textarea {
   flex-wrap: wrap;
   gap: 6px 12px;
   color: var(--muted-strong);
-  font-size: 0.94rem;
+  font-size: 0.936rem;
 }
 
 .incident-meta span:not(:last-child)::after {
@@ -630,18 +630,18 @@ textarea {
 .incident-kpi span,
 .incident-exposure span {
   color: var(--muted);
-  font-size: 0.94rem;
+  font-size: 0.936rem;
 }
 
 .incident-kpi strong,
 .incident-exposure strong {
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .incident-kpi small,
 .incident-exposure small {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.918rem;
 }
 
 .signal-panel {
@@ -660,12 +660,12 @@ textarea {
 }
 
 .signal-list li {
-  min-height: 76px;
+  min-height: 68px;
   display: grid;
-  grid-template-columns: 42px 36px 1fr auto;
+  grid-template-columns: 38px 30px 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 8px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--line);
   background: var(--panel);
   transition: background 0.15s ease;
@@ -681,18 +681,18 @@ textarea {
 
 .signal-time {
   color: var(--muted-strong);
-  font: 0.78rem 'JetBrains Mono', Consolas, monospace;
+  font: 0.72rem 'JetBrains Mono', Consolas, monospace;
   font-weight: 600;
 }
 
 .signal-icon {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
-  border-radius: 8px;
+  border-radius: 6px;
   font-style: normal;
-  font-size: 1.00rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: #1d7af2;
   background: rgba(29, 122, 242, 0.1);
@@ -700,7 +700,7 @@ textarea {
 }
 
 .signal-list strong {
-  font-size: 1.02rem;
+  font-size: 0.78rem;
   font-family: 'Outfit', 'Inter', sans-serif;
   font-weight: 700;
   color: var(--text);
@@ -709,18 +709,19 @@ textarea {
 
 .signal-list p {
   color: var(--muted-strong);
-  font-size: 1.00rem;
-  margin: 3px 0 0;
-  line-height: 1.45;
+  font-size: 0.72rem;
+  margin: 2px 0 0;
+  line-height: 1.4;
 }
 
 .signal-state {
-  padding: 5px 9px;
-  border-radius: 6px;
-  font-size: 0.95rem;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .signal-state.warning { color: #b45309; background: #fffbeb; border: 1px solid #fde68a; }
@@ -747,7 +748,7 @@ textarea {
   align-items: center;
   gap: 8px;
   color: var(--muted);
-  font-size: 0.91rem;
+  font-size: 0.909rem;
   font-family: 'Cascadia Code', Consolas, monospace;
   margin-bottom: 12px;
 }
@@ -782,13 +783,13 @@ textarea {
 
 .incident-command-title h1 {
   margin: 0 0 5px;
-  font-size: 1rem;
+  font-size: 1.125rem;
 }
 
 .incident-command-title p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.94rem;
+  font-size: 0.936rem;
 }
 
 .incident-command-title p strong {
@@ -812,13 +813,13 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.94rem;
+  font-size: 0.936rem;
 }
 
 .command-status strong {
   max-width: 250px;
   color: var(--muted-strong);
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -863,7 +864,7 @@ textarea {
   background: none;
   border-bottom: 2px solid transparent;
   padding: 0 18px;
-  font-size: 0.95rem;
+  font-size: 0.855rem;
   font-weight: 700;
 }
 
@@ -921,14 +922,14 @@ textarea {
 
 .module-header h2 {
   margin: 0 0 3px;
-  font-size: 1.02rem;
+  font-size: 0.918rem;
   letter-spacing: -0.015em;
 }
 
 .module-header > div > span {
   display: block;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.855rem;
 }
 
 .mini-select {
@@ -938,7 +939,7 @@ textarea {
 
 .mini-select span {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.918rem;
   text-transform: uppercase;
 }
 
@@ -958,7 +959,7 @@ textarea {
   background: #0a171c;
   border: 1px solid var(--line);
   border-radius: 6px;
-  font-size: 0.94rem;
+  font-size: 0.936rem;
 }
 
 .toggle-button i {
@@ -1000,14 +1001,15 @@ textarea {
 .reference-strip {
   height: 34px;
   display: grid;
-  grid-template-columns: 130px 1fr 95px;
+  grid-template-columns: 175px 1fr 95px;
   align-items: center;
   gap: 12px;
   padding: 0 18px;
   background: rgba(91, 167, 255, 0.035);
   border-bottom: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.91rem;
+  font-size: 0.909rem;
+  white-space: nowrap;
 }
 
 .reference-strip div {
@@ -1068,7 +1070,7 @@ textarea {
 }
 
 .timeline-time {
-  font-size: 0.97rem;
+  font-size: 0.873rem;
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
   margin-bottom: 8px;
@@ -1109,14 +1111,14 @@ textarea {
   color: var(--muted-strong);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  font-size: 0.96rem;
+  font-size: 0.864rem;
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
 }
 
 .timeline-card strong {
   color: var(--text);
-  font-size: 0.96rem;
+  font-size: 0.864rem;
   font-family: 'Outfit', 'Inter', sans-serif;
   font-weight: 700;
   line-height: 1.35;
@@ -1125,12 +1127,12 @@ textarea {
 .timeline-card em {
   color: var(--muted-strong);
   font-style: normal;
-  font-size: 0.99rem;
+  font-size: 0.891rem;
 }
 
 .timeline-card > span {
   color: var(--muted);
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   font-weight: 500;
 }
 
@@ -1167,7 +1169,7 @@ textarea {
   padding: 0 20px;
   color: var(--muted-strong);
   border-top: 1px solid var(--line);
-  font-size: 1.01rem;
+  font-size: 0.909rem;
   font-weight: 500;
 }
 
@@ -1205,7 +1207,7 @@ textarea {
   align-items: center;
   gap: 6px;
   color: var(--muted);
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -1227,7 +1229,7 @@ textarea {
 }
 
 .replay-status-line > strong {
-  font: 0.72rem 'Cascadia Code', Consolas, monospace;
+  font: 600 0.85rem 'Cascadia Code', Consolas, monospace;
 }
 
 .replay-status-line > strong small {
@@ -1236,7 +1238,7 @@ textarea {
 
 .replay-status-line > span:last-child {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.918rem;
   text-align: right;
 }
 
@@ -1268,9 +1270,9 @@ textarea {
 
 .stage-node > span {
   position: absolute;
-  top: -13px;
-  color: #4c6269;
-  font: 0.47rem 'Cascadia Code', Consolas, monospace;
+  top: -18px;
+  color: var(--muted-strong);
+  font: 700 0.78rem 'Cascadia Code', Consolas, monospace;
 }
 
 .stage-node > i {
@@ -1291,13 +1293,13 @@ textarea {
 }
 
 .stage-node strong {
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   line-height: 1.25;
 }
 
 .stage-node small {
-  color: #5d737a;
-  font: 0.49rem 'Cascadia Code', Consolas, monospace;
+  color: var(--muted-strong);
+  font: 600 0.75rem 'Cascadia Code', Consolas, monospace;
 }
 
 .stage-node.complete > i {
@@ -1351,7 +1353,7 @@ textarea {
   align-items: center;
   gap: 10px;
   color: var(--muted);
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   margin: 5px 8px 0;
 }
 
@@ -1406,7 +1408,7 @@ textarea {
   color: #06201d;
   background: var(--teal);
   border-color: var(--teal);
-  font-size: 0.93rem;
+  font-size: 0.927rem;
 }
 
 .replay-slider {
@@ -1425,7 +1427,7 @@ textarea {
   background: #102027;
   border: 1px solid var(--line);
   border-radius: 6px;
-  font-size: 0.92rem;
+  font-size: 0.918rem;
 }
 
 .pin-button.active {
@@ -1445,18 +1447,18 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.88rem;
+  font-size: 0.882rem;
 }
 
 .stage-inspector h3 {
   margin: 4px 0;
-  font-size: 1.00rem;
+  font-size: 0.9rem;
 }
 
 .stage-inspector p {
   max-width: 520px;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.918rem;
   line-height: 1.45;
   margin: 0;
 }
@@ -1479,11 +1481,11 @@ textarea {
 
 .stage-metrics small {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .stage-metrics strong {
-  font-size: 0.96rem;
+  font-size: 0.864rem;
 }
 
 .stage-metrics .warning strong { color: var(--amber); }
@@ -1514,23 +1516,28 @@ textarea {
   overflow: visible;
 }
 
-.graph-canvas line {
+.graph-canvas line,
+.graph-canvas path {
   stroke: #617079;
   vector-effect: non-scaling-stroke;
   opacity: 0.62;
+  fill: none;
 }
 
-.graph-canvas line.model_estimated {
+.graph-canvas line.model_estimated,
+.graph-canvas path.model_estimated {
   stroke: var(--amber);
   stroke-dasharray: 5 4;
 }
 
-.graph-canvas line.counterfactual_simulated {
+.graph-canvas line.counterfactual_simulated,
+.graph-canvas path.counterfactual_simulated {
   stroke: var(--teal);
   stroke-dasharray: 2 4;
 }
 
-.graph-canvas line.faded {
+.graph-canvas line.faded,
+.graph-canvas path.faded {
   opacity: 0.16;
 }
 
@@ -1540,13 +1547,13 @@ textarea {
 
 .cause-node {
   position: absolute;
-  width: 118px;
-  min-height: 72px;
+  width: 168px;
+  min-height: 80px;
   display: grid;
   align-content: center;
-  gap: 3px;
+  gap: 4px;
   transform: translate(-5%, -5%);
-  padding: 9px 10px;
+  padding: 10px 12px;
   text-align: left;
   color: var(--muted-strong);
   background: rgba(13, 31, 37, 0.96);
@@ -1554,6 +1561,7 @@ textarea {
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   transition: transform 150ms ease, border-color 150ms ease, opacity 150ms ease;
+  overflow: hidden;
 }
 
 .cause-node:hover {
@@ -1564,11 +1572,12 @@ textarea {
 .cause-node-top {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.81rem;
+  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+  white-space: nowrap;
 }
 
 .cause-node-top i {
@@ -1580,18 +1589,18 @@ textarea {
 
 .cause-node strong {
   color: var(--text);
-  font-size: 0.96rem;
+  font-size: 0.864rem;
 }
 
 .cause-node em {
   color: var(--teal);
   font-style: normal;
-  font-size: 0.93rem;
+  font-size: 0.927rem;
 }
 
 .cause-node small {
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.918rem;
   line-height: 1.25;
 }
 
@@ -1623,7 +1632,7 @@ textarea {
   padding: 0 16px;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.89rem;
+  font-size: 0.891rem;
 }
 
 .graph-legend span {
@@ -1635,7 +1644,7 @@ textarea {
 .graph-legend strong {
   color: var(--teal);
   margin-left: auto;
-  font-size: 0.90rem;
+  font-size: 0.9rem;
 }
 
 .edge {
@@ -1697,7 +1706,7 @@ textarea {
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 0.87rem;
+  font-size: 0.873rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
 }
@@ -1708,12 +1717,12 @@ textarea {
 
 .evidence-card h3 {
   margin: 8px 0 5px;
-  font-size: 0.94rem;
+  font-size: 0.936rem;
 }
 
 .evidence-card p {
   color: var(--muted);
-  font-size: 0.94rem;
+  font-size: 0.936rem;
   line-height: 1.5;
   margin-bottom: 11px;
 }
@@ -1728,7 +1737,7 @@ textarea {
 .evidence-card code,
 .evidence-card time {
   color: #6d848b;
-  font-size: 0.84rem;
+  font-size: 0.936rem;
 }
 
 .evidence-empty {
@@ -1737,22 +1746,33 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 14px;
+  padding: 20px;
   color: var(--muted);
 }
 
-.evidence-empty > span {
-  font-size: 1.6rem;
-  color: #35505a;
+.evidence-empty-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: rgba(91, 167, 255, 0.08);
+  border: 1px solid rgba(91, 167, 255, 0.22);
+  color: var(--blue);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
 }
 
 .evidence-empty strong {
-  color: var(--muted-strong);
+  color: var(--text);
   font-size: 0.95rem;
+  font-weight: 700;
+  display: block;
 }
 
 .evidence-empty p {
-  margin: 4px 0 0;
-  font-size: 0.93rem;
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
 }
 
 /* Simulator */
@@ -1808,11 +1828,11 @@ textarea {
 
 .scenario-presets strong {
   color: var(--muted-strong);
-  font-size: 0.92rem;
+  font-size: 0.918rem;
 }
 
 .scenario-presets small {
-  font-size: 0.88rem;
+  font-size: 0.882rem;
 }
 
 .scenario-presets button.active {
@@ -1852,7 +1872,7 @@ textarea {
 .parameter-grid label > span {
   display: flex;
   justify-content: space-between;
-  font-size: 0.91rem;
+  font-size: 0.909rem;
 }
 
 .parameter-grid output {
@@ -1867,7 +1887,7 @@ textarea {
 
 .parameter-grid small {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .constraint-field {
@@ -1878,20 +1898,20 @@ textarea {
 
 .constraint-field > span {
   color: var(--muted-strong);
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   font-weight: 700;
 }
 
 .constraint-field textarea {
   width: 100%;
   padding: 10px;
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   line-height: 1.4;
 }
 
 .constraint-field small {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .checkbox-row {
@@ -1915,12 +1935,12 @@ textarea {
 }
 
 .checkbox-row strong {
-  font-size: 0.94rem;
+  font-size: 0.936rem;
 }
 
 .checkbox-row small {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .run-scenario-button {
@@ -1952,12 +1972,12 @@ textarea {
 .simulation-output-head span {
   color: var(--muted);
   text-transform: uppercase;
-  font-size: 0.86rem;
+  font-size: 0.864rem;
   letter-spacing: 0.08em;
 }
 
 .simulation-output-head h3 {
-  font-size: 0.99rem;
+  font-size: 0.891rem;
   margin: 5px 0 0;
 }
 
@@ -1995,7 +2015,7 @@ textarea {
 
 .yield-column > span {
   color: var(--muted);
-  font-size: 0.87rem;
+  font-size: 0.873rem;
 }
 
 .yield-column > div {
@@ -2018,7 +2038,7 @@ textarea {
 }
 
 .yield-column strong {
-  font-size: 1.00rem;
+  font-size: 0.9rem;
 }
 
 .yield-arrow {
@@ -2026,11 +2046,11 @@ textarea {
   display: grid;
   justify-items: center;
   color: var(--teal);
-  font-size: 1.2rem;
+  font-size: 1.08rem;
 }
 
 .yield-arrow small {
-  font-size: 0.88rem;
+  font-size: 0.882rem;
   white-space: nowrap;
 }
 
@@ -2050,11 +2070,11 @@ textarea {
 
 .output-metrics small {
   color: var(--muted);
-  font-size: 0.83rem;
+  font-size: 0.927rem;
 }
 
 .output-metrics strong {
-  font-size: 0.93rem;
+  font-size: 0.927rem;
 }
 
 .simulation-warning,
@@ -2071,14 +2091,14 @@ textarea {
 .approval-warning strong,
 .report-guardrail strong {
   color: var(--amber);
-  font-size: 0.91rem;
+  font-size: 0.909rem;
 }
 
 .simulation-warning p,
 .approval-warning p,
 .report-guardrail p {
   color: var(--muted-strong);
-  font-size: 0.88rem;
+  font-size: 0.882rem;
   line-height: 1.4;
   margin: 3px 0 0;
 }
@@ -2089,20 +2109,20 @@ textarea {
 
 .assumptions > strong {
   color: var(--muted-strong);
-  font-size: 0.90rem;
+  font-size: 0.9rem;
 }
 
 .assumptions ul {
   margin: 6px 0 0;
   padding-left: 15px;
   color: var(--muted);
-  font-size: 0.86rem;
+  font-size: 0.864rem;
   line-height: 1.5;
 }
 
 .output-footnote {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
   margin: 11px 0 0;
 }
 
@@ -2176,7 +2196,7 @@ textarea {
 }
 
 .recommendation-title h3 {
-  font-size: 0.97rem;
+  font-size: 0.873rem;
   margin: 0;
 }
 
@@ -2187,13 +2207,13 @@ textarea {
   background: var(--teal-soft);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  font-size: 0.82rem;
+  font-size: 0.918rem;
   font-weight: 800;
 }
 
 .recommendation-select p {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.918rem;
   line-height: 1.5;
   margin: 6px 0 9px;
 }
@@ -2210,7 +2230,7 @@ textarea {
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--line);
-  font-size: 0.84rem;
+  font-size: 0.936rem;
 }
 
 .impact-score {
@@ -2218,13 +2238,13 @@ textarea {
   justify-items: center;
   gap: 2px;
   color: var(--green);
-  font-size: 0.95rem;
+  font-size: 0.855rem;
   text-transform: uppercase;
 }
 
 .impact-score small {
   color: var(--muted);
-  font-size: 0.86rem;
+  font-size: 0.864rem;
 }
 
 .impact-score.impact-low { color: var(--red); }
@@ -2240,7 +2260,7 @@ textarea {
 
 .recommendation-actions > span {
   color: var(--muted);
-  font-size: 0.89rem;
+  font-size: 0.891rem;
 }
 
 .recommendation-actions .primary-button {
@@ -2251,7 +2271,7 @@ textarea {
   color: var(--teal);
   background: none;
   padding: 0;
-  font-size: 0.91rem;
+  font-size: 0.909rem;
 }
 
 .impact-panel {
@@ -2268,20 +2288,20 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.88rem;
+  font-size: 0.882rem;
 }
 
 .impact-hero strong {
   display: block;
   color: var(--teal);
-  font-size: 1.75rem;
+  font-size: 1.575rem;
   margin: 5px 0 2px;
   letter-spacing: -0.04em;
 }
 
 .impact-hero small {
   color: var(--muted);
-  font-size: 0.89rem;
+  font-size: 0.891rem;
 }
 
 .impact-metrics {
@@ -2302,11 +2322,11 @@ textarea {
 
 .impact-metrics small {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .impact-metrics strong {
-  font-size: 0.93rem;
+  font-size: 0.927rem;
 }
 
 .impact-basis {
@@ -2317,12 +2337,12 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .impact-basis p {
   color: var(--muted-strong);
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   line-height: 1.45;
   margin: 5px 0 8px;
 }
@@ -2330,7 +2350,7 @@ textarea {
 .impact-basis code {
   display: block;
   color: #5f7880;
-  font-size: 0.80rem;
+  font-size: 0.9rem;
   line-height: 1.5;
 }
 
@@ -2358,12 +2378,12 @@ textarea {
 
 .approval-record strong {
   color: var(--green);
-  font-size: 0.90rem;
+  font-size: 0.9rem;
 }
 
 .approval-record p {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
   margin: 2px 0 0;
 }
 
@@ -2403,7 +2423,7 @@ textarea {
 }
 
 .assistant-identity strong {
-  font-size: 0.94rem;
+  font-size: 0.936rem;
 }
 
 .assistant-identity small {
@@ -2411,7 +2431,7 @@ textarea {
   align-items: center;
   gap: 5px;
   color: var(--teal);
-  font-size: 0.86rem;
+  font-size: 0.864rem;
 }
 
 .assistant-identity small i {
@@ -2428,7 +2448,7 @@ textarea {
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-size: 0.80rem;
+  font-size: 0.9rem;
 }
 
 .assistant-orb {
@@ -2474,20 +2494,20 @@ textarea {
   color: var(--teal);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.83rem;
+  font-size: 0.927rem;
 }
 
 .assistant-context-strip strong {
   overflow: hidden;
   color: var(--muted-strong);
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .assistant-context-strip small {
   color: var(--muted);
-  font-size: 0.84rem;
+  font-size: 0.936rem;
 }
 
 .assistant-conversation {
@@ -2507,7 +2527,7 @@ textarea {
 
 .assistant-intro p {
   color: var(--muted-strong);
-  font-size: 0.94rem;
+  font-size: 0.936rem;
   line-height: 1.55;
   margin: 2px 0 0;
 }
@@ -2522,12 +2542,12 @@ textarea {
 }
 
 .assistant-thinking strong {
-  font-size: 0.90rem;
+  font-size: 0.9rem;
 }
 
 .assistant-thinking p {
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.882rem;
   line-height: 1.4;
   margin: 0;
 }
@@ -2562,18 +2582,18 @@ textarea {
   color: var(--teal);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.82rem;
+  font-size: 0.918rem;
 }
 
 .assistant-answer h3 {
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   line-height: 1.4;
   margin: 5px 0;
 }
 
 .assistant-answer p {
   color: var(--muted-strong);
-  font-size: 0.91rem;
+  font-size: 0.909rem;
   line-height: 1.55;
   margin-bottom: 9px;
 }
@@ -2600,7 +2620,7 @@ textarea {
 
 .answer-confidence strong {
   color: var(--teal);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .assistant-evidence-links {
@@ -2621,7 +2641,7 @@ textarea {
 
 .assumption-details {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .assumption-details summary {
@@ -2645,7 +2665,7 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.82rem;
+  font-size: 0.918rem;
   margin-bottom: 2px;
 }
 
@@ -2659,7 +2679,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 6px;
   text-align: left;
-  font-size: 0.90rem;
+  font-size: 0.9rem;
 }
 
 .assistant-prompts button:hover {
@@ -2691,7 +2711,7 @@ textarea {
   padding: 0 13px;
   color: var(--muted);
   background: #09171b;
-  font-size: 0.87rem;
+  font-size: 0.873rem;
 }
 
 .tool-trace > button span {
@@ -2709,7 +2729,7 @@ textarea {
 
 .tool-trace > button strong {
   color: var(--muted-strong);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 .tool-trace ol {
@@ -2745,7 +2765,7 @@ textarea {
 
 .tool-trace li span {
   color: var(--muted);
-  font-size: 0.80rem;
+  font-size: 0.9rem;
 }
 
 .tool-trace li strong {
@@ -2755,18 +2775,18 @@ textarea {
 
 .tool-trace li small {
   color: #526b73;
-  font-size: 0.84rem;
+  font-size: 0.936rem;
 }
 
 .tool-trace li time {
   color: var(--muted);
-  font-size: 0.84rem;
+  font-size: 0.936rem;
 }
 
 .tool-trace .trace-empty {
   display: block;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.855rem;
 }
 
 /* Modals */
@@ -2807,7 +2827,7 @@ textarea {
 .approval-modal h2,
 .report-modal h2 {
   font-family: 'Outfit', 'Inter', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text);
   margin: 8px 0 0;
@@ -2823,7 +2843,7 @@ textarea {
   color: #1d7af2;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.93rem;
+  font-size: 0.927rem;
   font-weight: 700;
 }
 
@@ -2831,14 +2851,14 @@ textarea {
   display: block;
   margin: 6px 0 4px;
   font-family: 'Outfit', 'Inter', sans-serif;
-  font-size: 1.05rem;
+  font-size: 0.945rem;
   font-weight: 700;
   color: var(--text);
 }
 
 .approval-summary p {
   color: var(--muted-strong);
-  font-size: 0.95rem;
+  font-size: 0.855rem;
   line-height: 1.5;
   margin: 0;
 }
@@ -2861,14 +2881,14 @@ textarea {
 
 .approval-modal dt {
   color: var(--muted-strong);
-  font-size: 1.03rem;
+  font-size: 0.927rem;
   font-weight: 600;
 }
 
 .approval-modal dd {
   margin: 0;
   color: var(--text);
-  font-size: 0.98rem;
+  font-size: 0.882rem;
   font-weight: 600;
 }
 
@@ -2883,7 +2903,7 @@ textarea {
 .approval-warning strong {
   display: block;
   color: var(--amber);
-  font-size: 1.03rem;
+  font-size: 0.927rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -2891,7 +2911,7 @@ textarea {
 .approval-warning p {
   margin: 0;
   color: var(--muted-strong);
-  font-size: 1.03rem;
+  font-size: 0.927rem;
   line-height: 1.45;
 }
 
@@ -2920,17 +2940,17 @@ textarea {
   color: var(--teal);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.88rem;
+  font-size: 0.882rem;
 }
 
 .report-summary h3 {
-  font-size: 1.1rem;
+  font-size: 0.99rem;
   margin: 8px 0;
 }
 
 .report-summary p {
   color: var(--muted-strong);
-  font-size: 0.95rem;
+  font-size: 0.855rem;
   line-height: 1.55;
   margin: 0;
 }
@@ -2950,7 +2970,7 @@ textarea {
 
 .report-columns p {
   color: var(--muted-strong);
-  font-size: 0.94rem;
+  font-size: 0.936rem;
   line-height: 1.6;
   margin: 8px 0 0;
 }

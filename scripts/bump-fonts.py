@@ -38,4 +38,4 @@ for path in sys.argv[1:]:
     updated  = PATTERN.sub(bump, original)
     changed  = sum(1 for a, b in zip(original.splitlines(), updated.splitlines()) if a != b)
     p.write_text(updated, encoding='utf-8')
-    print(f"[OK] {p.name}: {changed} lines updated")
+    print(f"OK {p.name}: {changed} lines updated")

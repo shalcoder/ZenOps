@@ -3,13 +3,14 @@ FastAPI main entry point for the ForgeOps 4-Agent Backend.
 Exposes HTTP endpoints for the frontend and testing.
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from backend.pipeline import run_pipeline
 from backend.database.audit_log import get_audit_log, log_decision_approval
