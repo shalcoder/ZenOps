@@ -23,7 +23,7 @@ export function EvidencePanel() {
   const node = graphNodes.find((item) => focus.graphNodeIds.includes(item.id));
 
   return (
-    <section className="module-panel evidence-panel">
+    <section id="evidence-inspector" className="module-panel evidence-panel">
       <header className="module-header compact-header">
         <div>
           <p className="section-kicker">Evidence inspector</p>

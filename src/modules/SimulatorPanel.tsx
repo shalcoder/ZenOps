@@ -46,7 +46,7 @@ export function SimulatorPanel() {
   const preview = result ?? data.simulations[selected] ?? data.simulations.baseline;
 
   return (
-    <section className="module-panel simulator-panel">
+    <section id="scenario-comparison" className="module-panel simulator-panel">
       <header className="module-header">
         <div>
           <p className="section-kicker">Module 04</p>

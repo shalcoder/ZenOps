@@ -33,12 +33,14 @@ const prompts = [
 
 type AssistantPanelProps = {
   onOpenDecision: () => void;
+  onFocusEvidence: () => void;
   onAgentActions: (actions: AssistantResponse['uiActions']) => void;
   onResponse: (response: AssistantResponse) => void;
 };
 
 export function AssistantPanel({
   onOpenDecision,
+  onFocusEvidence,
   onAgentActions,
   onResponse,
 }: AssistantPanelProps) {
@@ -229,7 +231,10 @@ export function AssistantPanel({
             {response.actions.includes('open_evidence') && (
               <button
                 className="secondary-button compact"
-                onClick={() => focusEvidenceRefs(response.evidenceRefs, response.conclusion)}
+                onClick={() => {
+                  focusEvidenceRefs(response.evidenceRefs, response.conclusion);
+                  onFocusEvidence();
+                }}
               >
                 Focus evidence
               </button>

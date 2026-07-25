@@ -22,6 +22,26 @@ export function Workbench({ onBack }: { onBack: () => void }) {
   const [activeTab, setActiveTab] = useState<'investigate' | 'decide'>('investigate');
   const [agentResponse, setAgentResponse] = useState<AssistantResponse | null>(null);
 
+  const scrollToPanel = (panelId: string) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.getElementById(panelId)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      });
+    });
+  };
+
+  const openComparison = () => {
+    setActiveTab('decide');
+    scrollToPanel('scenario-comparison');
+  };
+
+  const openEvidence = () => {
+    scrollToPanel('evidence-inspector');
+  };
+
   const applyAgentActions = (actions: AssistantResponse['uiActions']) => {
     for (const action of actions) {
       if (['OPEN_SIMULATION', 'OPEN_COMPARISON_VIEW', 'OPEN_RECOMMENDATIONS'].includes(action.action)) {
@@ -99,7 +119,8 @@ export function Workbench({ onBack }: { onBack: () => void }) {
           )}
         </div>
         <AssistantPanel
-          onOpenDecision={() => setActiveTab('decide')}
+          onOpenDecision={openComparison}
+          onFocusEvidence={openEvidence}
           onAgentActions={applyAgentActions}
           onResponse={(response) => {
             setAgentResponse(response);
