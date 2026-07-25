@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FocusProvider } from './FocusContext';
 import { WorkbenchDataProvider, useWorkbenchData } from './WorkbenchDataContext';
+import { LaunchIntro } from './LaunchIntro';
 import { HomeDashboard } from './modules/HomeDashboard';
 import { Workbench } from './modules/Workbench';
 
@@ -16,11 +17,14 @@ function BrandMark() {
 
 function App() {
   const [view, setView] = useState<'dashboard' | 'workbench'>('dashboard');
+  const [showIntro, setShowIntro] = useState(true);
+  const completeIntro = useCallback(() => setShowIntro(false), []);
 
   return (
     <WorkbenchDataProvider>
       <FocusProvider>
       <div className="app-shell">
+        {showIntro && <LaunchIntro onComplete={completeIntro} />}
         <header className="app-header">
           <button className="brand-button" onClick={() => setView('dashboard')} aria-label="Go to ForgeOps dashboard">
             <BrandMark />
