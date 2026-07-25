@@ -6,7 +6,7 @@ Records: question, intent, tools used, record refs, simulation version, output, 
 import sqlite3
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "audit_log.db")
 
@@ -53,7 +53,7 @@ def log_pipeline_run(
             simulation_version, conclusion, confidence, evidence_refs, assumptions, ui_actions)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         (
-            datetime.utcnow().isoformat(),
+            datetime.now(timezone.utc).isoformat(),
             query,
             intent,
             json.dumps(required_servers),
@@ -86,3 +86,51 @@ def get_audit_log(limit: int = 50) -> list:
             d[field] = json.loads(d[field])
         result.append(d)
     return result
+
+
+def log_decision_approval(
+    incident_id: str,
+    recommendation: dict,
+    approved_by: str,
+    agent_conclusion: str,
+) -> dict:
+    """Persist a human approval record without modifying plant controls."""
+    init_db()
+    con = sqlite3.connect(DB_PATH)
+    con.execute("""
+        CREATE TABLE IF NOT EXISTS decision_approvals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT NOT NULL,
+            incident_id TEXT NOT NULL,
+            recommendation TEXT NOT NULL,
+            approved_by TEXT NOT NULL,
+            agent_conclusion TEXT NOT NULL,
+            execution_status TEXT NOT NULL
+        )
+    """)
+    timestamp = datetime.now(timezone.utc).isoformat()
+    cursor = con.execute(
+        """INSERT INTO decision_approvals
+           (timestamp, incident_id, recommendation, approved_by,
+            agent_conclusion, execution_status)
+           VALUES (?, ?, ?, ?, ?, ?)""",
+        (
+            timestamp,
+            incident_id,
+            json.dumps(recommendation),
+            approved_by,
+            agent_conclusion,
+            "recorded_not_executed",
+        ),
+    )
+    con.commit()
+    record_id = cursor.lastrowid
+    con.close()
+    return {
+        "id": record_id,
+        "timestamp": timestamp,
+        "incident_id": incident_id,
+        "recommendation": recommendation,
+        "approved_by": approved_by,
+        "execution_status": "recorded_not_executed",
+    }

@@ -12,9 +12,10 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from backend.pipeline import run_pipeline
-from backend.database.audit_log import get_audit_log
+from backend.database.audit_log import get_audit_log, log_decision_approval
 from backend.config import FORGEOPS_MCP_URL, FORGEOPS_MODEL, LIVE_AGENTS_ENABLED
 from backend.mcp.nitro_mcp_client import NitroMCPClient
+from backend.workbench import load_live_workbench
 
 app = FastAPI(
     title="ForgeOps 4-Agent Pipeline API",
@@ -35,6 +36,19 @@ class QueryRequest(BaseModel):
     query: str
     incident_id: Optional[str] = "INC-2407-001"
     batch_id: Optional[str] = "B-2407-184"
+    constraints: Dict[str, Any] = Field(default_factory=dict)
+
+
+class DecisionApprovalRequest(BaseModel):
+    incident_id: str = "INC-2407-001"
+    recommendation: Dict[str, Any]
+    approved_by: str = "Vaishak"
+    agent_conclusion: str = ""
+
+
+class SimulationRequest(BaseModel):
+    name: str
+    inputs: Dict[str, Any] = Field(default_factory=dict)
     constraints: Dict[str, Any] = Field(default_factory=dict)
 
 
@@ -87,10 +101,49 @@ def pipeline_query(req: QueryRequest):
     return result.model_dump()
 
 
+@app.get("/api/agent/workbench")
+def workbench_data(
+    incident_id: str = "INC-2407-001",
+    batch_id: str = "B-2407-184",
+):
+    """Return the frontend's current incident data from the deployed MCP."""
+    return load_live_workbench(incident_id=incident_id, batch_id=batch_id)
+
+
+@app.post("/api/agent/simulate")
+def simulate(req: SimulationRequest):
+    """Execute the selected what-if scenario through the deployed MCP."""
+    with NitroMCPClient() as client:
+        value, trace = client.call_tool(
+            "run_scenario",
+            {
+                "scenario_name": req.name,
+                "parameters": {**req.inputs, **req.constraints},
+            },
+        )
+    result = value.get("result", value) if isinstance(value, dict) else {}
+    return {
+        **result,
+        "tool_trace": trace,
+        "source": "nitrocloud_mcp",
+    }
+
+
 @app.get("/api/audit/log")
 def audit_log(limit: int = 20):
     """Return the audit trail of agent pipeline runs."""
     return get_audit_log(limit=limit)
+
+
+@app.post("/api/agent/decision/approve")
+def approve_decision(req: DecisionApprovalRequest):
+    """Record human approval; no MES or plant-control mutation is performed."""
+    return log_decision_approval(
+        incident_id=req.incident_id,
+        recommendation=req.recommendation,
+        approved_by=req.approved_by,
+        agent_conclusion=req.agent_conclusion,
+    )
 
 
 if __name__ == "__main__":

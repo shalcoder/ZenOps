@@ -104,7 +104,10 @@ class PlannerAgent:
                 "Classify the manufacturing request and create a short investigation plan. "
                 "Allowed intents: show_evidence, explain_exclusion, compare_options, "
                 "constraint_query, generate_report, simulate. Do not invent evidence. "
-                "Return {\"intent\": string, \"rationale\": string}."
+                "Extract explicit operational constraints from the user's words. "
+                "Return {\"intent\": string, \"rationale\": string, "
+                "\"constraints\": {\"no_supplier_change\": boolean, "
+                "\"supplier_freeze\": boolean}}."
             ),
             payload={
                 "query": inp.user_query,
@@ -115,6 +118,20 @@ class PlannerAgent:
         )
         candidate = str(call.data.get("intent", ""))
         intent = candidate if candidate in INTENT_TO_TASKS else fallback_intent
+        constraints = dict(inp.constraints)
+        model_constraints = call.data.get("constraints", {})
+        if isinstance(model_constraints, dict):
+            for key in ("no_supplier_change", "supplier_freeze"):
+                if isinstance(model_constraints.get(key), bool):
+                    constraints[key] = model_constraints[key]
+        normalized_query = inp.user_query.lower()
+        if (
+            "supplier freeze" in normalized_query
+            or "cannot change supplier" in normalized_query
+            or "can't change supplier" in normalized_query
+        ):
+            constraints["no_supplier_change"] = True
+            constraints["supplier_freeze"] = True
         self.last_trace = {
             "agent": "planner",
             "status": "complete" if call.live else "fallback",
@@ -143,6 +160,6 @@ class PlannerAgent:
             required_servers=INTENT_TO_SERVERS.get(intent, [MCPServer.ORCHESTRATOR]),
             expected_outputs=["conclusion", "evidence_refs", "ui_actions", "confidence"],
             execution_order=list(range(1, len(tasks) + 1)),
-            constraints=inp.constraints,
+            constraints=constraints,
             raw_query=inp.user_query,
         )

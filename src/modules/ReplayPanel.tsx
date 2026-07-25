@@ -1,11 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFocusContext } from '../FocusContext';
-import { incidentEvents, replayStages } from '../mockData';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 
 const formatDuration = (minute: number) => `${Math.floor(minute / 60)}:${String(minute % 60).padStart(2, '0')}`;
 
 export function ReplayPanel() {
   const { focus, focusStage, setPinned, setReplayTime } = useFocusContext();
+  const { data } = useWorkbenchData();
+  const { incidentEvents, replayStages } = data;
+  const duration = Math.max(
+    1,
+    ...replayStages.map((stage) => stage.endMinute),
+    ...incidentEvents.map((event) => event.offsetMinutes),
+  );
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [overlay, setOverlay] = useState(true);
@@ -13,14 +20,14 @@ export function ReplayPanel() {
   useEffect(() => {
     if (!playing || focus.pinned) return;
     const timer = window.setInterval(() => {
-      if (focus.timeMinute >= 229) {
+      if (focus.timeMinute >= duration) {
         setPlaying(false);
         return;
       }
       setReplayTime(focus.timeMinute + Math.max(1, Math.round(speed * 3)));
     }, 500);
     return () => window.clearInterval(timer);
-  }, [focus.pinned, focus.timeMinute, playing, setReplayTime, speed]);
+  }, [duration, focus.pinned, focus.timeMinute, playing, setReplayTime, speed]);
 
   const activeStage = useMemo(
     () => replayStages.find((stage) => stage.id === focus.stageId) ?? replayStages[0],
@@ -34,7 +41,7 @@ export function ReplayPanel() {
         <div>
           <p className="section-kicker">Module 02</p>
           <h2>Replay production</h2>
-          <span>Deterministic reconstruction · 3h 49m</span>
+          <span>Reconstruction from live MCP timeline · {formatDuration(duration)}</span>
         </div>
         <button className={`toggle-button${overlay ? ' active' : ''}`} onClick={() => setOverlay((value) => !value)} aria-pressed={overlay}>
           <i /> Reference overlay
@@ -44,7 +51,7 @@ export function ReplayPanel() {
       <div className="replay-viewport">
         <div className="replay-status-line">
           <span className={`replay-status ${playing ? 'playing' : ''}`}><i /> {playing ? 'Replaying' : focus.pinned ? 'Moment pinned' : 'Paused'}</span>
-          <strong>{formatDuration(focus.timeMinute)} <small>/ 3:49</small></strong>
+          <strong>{formatDuration(focus.timeMinute)} <small>/ {formatDuration(duration)}</small></strong>
           {activeEvent && <span>{activeEvent.label} · {activeEvent.value}</span>}
         </div>
         <div className="production-path">
@@ -71,7 +78,7 @@ export function ReplayPanel() {
         {overlay && (
           <div className="reference-path">
             <span>Healthy reference</span>
-            <div><i style={{ width: `${Math.min(100, (focus.timeMinute / 229) * 100)}%` }} /></div>
+            <div><i style={{ width: `${Math.min(100, (focus.timeMinute / duration) * 100)}%` }} /></div>
             <strong>No anomalies · 97.2%</strong>
           </div>
         )}
@@ -86,7 +93,7 @@ export function ReplayPanel() {
           className="replay-slider"
           type="range"
           min="0"
-          max="229"
+          max={duration}
           value={focus.timeMinute}
           onChange={(event) => { setPlaying(false); setPinned(false); setReplayTime(Number(event.target.value)); }}
           aria-label="Replay position"

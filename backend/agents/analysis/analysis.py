@@ -102,8 +102,6 @@ class AnalysisAgent:
 
     def _run_simulations(self, constraints: dict[str, Any]) -> list[SimulationResult]:
         scenarios = list(SCENARIOS)
-        if not constraints.get("no_supplier_change") and not constraints.get("supplier_freeze"):
-            scenarios.append(("Change supplier", {"change_supplier": True}))
 
         output: list[SimulationResult] = []
         try:

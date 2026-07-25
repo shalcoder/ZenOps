@@ -157,8 +157,30 @@ export type AssistantResponse = {
   actions: Array<'open_evidence' | 'run_comparison' | 'generate_report'>;
   toolTrace: ToolTraceStep[];
   agentTrace?: AgentTraceStep[];
+  uiActions: Array<{ action: string; targetId?: string | null; params?: Record<string, unknown> }>;
+  generatedReports: Array<{ reportType: string; markdown: string; html?: string | null }>;
+  notifications: Array<{ recipient: string; subject: string; body: string; requiresApproval: boolean }>;
+  workbenchData?: WorkbenchSnapshot;
   pipelineMode?: 'live_nitrocloud' | 'degraded_fallback';
   model?: string;
+};
+
+export type WorkbenchSnapshot = {
+  source: 'nitrocloud_mcp' | 'nitrocloud_agents_and_mcp' | 'degraded_fallback';
+  live: boolean;
+  incident: Incident;
+  incidentEvents: IncidentEvent[];
+  replayStages: ReplayStage[];
+  graphNodes: GraphNode[];
+  graphEdges: GraphEdge[];
+  evidenceRecords: EvidenceRecord[];
+  recommendations: Recommendation[];
+  businessImpact: BusinessImpact;
+  simulations: Record<string, SimulationResult>;
+  rootCause: string;
+  toolTrace: ToolTraceStep[];
+  errors: string[];
+  updatedAt: string;
 };
 
 export type FocusContext = {

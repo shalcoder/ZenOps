@@ -35,6 +35,14 @@ INTENT_TOOLS = {
     "simulate": ["get_incident_summary", "get_batch_history", "get_queue_events"],
 }
 
+WORKBENCH_TOOLS = [
+    "get_incident_summary",
+    "get_timeline",
+    "get_causal_graph",
+    "get_recommendations",
+    "get_business_impact",
+]
+
 
 class ResearchAgent:
     def __init__(self, llm: NitroChatClient | None = None) -> None:
@@ -60,8 +68,7 @@ class ResearchAgent:
         if not isinstance(selected, list):
             selected = []
         tool_names = [name for name in selected if name in TOOL_ARGUMENTS][:8]
-        if "get_incident_summary" not in tool_names:
-            tool_names.insert(0, "get_incident_summary")
+        tool_names = list(dict.fromkeys(WORKBENCH_TOOLS + tool_names))
         if len(tool_names) < 2:
             tool_names = fallback_tools
 

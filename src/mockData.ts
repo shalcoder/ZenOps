@@ -700,6 +700,9 @@ export const assistantResponses: Record<string, AssistantResponse> = {
     assumptions: ['Machine 7 condition held constant', 'No supplier change within 30 days'],
     actions: ['open_evidence', 'run_comparison', 'generate_report'],
     toolTrace: sharedTrace,
+    uiActions: [],
+    generatedReports: [],
+    notifications: [],
   },
   machine: {
     intent: 'explain_exclusion',
@@ -710,6 +713,9 @@ export const assistantResponses: Record<string, AssistantResponse> = {
     assumptions: ['Queue delay remains at 198 minutes', 'Humidity conditions remain unchanged'],
     actions: ['open_evidence', 'run_comparison', 'generate_report'],
     toolTrace: sharedTrace,
+    uiActions: [],
+    generatedReports: [],
+    notifications: [],
   },
   compare: {
     intent: 'compare_options',
@@ -720,6 +726,9 @@ export const assistantResponses: Record<string, AssistantResponse> = {
     assumptions: ['Current production schedule can be reprioritized', 'Supplier freeze remains active'],
     actions: ['open_evidence', 'run_comparison', 'generate_report'],
     toolTrace: sharedTrace,
+    uiActions: [],
+    generatedReports: [],
+    notifications: [],
   },
   report: {
     intent: 'generate_report',
@@ -730,6 +739,9 @@ export const assistantResponses: Record<string, AssistantResponse> = {
     assumptions: ['Report remains a draft until an authorized manager approves it'],
     actions: ['open_evidence', 'generate_report'],
     toolTrace: sharedTrace,
+    uiActions: [],
+    generatedReports: [],
+    notifications: [],
   },
 };
 

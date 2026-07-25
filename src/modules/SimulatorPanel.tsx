@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { runScenario } from '../integrations/forgeOpsClient';
-import { simulationPresets } from '../mockData';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 import type { LoadState, SimulationResult } from '../types';
 
 type ScenarioKey = 'reduce_queue_delay' | 'humidity_control' | 'replace_machine_7';
@@ -12,6 +12,7 @@ const presets: Array<{ key: ScenarioKey; label: string; description: string }> =
 ];
 
 export function SimulatorPanel() {
+  const { data } = useWorkbenchData();
   const [selected, setSelected] = useState<ScenarioKey>('reduce_queue_delay');
   const [queueDelay, setQueueDelay] = useState(45);
   const [humidity, setHumidity] = useState(50);
@@ -42,7 +43,7 @@ export function SimulatorPanel() {
     }
   };
 
-  const preview = result ?? simulationPresets[selected];
+  const preview = result ?? data.simulations[selected] ?? data.simulations.baseline;
 
   return (
     <section className="module-panel simulator-panel">

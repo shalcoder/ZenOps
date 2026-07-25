@@ -1,16 +1,21 @@
 import { useMemo, useState } from 'react';
 import { incidents } from '../mockData';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 
 const formatInr = (value: number) => `₹${(value / 100000).toFixed(value >= 1000000 ? 0 : 1)}L`;
 
 export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
+  const { data, loading } = useWorkbenchData();
+  const incidentList = [data.incident, ...incidents.slice(1)];
   const [plant, setPlant] = useState('All plants');
   const [status, setStatus] = useState('All statuses');
-  const filtered = useMemo(() => incidents.filter((incident) => {
+  const filtered = useMemo(() => incidentList.filter((incident) => {
     const plantMatch = plant === 'All plants' || incident.plant === plant;
     const statusMatch = status === 'All statuses' || incident.status === status;
     return plantMatch && statusMatch;
-  }), [plant, status]);
+  }), [data.incident, plant, status]);
+  const yieldDelta = data.incident.baselineYield - data.incident.currentYield;
+  const recentEvents = [...data.incidentEvents].slice(-4).reverse();
 
   return (
     <main className="dashboard-page">
@@ -34,12 +39,12 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
 
       <section className="metric-grid" aria-label="Production KPIs">
         <article className="metric-card metric-critical">
-          <div className="metric-topline"><span>Yield</span><span className="metric-delta negative">↓ 14.0 pts</span></div>
-          <strong>82.0<span>%</span></strong>
+          <div className="metric-topline"><span>Yield</span><span className="metric-delta negative">↓ {yieldDelta.toFixed(1)} pts</span></div>
+          <strong>{data.incident.currentYield.toFixed(1)}<span>%</span></strong>
           <div className="mini-bars" aria-label="Yield trend">
             {[68, 72, 75, 70, 62, 49, 42, 36].map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}
           </div>
-          <small>Target 96% · Assembly Line 3</small>
+          <small>Target {data.incident.baselineYield}% · {data.incident.line}</small>
         </article>
         <article className="metric-card">
           <div className="metric-topline"><span>Overall equipment effectiveness</span><span className="metric-delta positive">↑ 1.8%</span></div>
@@ -144,33 +149,19 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
               <p className="section-kicker">Signal stream</p>
               <h2>Recent alerts</h2>
             </div>
-            <span className="dataset-label">Golden-path dataset</span>
+            <span className="dataset-label">
+              {loading ? 'Loading MCP' : data.live ? 'Live MCP records' : 'Fallback records'}
+            </span>
           </div>
           <ol className="signal-list">
-            <li>
-              <span className="signal-time">14:28</span>
-              <i className="signal-icon sensor">H</i>
-              <div><strong>High humidity</strong><p>Queue area · 68.5% RH</p></div>
-              <span className="signal-state warning">Warning</span>
-            </li>
-            <li>
-              <span className="signal-time">14:19</span>
-              <i className="signal-icon queue">Q</i>
-              <div><strong>Conveyor delay</strong><p>Line 2 · +11% cycle time</p></div>
-              <span className="signal-state info">Monitor</span>
-            </li>
-            <li>
-              <span className="signal-time">14:12</span>
-              <i className="signal-icon machine">M7</i>
-              <div><strong>Machine 7 vibration</strong><p>4.7 mm/s · limit 3.5</p></div>
-              <span className="signal-state critical">Critical</span>
-            </li>
-            <li>
-              <span className="signal-time">13:56</span>
-              <i className="signal-icon quality">Q</i>
-              <div><strong>Quality score</strong><p>Batch B-2407-184 · 62.3</p></div>
-              <span className="signal-state critical">Failed</span>
-            </li>
+            {recentEvents.map((event) => (
+              <li key={event.id}>
+                <span className="signal-time">{new Date(event.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
+                <i className={`signal-icon ${event.category}`}>{event.source.slice(0, 2)}</i>
+                <div><strong>{event.label}</strong><p>{event.value || event.description}</p></div>
+                <span className={`signal-state ${event.severity}`}>{event.severity}</span>
+              </li>
+            ))}
           </ol>
         </aside>
       </section>

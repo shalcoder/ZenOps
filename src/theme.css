@@ -1203,6 +1203,33 @@ time,
   background: #faf7f0;
 }
 
+.assistant-user-question {
+  max-width: 78%;
+  margin: 0 0 20px auto;
+  padding: 12px 14px;
+  color: var(--text);
+  border: 1px solid #cddde4;
+  border-radius: 12px 12px 3px 12px;
+  background: #eef7fa;
+}
+
+.assistant-user-question span {
+  display: block;
+  margin-bottom: 4px;
+  color: #397d9f;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.assistant-user-question p {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .assistant-intro p,
 .assistant-thinking p,
 .assistant-answer p {
@@ -1233,6 +1260,59 @@ time,
   background: var(--panel);
 }
 
+.assistant-composer {
+  display: grid;
+  gap: 8px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.assistant-composer > label {
+  color: #4f91b2;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.assistant-composer > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 13px;
+  background: #fffdf8;
+}
+
+.assistant-composer textarea {
+  width: 100%;
+  min-height: 64px;
+  resize: vertical;
+  color: var(--text);
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.assistant-composer textarea::placeholder {
+  color: #9b9187;
+}
+
+.assistant-composer > small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.assistant-composer .primary-button {
+  min-width: 92px;
+}
+
 .assistant-prompts > span {
   grid-column: 1 / -1;
 }
@@ -1252,8 +1332,28 @@ time,
 }
 
 .assistant-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   padding: 0 24px 20px;
   background: var(--panel);
+}
+
+.assistant-actions > button {
+  flex: 1 1 150px;
+}
+
+.agent-report-markdown {
+  max-height: 56vh;
+  overflow: auto;
+  margin: 0;
+  padding: 24px;
+  color: var(--text);
+  background: #fffdf8;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  white-space: pre-wrap;
+  font: 0.84rem/1.65 "Cascadia Code", Consolas, monospace;
 }
 
 .tool-trace {
@@ -1347,6 +1447,13 @@ time,
 }
 
 @media (max-width: 760px) {
+  .assistant-composer > div {
+    grid-template-columns: 1fr;
+  }
+
+  .assistant-composer .primary-button {
+    width: 100%;
+  }
   .app-header {
     height: 68px;
     padding: 0 18px;

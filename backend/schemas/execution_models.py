@@ -47,5 +47,6 @@ class ExecutionOutput(BaseModel):
     actions_available: List[str]
     tool_trace: List[Dict[str, Any]] = Field(default_factory=list)
     agent_trace: List[Dict[str, Any]] = Field(default_factory=list)
+    workbench_data: Dict[str, Any] = Field(default_factory=dict)
     pipeline_mode: str = "degraded_fallback"
     model: str = ""

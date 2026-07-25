@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useFocusContext } from '../FocusContext';
-import { graphEdges, graphNodes } from '../mockData';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 
 export function GraphPanel() {
   const { focus, focusGraphNode } = useFocusContext();
+  const { data } = useWorkbenchData();
+  const { graphEdges, graphNodes } = data;
   const [hideWeak, setHideWeak] = useState(true);
   const [afterIntervention, setAfterIntervention] = useState(false);
 

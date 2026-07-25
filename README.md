@@ -28,6 +28,24 @@ npm run dev
 
 Open `http://localhost:4173`. Vite sends `/api/agent` and `/api/audit` to the agent backend on port 8000 and the remaining `/api` routes to the bridge on port 8787. NitroCloud keeps its model gateway credential server-side, so this repository needs no OpenAI, Gemini, or Anthropic key.
 
+The workbench is driven by the live agent pipeline and deployed NitroCloud MCP
+data. Operators can type arbitrary questions in the assistant, and the returned
+evidence, timeline, causal graph, simulations, recommendations, and business
+impact update the shared frontend state. Scenario buttons call the live MCP
+`run_scenario` tool. Approving a recommendation creates an auditable decision
+record; it deliberately does not claim to change a physical plant, MES, or ERP
+system.
+
+Key agent endpoints:
+
+- `GET /api/agent/workbench` loads the current NitroCloud MCP incident snapshot.
+- `POST /api/agent/query` runs Planner, Research, Analysis, and Execution.
+- `POST /api/agent/simulate` runs an MCP counterfactual scenario.
+- `POST /api/agent/decision/approve` records an approved decision.
+
+If NitroCloud or the agent backend is unavailable, the UI visibly labels the
+bundled dataset as fallback data instead of presenting it as a live result.
+
 Run the complete frontend, MCP-tool, and HTTP integration checks with:
 
 ```powershell

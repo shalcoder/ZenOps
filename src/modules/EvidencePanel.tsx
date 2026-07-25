@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useFocusContext } from '../FocusContext';
-import { evidenceRecords, graphNodes, incidentEvents } from '../mockData';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 
 const formatTimestamp = (timestamp: string) => new Intl.DateTimeFormat('en-IN', {
   day: '2-digit',
@@ -13,6 +13,8 @@ const formatTimestamp = (timestamp: string) => new Intl.DateTimeFormat('en-IN', 
 
 export function EvidencePanel() {
   const { focus } = useFocusContext();
+  const { data } = useWorkbenchData();
+  const { evidenceRecords, graphNodes, incidentEvents } = data;
   const records = useMemo(
     () => evidenceRecords.filter((record) => focus.evidenceIds.includes(record.id)),
     [focus.evidenceIds],

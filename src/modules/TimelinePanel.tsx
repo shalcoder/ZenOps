@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useFocusContext } from '../FocusContext';
-import { incidentEvents } from '../mockData';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 
 const time = (timestamp: string) => new Intl.DateTimeFormat('en-IN', {
   hour: '2-digit',
@@ -11,6 +11,8 @@ const time = (timestamp: string) => new Intl.DateTimeFormat('en-IN', {
 
 export function TimelinePanel() {
   const { focus, focusEvent } = useFocusContext();
+  const { data } = useWorkbenchData();
+  const { incidentEvents } = data;
   const [source, setSource] = useState('all');
   const [severity, setSeverity] = useState('all');
   const [compare, setCompare] = useState(true);

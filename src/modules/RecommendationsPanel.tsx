@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useFocusContext } from '../FocusContext';
-import { businessImpact, recommendations } from '../mockData';
+import { approveDecision } from '../integrations/forgeOpsClient';
+import type { AssistantResponse } from '../types';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 
 const inr = (value: number) => new Intl.NumberFormat('en-IN', {
   style: 'currency',
@@ -8,12 +10,36 @@ const inr = (value: number) => new Intl.NumberFormat('en-IN', {
   maximumFractionDigits: 0,
 }).format(value);
 
-export function RecommendationsPanel() {
+export function RecommendationsPanel({
+  agentResponse,
+}: {
+  agentResponse: AssistantResponse | null;
+}) {
   const { focusEvidenceRefs } = useFocusContext();
-  const [selectedId, setSelectedId] = useState(recommendations[0].id);
+  const { data } = useWorkbenchData();
+  const { businessImpact, recommendations } = data;
+  const [selectedId, setSelectedId] = useState(recommendations[0]?.id ?? '');
   const [approvalOpen, setApprovalOpen] = useState(false);
-  const [approved, setApproved] = useState(false);
+  const [approvalStatus, setApprovalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [approvalId, setApprovalId] = useState<number | null>(null);
   const selected = recommendations.find((item) => item.id === selectedId) ?? recommendations[0];
+
+  if (!selected) return null;
+
+  const recordApproval = async () => {
+    setApprovalStatus('loading');
+    try {
+      const record = await approveDecision(
+        selected,
+        agentResponse?.conclusion ?? 'No agent conclusion was attached.',
+      );
+      setApprovalId(record.id);
+      setApprovalStatus('success');
+      setApprovalOpen(false);
+    } catch {
+      setApprovalStatus('error');
+    }
+  };
 
   return (
     <>
@@ -83,7 +109,8 @@ export function RecommendationsPanel() {
             <p>{businessImpact.basis}</p>
             <code>{selected.evidenceRefs.join(' · ')}</code>
           </div>
-          {approved && <div className="approval-record"><i>✓</i><div><strong>Decision recorded</strong><p>Approved locally for the demo audit trail. No external system was changed.</p></div></div>}
+          {approvalStatus === 'success' && <div className="approval-record"><i>✓</i><div><strong>Decision recorded · #{approvalId}</strong><p>Persisted in the ForgeOps audit API. No plant control was changed.</p></div></div>}
+          {approvalStatus === 'error' && <div className="approval-record"><div><strong>Approval was not recorded</strong><p>The backend audit API could not be reached.</p></div></div>}
         </aside>
       </section>
 
@@ -108,7 +135,9 @@ export function RecommendationsPanel() {
             <div className="approval-warning"><strong>Human authority</strong><p>ForgeOps recommends and explains. This confirmation records approval but does not directly modify plant controls.</p></div>
             <footer>
               <button className="secondary-button" onClick={() => setApprovalOpen(false)}>Cancel</button>
-              <button className="primary-button" onClick={() => { setApproved(true); setApprovalOpen(false); }}>Approve & record decision <span>→</span></button>
+              <button className="primary-button" onClick={() => void recordApproval()} disabled={approvalStatus === 'loading'}>
+                {approvalStatus === 'loading' ? 'Recording…' : 'Approve & record decision'} <span>→</span>
+              </button>
             </footer>
           </section>
         </div>

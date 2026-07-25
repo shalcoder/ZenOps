@@ -1,38 +1,99 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useFocusContext } from '../FocusContext';
-import { askAgent, getRuntimeStatus, type RuntimeStatus } from '../integrations/forgeOpsClient';
+import {
+  askAgent,
+  getRuntimeStatus,
+  type RuntimeStatus,
+} from '../integrations/forgeOpsClient';
 import type { AssistantResponse, LoadState } from '../types';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 
 const prompts = [
-  { key: 'evidence' as const, label: 'Show me the evidence' },
-  { key: 'machine' as const, label: 'Why not Machine 7?' },
-  { key: 'compare' as const, label: 'Compare the options' },
-  { key: 'report' as const, label: 'Generate manager report' },
+  {
+    key: 'evidence',
+    label: 'Show me the evidence',
+    query: 'Show me the evidence and identify the strongest controllable cause.',
+  },
+  {
+    key: 'machine',
+    label: 'Why not Machine 7?',
+    query: 'Why was Machine 7 ruled out as the primary action?',
+  },
+  {
+    key: 'compare',
+    label: 'Compare the options',
+    query: 'Compare reducing queue delay, humidity control, and replacing Machine 7.',
+  },
+  {
+    key: 'report',
+    label: 'Generate manager report',
+    query: 'Generate a report for the plant manager.',
+  },
 ];
 
-export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void }) {
+type AssistantPanelProps = {
+  onOpenDecision: () => void;
+  onAgentActions: (actions: AssistantResponse['uiActions']) => void;
+  onResponse: (response: AssistantResponse) => void;
+};
+
+export function AssistantPanel({
+  onOpenDecision,
+  onAgentActions,
+  onResponse,
+}: AssistantPanelProps) {
   const { focus, focusEvidenceRefs } = useFocusContext();
+  const { applyAgentData } = useWorkbenchData();
   const [status, setStatus] = useState<LoadState>('idle');
   const [response, setResponse] = useState<AssistantResponse | null>(null);
+  const [question, setQuestion] = useState('');
+  const [draft, setDraft] = useState('');
   const [traceOpen, setTraceOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [runtime, setRuntime] = useState<RuntimeStatus | null>(null);
 
   useEffect(() => {
     let active = true;
-    getRuntimeStatus().then((result) => { if (active) setRuntime(result); });
-    return () => { active = false; };
+    getRuntimeStatus().then((result) => {
+      if (active) setRuntime(result);
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const runPrompt = async (key: keyof typeof import('../mockData').assistantResponses) => {
+  const runQuery = async (rawQuery: string) => {
+    const query = rawQuery.trim();
+    if (!query || status === 'loading') return;
+    setQuestion(query);
+    setDraft('');
     setStatus('loading');
-    const result = await askAgent(key);
+    const result = await askAgent(query);
     setResponse(result);
     setStatus('success');
-    focusEvidenceRefs(result.evidenceRefs, result.conclusion);
-    if (key === 'compare') onOpenDecision();
-    if (key === 'report') setReportOpen(true);
+    applyAgentData(result.workbenchData);
+    onResponse(result);
+    onAgentActions(result.uiActions);
+    if (
+      result.generatedReports.length > 0
+      || result.uiActions.some((action) => action.action === 'OPEN_REPORT_PANEL')
+    ) {
+      setReportOpen(true);
+    }
   };
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    void runQuery(draft);
+  };
+
+  const liveReady = Boolean(
+    runtime?.online
+    && runtime.llmBacked
+    && runtime.mcpServerAttached
+    && runtime.agentRoles === 4,
+  );
+  const report = response?.generatedReports[0];
 
   return (
     <>
@@ -42,8 +103,8 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
             <span className="assistant-orb" aria-hidden="true"><i /><i /></span>
             <div>
               <strong>Decision assistant</strong>
-              <small className={runtime?.online ? 'online' : runtime ? 'offline' : 'checking'}>
-                <i /> {runtime?.online ? 'Live agents online' : runtime ? 'Backend offline' : 'Checking agents'}
+              <small className={liveReady ? 'online' : runtime ? 'offline' : 'checking'}>
+                <i /> {liveReady ? 'Live agents and MCP online' : runtime ? 'Degraded mode' : 'Checking agents'}
               </small>
             </div>
           </div>
@@ -64,15 +125,28 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
           {!response && status !== 'loading' && (
             <div className="assistant-intro">
               <span className="assistant-orb small"><i /><i /></span>
-              <p>Four specialized NitroCloud agents plan, retrieve live MCP evidence, analyze counterfactuals, and prepare an approval-safe decision for <strong>INC-2407-001</strong>.</p>
+              <p>Ask any manufacturing question. Four NitroCloud roles will plan, retrieve MCP evidence, analyze scenarios, and prepare a decision.</p>
             </div>
           )}
+
+          {question && (
+            <div className="assistant-user-question">
+              <span>You</span>
+              <p>{question}</p>
+            </div>
+          )}
+
           {status === 'loading' && (
             <div className="assistant-thinking">
               <span className="assistant-orb small"><i /><i /></span>
-              <div><strong>Running the four-agent investigation</strong><p>Planning, calling MCP tools, analyzing scenarios, and preparing the decision...</p><span><i /><i /><i /></span></div>
+              <div>
+                <strong>Running the four-agent investigation</strong>
+                <p>Planning, retrieving MCP records, analyzing scenarios, and preparing the decision…</p>
+                <span><i /><i /><i /></span>
+              </div>
             </div>
           )}
+
           {response && status === 'success' && (
             <div className="assistant-answer">
               <span className="assistant-orb small"><i /><i /></span>
@@ -91,7 +165,12 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
                 </p>
                 <div className="assistant-evidence-links">
                   {response.evidenceRefs.map((ref) => (
-                    <button key={ref} onClick={() => focusEvidenceRefs([ref], response.conclusion)}>{ref} ↗</button>
+                    <button
+                      key={ref}
+                      onClick={() => focusEvidenceRefs([ref], response.conclusion)}
+                    >
+                      {ref} ↗
+                    </button>
                   ))}
                 </div>
                 <details className="assumption-details">
@@ -103,10 +182,41 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
           )}
         </div>
 
+        <form className="assistant-composer" onSubmit={submit}>
+          <label htmlFor="agent-question">Ask the agents</label>
+          <div>
+            <textarea
+              id="agent-question"
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                  event.preventDefault();
+                  event.currentTarget.form?.requestSubmit();
+                }
+              }}
+              placeholder="Ask about causes, evidence, constraints, scenarios, or next actions…"
+              rows={3}
+            />
+            <button
+              className="primary-button"
+              type="submit"
+              disabled={!draft.trim() || status === 'loading'}
+            >
+              {status === 'loading' ? 'Running…' : 'Send'}
+            </button>
+          </div>
+          <small>Enter to send · Shift+Enter for a new line</small>
+        </form>
+
         <div className="assistant-prompts">
           <span>Suggested investigations</span>
           {prompts.map((prompt) => (
-            <button key={prompt.key} onClick={() => runPrompt(prompt.key)} disabled={status === 'loading'}>
+            <button
+              key={prompt.key}
+              onClick={() => void runQuery(prompt.query)}
+              disabled={status === 'loading'}
+            >
               {prompt.label}<span>→</span>
             </button>
           ))}
@@ -114,10 +224,24 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
 
         {response && (
           <div className="assistant-actions">
-            <button className="secondary-button compact" onClick={() => focusEvidenceRefs(response.evidenceRefs, response.conclusion)}>Focus evidence</button>
-            <button className="primary-button compact" onClick={() => response.actions.includes('generate_report') ? setReportOpen(true) : onOpenDecision()}>
-              {response.actions.includes('generate_report') ? 'Open brief' : 'Open decision'}
-            </button>
+            {response.actions.includes('open_evidence') && (
+              <button
+                className="secondary-button compact"
+                onClick={() => focusEvidenceRefs(response.evidenceRefs, response.conclusion)}
+              >
+                Focus evidence
+              </button>
+            )}
+            {response.actions.includes('run_comparison') && (
+              <button className="secondary-button compact" onClick={onOpenDecision}>
+                Open comparison
+              </button>
+            )}
+            {response.actions.includes('generate_report') && (
+              <button className="primary-button compact" onClick={() => setReportOpen(true)}>
+                Open decision brief
+              </button>
+            )}
           </div>
         )}
 
@@ -135,10 +259,14 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
           </button>
           {traceOpen && (
             <ol>
-              {(response?.toolTrace ?? []).map((step) => (
-                <li key={step.id}>
+              {(response?.toolTrace ?? []).map((step, index) => (
+                <li key={`${step.id}-${index}`}>
                   <i />
-                  <div><span>{step.server}</span><strong>{step.tool}</strong><small>{step.records.join(', ')}</small></div>
+                  <div>
+                    <span>{step.server}</span>
+                    <strong>{step.tool}</strong>
+                    <small>{step.records.join(', ') || step.status}</small>
+                  </div>
                   <time>{step.durationMs} ms</time>
                 </li>
               ))}
@@ -148,23 +276,41 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
         </div>
       </aside>
 
-      {reportOpen && (
-        <div className="modal-backdrop report-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setReportOpen(false); }}>
+      {reportOpen && response && (
+        <div
+          className="modal-backdrop report-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setReportOpen(false);
+          }}
+        >
           <article className="report-modal" role="dialog" aria-modal="true" aria-labelledby="report-title">
             <header>
-              <div><p className="section-kicker">Plant manager brief · Draft</p><h2 id="report-title">Yield degradation — Batch B-2407-184</h2></div>
+              <div>
+                <p className="section-kicker">Plant manager brief · Draft</p>
+                <h2 id="report-title">Agent decision brief</h2>
+              </div>
               <button className="icon-button" onClick={() => setReportOpen(false)} aria-label="Close report preview">×</button>
             </header>
-            <div className="report-summary">
-              <span>Decision required</span>
-              <h3>{response?.conclusion ?? 'Review the agent recommendation.'}</h3>
-              <p>{response?.effect}</p>
+            {report?.markdown ? (
+              <pre className="agent-report-markdown">{report.markdown}</pre>
+            ) : (
+              <>
+                <div className="report-summary">
+                  <span>Decision required</span>
+                  <h3>{response.conclusion}</h3>
+                  <p>{response.effect}</p>
+                </div>
+                <div className="report-columns">
+                  <section><span>Evidence</span><p>{response.evidenceRefs.join(' · ')}</p></section>
+                  <section><span>Confidence</span><p>{Math.round(response.confidence * 100)}% based on live MCP evidence and scenario analysis.</p></section>
+                </div>
+              </>
+            )}
+            <div className="report-guardrail">
+              <strong>Approval status</strong>
+              <p>Draft only. An authorized manager must approve before any operational action or notification.</p>
             </div>
-            <div className="report-columns">
-              <section><span>Evidence</span><p>{response?.evidenceRefs.join(' · ')}</p></section>
-              <section><span>Confidence</span><p>{Math.round((response?.confidence ?? 0) * 100)}% based on live MCP evidence and scenario analysis.</p></section>
-            </div>
-            <div className="report-guardrail"><strong>Approval status</strong><p>Draft only. An authorized manager must approve before any operational action or notification.</p></div>
             <footer>
               <button className="secondary-button" onClick={() => window.print()}>Print / save PDF</button>
               <button className="primary-button" onClick={() => setReportOpen(false)}>Return to workbench</button>

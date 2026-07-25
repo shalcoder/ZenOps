@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FocusProvider } from './FocusContext';
+import { WorkbenchDataProvider, useWorkbenchData } from './WorkbenchDataContext';
 import { HomeDashboard } from './modules/HomeDashboard';
 import { Workbench } from './modules/Workbench';
 
@@ -17,7 +18,8 @@ function App() {
   const [view, setView] = useState<'dashboard' | 'workbench'>('dashboard');
 
   return (
-    <FocusProvider>
+    <WorkbenchDataProvider>
+      <FocusProvider>
       <div className="app-shell">
         <header className="app-header">
           <button className="brand-button" onClick={() => setView('dashboard')} aria-label="Go to ForgeOps dashboard">
@@ -28,7 +30,7 @@ function App() {
             </span>
           </button>
           <div className="header-context">
-            <span className="live-indicator"><i /> Plant Mumbai-1 · Demo dataset</span>
+            <LiveDataLabel />
             <span className="header-divider" />
             <span className="shift-label">Incident INC-2407-001</span>
             <span className="avatar-button" aria-label="Signed in as Vaishak">VK</span>
@@ -39,7 +41,21 @@ function App() {
           ? <HomeDashboard onOpen={() => setView('workbench')} />
           : <Workbench onBack={() => setView('dashboard')} />}
       </div>
-    </FocusProvider>
+      </FocusProvider>
+    </WorkbenchDataProvider>
+  );
+}
+
+function LiveDataLabel() {
+  const { data, loading } = useWorkbenchData();
+  return (
+    <span className="live-indicator">
+      <i /> {data.incident.plant} · {loading
+        ? 'Connecting to MCP'
+        : data.live
+          ? 'Live NitroCloud MCP'
+          : 'Fallback dataset'}
+    </span>
   );
 }
 

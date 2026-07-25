@@ -18,6 +18,7 @@ from backend.agents.analysis.analysis import AnalysisAgent
 from backend.agents.execution.execution import ExecutionAgent
 from backend.database.audit_log import log_pipeline_run
 from backend.config import FORGEOPS_MODEL
+from backend.workbench import build_pipeline_workbench, evidence_refs_for_intent
 
 
 def run_pipeline(
@@ -72,6 +73,12 @@ def run_pipeline(
     ]
     output.agent_trace = agent_trace
     output.tool_trace = evidence.tool_trace + analyst.tool_trace
+    output.evidence_refs = evidence_refs_for_intent(
+        plan.intent,
+        evidence,
+        output.evidence_refs,
+    )
+    output.workbench_data = build_pipeline_workbench(evidence, analysis)
     output.pipeline_mode = (
         "live_nitrocloud"
         if all(step.get("status") == "complete" for step in agent_trace)

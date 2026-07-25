@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useFocusContext } from '../FocusContext';
-import { featuredIncident } from '../mockData';
+import type { AssistantResponse } from '../types';
+import { useWorkbenchData } from '../WorkbenchDataContext';
 import { AssistantPanel } from './AssistantPanel';
 import { EvidencePanel } from './EvidencePanel';
 import { GraphPanel } from './GraphPanel';
@@ -10,8 +11,33 @@ import { SimulatorPanel } from './SimulatorPanel';
 import { TimelinePanel } from './TimelinePanel';
 
 export function Workbench({ onBack }: { onBack: () => void }) {
-  const { focus, clearFocus } = useFocusContext();
+  const {
+    focus,
+    clearFocus,
+    focusGraphNode,
+    focusEvidenceRefs,
+  } = useFocusContext();
+  const { data, loading, refresh } = useWorkbenchData();
+  const featuredIncident = data.incident;
   const [activeTab, setActiveTab] = useState<'investigate' | 'decide'>('investigate');
+  const [agentResponse, setAgentResponse] = useState<AssistantResponse | null>(null);
+
+  const applyAgentActions = (actions: AssistantResponse['uiActions']) => {
+    for (const action of actions) {
+      if (['OPEN_SIMULATION', 'OPEN_COMPARISON_VIEW', 'OPEN_RECOMMENDATIONS'].includes(action.action)) {
+        setActiveTab('decide');
+      }
+      if (['OPEN_TIMELINE', 'OPEN_GRAPH'].includes(action.action)) {
+        setActiveTab('investigate');
+      }
+      if (action.action === 'HIGHLIGHT_NODE' && action.targetId) {
+        const nodeId = action.targetId.startsWith('node_')
+          ? action.targetId
+          : `node_${action.targetId}`;
+        focusGraphNode(nodeId, 'assistant');
+      }
+    }
+  };
 
   return (
     <main className="workbench-page">
@@ -28,7 +54,7 @@ export function Workbench({ onBack }: { onBack: () => void }) {
           <span className="severity-label high">High severity</span>
           <div>
             <h1>{featuredIncident.title} · {featuredIncident.batchId}</h1>
-            <p>{featuredIncident.plant} · {featuredIncident.line} · Yield <strong>96% → 82%</strong></p>
+            <p>{featuredIncident.plant} · {featuredIncident.line} · Yield <strong>{featuredIncident.baselineYield}% → {featuredIncident.currentYield}%</strong></p>
           </div>
         </div>
         <div className="command-status">
@@ -41,13 +67,16 @@ export function Workbench({ onBack }: { onBack: () => void }) {
             <strong>{focus.aiLabel ?? (focus.pinned ? 'Pinned replay moment' : focus.eventId ?? 'Batch overview')}</strong>
           </div>
           <button className="icon-button" onClick={clearFocus} title="Reset workbench focus" aria-label="Reset workbench focus">↺</button>
+          <button className="icon-button" onClick={() => void refresh()} title="Refresh live MCP data" aria-label="Refresh live MCP data">↻</button>
         </div>
       </section>
 
       <div className="workbench-tabs" role="tablist" aria-label="Workbench mode">
         <button className={activeTab === 'investigate' ? 'active' : ''} onClick={() => setActiveTab('investigate')}>01 · Investigate</button>
         <button className={activeTab === 'decide' ? 'active' : ''} onClick={() => setActiveTab('decide')}>02 · Decide</button>
-        <span className="contract-badge">Integrated tool API · 6 modules</span>
+        <span className={`contract-badge${data.live ? ' live' : ''}`}>
+          {loading ? 'Loading MCP data…' : data.live ? 'Live NitroCloud MCP data' : 'Degraded fallback data'}
+        </span>
       </div>
 
       <div className="workbench-with-assistant">
@@ -64,12 +93,19 @@ export function Workbench({ onBack }: { onBack: () => void }) {
           ) : (
             <>
               <SimulatorPanel />
-              <RecommendationsPanel />
+              <RecommendationsPanel agentResponse={agentResponse} />
               <EvidencePanel />
             </>
           )}
         </div>
-        <AssistantPanel onOpenDecision={() => setActiveTab('decide')} />
+        <AssistantPanel
+          onOpenDecision={() => setActiveTab('decide')}
+          onAgentActions={applyAgentActions}
+          onResponse={(response) => {
+            setAgentResponse(response);
+            focusEvidenceRefs(response.evidenceRefs, response.conclusion);
+          }}
+        />
       </div>
     </main>
   );

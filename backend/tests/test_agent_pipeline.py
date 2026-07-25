@@ -7,11 +7,24 @@ import unittest
 os.environ["FORGEOPS_LIVE_AGENTS"] = "false"
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from backend.agents.planner.planner import classify_intent
+from backend.agents.planner.planner import PlannerAgent, classify_intent
 from backend.pipeline import run_pipeline
+from backend.schemas.planner_models import PlannerInput
 
 
 class TestPlannerIntentClassification(unittest.TestCase):
+    def test_supplier_freeze_is_extracted_as_constraint(self):
+        plan = PlannerAgent().plan(
+            PlannerInput(
+                user_query=(
+                    "Given the supplier freeze, what should the shift manager "
+                    "do first?"
+                ),
+                incident_id="INC-2026-0725-014",
+            )
+        )
+        self.assertTrue(plan.constraints["no_supplier_change"])
+
     def test_show_evidence_intent(self):
         self.assertEqual(classify_intent("Show me the evidence"), "show_evidence")
 
