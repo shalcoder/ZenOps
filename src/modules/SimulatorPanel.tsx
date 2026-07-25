@@ -52,7 +52,6 @@ export function SimulatorPanel() {
           <h2>What-if simulator</h2>
           <span>Test interventions against the 82% incident baseline</span>
         </div>
-        <span className="model-badge">forgeops-sim-v1.0 · validated</span>
       </header>
 
       <div className="simulator-layout">
