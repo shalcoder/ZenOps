@@ -29,6 +29,26 @@ const prompts = [
     label: 'Generate manager report',
     query: 'Generate a report for the plant manager.',
   },
+  {
+    key: 'sequence',
+    label: 'Trace the anomaly sequence',
+    query: 'Trace the anomaly sequence from intake through final inspection.',
+  },
+  {
+    key: 'controllable',
+    label: 'Find the most controllable cause',
+    query: 'Which root cause is most controllable, and what evidence supports it?',
+  },
+  {
+    key: 'risk',
+    label: 'Assess production risk',
+    query: 'What happens if queue delay remains above 120 minutes?',
+  },
+  {
+    key: 'next-shift',
+    label: 'Plan the next shift',
+    query: 'Recommend a safe action plan for the next production shift.',
+  },
 ];
 
 type AssistantPanelProps = {
@@ -115,6 +135,11 @@ export function AssistantPanel({
               ? `${runtime.agentRoles} LLM roles · ${runtime.orchestratorProcesses} orchestrator · ${runtime.toolCount} MCP tools`
               : 'Offline fallback'}
           </span>
+          <div className="assistant-header-context">
+            <span>Current context</span>
+            <strong>{focus.pinned ? `Pinned +${focus.timeMinute} min` : focus.eventId ?? 'Incident overview'}</strong>
+            <small>{focus.graphNodeIds.length} graph · {focus.evidenceIds.length} evidence</small>
+          </div>
         </header>
 
         <div className="assistant-context-strip">
