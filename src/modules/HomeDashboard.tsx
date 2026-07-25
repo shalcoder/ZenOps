@@ -4,6 +4,16 @@ import { useWorkbenchData } from '../WorkbenchDataContext';
 
 const formatInr = (value: number) => `₹${(value / 100000).toFixed(value >= 1000000 ? 0 : 1)}L`;
 
+const incidentOneLiner = (
+  incident: (typeof incidents)[number],
+  isLivePriority: boolean,
+) => {
+  if (isLivePriority) {
+    return `Yield fell from ${incident.baselineYield}% to ${incident.currentYield}% during Batch ${incident.batchId}; final inspection rejected it.`;
+  }
+  return incident.summary.split(/(?<=[.!?])\s/)[0];
+};
+
 export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
   const { data, loading } = useWorkbenchData();
   const incidentList = [data.incident, ...incidents.slice(1)];
@@ -115,7 +125,9 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
                     <span className={`status-label ${incident.status}`}>{incident.status}</span>
                   </div>
                   <h3>{incident.title}</h3>
-                  <p>{incident.summary}</p>
+                  <p className="incident-summary-line">
+                    {incidentOneLiner(incident, index === 0)}
+                  </p>
                   <div className="incident-meta">
                     <span>{incident.plant}</span>
                     <span>{incident.line}</span>

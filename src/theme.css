@@ -398,6 +398,13 @@ time,
   font-size: 1.035rem;
 }
 
+.incident-main > .incident-summary-line {
+  overflow: hidden;
+  margin-bottom: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .incident-kpi span,
 .incident-exposure span,
 .incident-kpi small,
