@@ -110,7 +110,6 @@ export function Workbench({ onBack }: { onBack: () => void }) {
             <>
               <SimulatorPanel />
               <RecommendationsPanel agentResponse={agentResponse} />
-              <EvidencePanel />
             </>
           )}
         </div>
