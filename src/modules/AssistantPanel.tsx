@@ -161,7 +161,9 @@ export function AssistantPanel({
                 <p className="output-footnote">
                   {response.pipelineMode === 'live_nitrocloud'
                     ? `Live NitroCloud reasoning · ${response.model}`
-                    : 'Degraded fallback mode · verify before acting'}
+                    : response.pipelineMode === 'live_nitrocloud_with_safe_tool_selection'
+                      ? 'Live NitroCloud reasoning and MCP evidence · safe research tool selection used'
+                      : 'Degraded fallback mode · verify before acting'}
                 </p>
                 <div className="assistant-evidence-links">
                   {response.evidenceRefs.map((ref) => (
@@ -250,7 +252,26 @@ export function AssistantPanel({
             <div className="assistant-context-strip">
               <span>Agent run</span>
               <strong>{response.agentTrace.map((step) => step.agent).join(' → ')}</strong>
-              <small>{response.agentTrace.map((step) => `${step.agent}: ${step.status}`).join(' · ')}</small>
+              <small>
+                {response.agentTrace.map((step) => (
+                  `${step.agent}: ${
+                    step.status === 'complete_with_safe_tool_selection'
+                      ? 'live MCP · safe tool selection'
+                      : step.status
+                  }${step.attempts && step.attempts > 1 ? ` (${step.attempts} attempts)` : ''}`
+                )).join(' · ')}
+              </small>
+              {response.agentTrace.some((step) => step.error) && (
+                <ul className="agent-run-errors">
+                  {response.agentTrace
+                    .filter((step) => step.error)
+                    .map((step) => (
+                      <li key={step.agent}>
+                        <strong>{step.agent}</strong>: {step.error}
+                      </li>
+                    ))}
+                </ul>
+              )}
             </div>
           )}
           <button onClick={() => setTraceOpen((value) => !value)} aria-expanded={traceOpen}>

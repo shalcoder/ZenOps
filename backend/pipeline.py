@@ -21,6 +21,18 @@ from backend.config import FORGEOPS_MODEL
 from backend.workbench import build_pipeline_workbench, evidence_refs_for_intent
 
 
+def classify_pipeline_mode(agent_trace: list[dict]) -> str:
+    statuses = [step.get("status") for step in agent_trace]
+    if statuses and all(status == "complete" for status in statuses):
+        return "live_nitrocloud"
+    if statuses and all(
+        status in {"complete", "complete_with_safe_tool_selection"}
+        for status in statuses
+    ):
+        return "live_nitrocloud_with_safe_tool_selection"
+    return "degraded_fallback"
+
+
 def run_pipeline(
     user_query: str,
     incident_id: str = "INC-2407-001",
@@ -79,11 +91,7 @@ def run_pipeline(
         output.evidence_refs,
     )
     output.workbench_data = build_pipeline_workbench(evidence, analysis)
-    output.pipeline_mode = (
-        "live_nitrocloud"
-        if all(step.get("status") == "complete" for step in agent_trace)
-        else "degraded_fallback"
-    )
+    output.pipeline_mode = classify_pipeline_mode(agent_trace)
     output.model = FORGEOPS_MODEL
 
     # Audit trail

@@ -166,6 +166,7 @@ class ExecutionAgent:
             "model": call.model,
             "summary": "Prepared the user-facing decision and approval-safe actions.",
             "error": call.error,
+            "attempts": call.attempts,
         }
         return ExecutionOutput(
             assistant_message=conclusion,

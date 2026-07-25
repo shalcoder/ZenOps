@@ -1215,6 +1215,23 @@ time,
   color: var(--text);
 }
 
+.agent-run-errors {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  color: #7c2b20;
+  border: 1px solid #f0c2b8;
+  border-radius: 8px;
+  background: #fff1ed;
+  list-style: none;
+}
+
+.agent-run-errors li {
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
 .assistant-conversation {
   max-height: none;
   padding: 26px 24px;

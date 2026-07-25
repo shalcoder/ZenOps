@@ -67,8 +67,12 @@ class ResearchAgent:
         selected = call.data.get("tool_names", [])
         if not isinstance(selected, list):
             selected = []
-        tool_names = [name for name in selected if name in TOOL_ARGUMENTS][:8]
-        tool_names = list(dict.fromkeys(WORKBENCH_TOOLS + tool_names))
+        selected_tool_names = [
+            name for name in selected
+            if isinstance(name, str) and name in TOOL_ARGUMENTS
+        ][:8]
+        used_safe_tool_selection = not call.live or not selected_tool_names
+        tool_names = list(dict.fromkeys(WORKBENCH_TOOLS + selected_tool_names))
         if len(tool_names) < 2:
             tool_names = fallback_tools
 
@@ -117,13 +121,30 @@ class ResearchAgent:
             "supplier": bundle.evidence_by_tool.get("get_supplier_lot_info", {}),
             "business_impact": bundle.evidence_by_tool.get("get_business_impact", {}),
         }
+        has_required_evidence = all(
+            name in bundle.evidence_by_tool
+            for name in WORKBENCH_TOOLS
+        )
+        if not used_safe_tool_selection and has_required_evidence:
+            status = "complete"
+        elif has_required_evidence:
+            status = "complete_with_safe_tool_selection"
+        else:
+            status = "fallback"
         self.last_trace = {
             "agent": "research",
-            "status": "complete" if call.live and bundle.retrieval_sources else "fallback",
+            "status": status,
             "durationMs": call.latency_ms + sum(int(t.get("durationMs", 0)) for t in bundle.tool_trace),
             "model": call.model,
-            "summary": str(call.data.get("research_goal", f"Retrieved {len(bundle.retrieval_sources)} evidence sources.")),
+            "summary": str(call.data.get(
+                "research_goal",
+                (
+                    f"Retrieved {len(bundle.retrieval_sources)} live MCP evidence sources "
+                    "using the verified safe tool plan."
+                ),
+            )),
             "error": call.error,
+            "attempts": call.attempts,
         }
         return bundle
 

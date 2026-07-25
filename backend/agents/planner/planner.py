@@ -139,6 +139,7 @@ class PlannerAgent:
             "model": call.model,
             "summary": str(call.data.get("rationale", "Rule-based plan used.")),
             "error": call.error,
+            "attempts": call.attempts,
         }
         task_specs = INTENT_TO_TASKS.get(intent, INTENT_TO_TASKS["show_evidence"])
 

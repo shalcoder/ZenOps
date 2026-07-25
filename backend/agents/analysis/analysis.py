@@ -86,6 +86,7 @@ class AnalysisAgent:
             "model": call.model,
             "summary": str(call.data.get("analysis_summary", root.primary_cause)),
             "error": call.error,
+            "attempts": call.attempts,
         }
         return AnalysisResult(
             root_causes=[root],

@@ -140,11 +140,12 @@ export type ToolTraceStep = {
 
 export type AgentTraceStep = {
   agent: 'planner' | 'research' | 'analysis' | 'execution';
-  status: 'complete' | 'fallback';
+  status: 'complete' | 'complete_with_safe_tool_selection' | 'fallback';
   durationMs: number;
   model: string;
   summary: string;
   error?: string | null;
+  attempts?: number;
 };
 
 export type AssistantResponse = {
@@ -161,7 +162,7 @@ export type AssistantResponse = {
   generatedReports: Array<{ reportType: string; markdown: string; html?: string | null }>;
   notifications: Array<{ recipient: string; subject: string; body: string; requiresApproval: boolean }>;
   workbenchData?: WorkbenchSnapshot;
-  pipelineMode?: 'live_nitrocloud' | 'degraded_fallback';
+  pipelineMode?: 'live_nitrocloud' | 'live_nitrocloud_with_safe_tool_selection' | 'degraded_fallback';
   model?: string;
 };
 
