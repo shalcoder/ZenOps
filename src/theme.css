@@ -557,43 +557,11 @@ time,
 }
 
 .workbench-with-assistant {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
-  align-items: start;
-  gap: 24px;
+  display: block;
 }
 
 .workbench-main {
   min-width: 0;
-}
-
-.assistant-dock {
-  position: sticky;
-  top: 20px;
-  min-width: 0;
-  max-height: calc(100vh - 40px);
-}
-
-.assistant-drawer-backdrop {
-  display: none;
-}
-
-.assistant-launcher {
-  position: fixed;
-  right: 28px;
-  bottom: 28px;
-  z-index: 24;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 52px;
-  padding: 7px 18px 7px 8px;
-  color: var(--text);
-  border: 1px solid #b9ddea;
-  border-radius: 15px;
-  background: #fffdf8;
-  box-shadow: 0 12px 34px rgba(70, 55, 43, 0.16);
-  font-weight: 700;
 }
 
 .module-panel {
@@ -1160,46 +1128,22 @@ time,
 }
 
 .assistant-panel {
-  position: relative;
-  max-height: calc(100vh - 40px);
-  margin-top: 0;
+  position: static;
+  max-height: none;
+  margin-top: 28px;
   color: var(--text);
   border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--panel);
   box-shadow: none;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .assistant-header {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
   min-height: 82px;
   padding: 20px 24px;
   border-bottom: 1px solid var(--line);
   background: #faf7f0;
-}
-
-.assistant-mode-label {
-  grid-column: 1 / -1;
-}
-
-.assistant-close {
-  grid-column: 2;
-  grid-row: 1;
-  width: 34px;
-  height: 34px;
-  color: var(--muted-strong);
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: var(--panel);
-  font-size: 1.2rem;
 }
 
 .assistant-identity strong {
@@ -1590,36 +1534,6 @@ time,
   .signal-panel {
     width: 100%;
   }
-
-  .workbench-with-assistant {
-    display: block;
-  }
-
-  .assistant-dock {
-    position: fixed;
-    top: 88px;
-    right: 20px;
-    bottom: 20px;
-    z-index: 31;
-    width: min(440px, calc(100% - 40px));
-    max-height: none;
-  }
-
-  .assistant-panel {
-    height: 100%;
-    max-height: none;
-    box-shadow: 0 24px 80px rgba(70, 55, 43, 0.22);
-  }
-
-  .assistant-drawer-backdrop {
-    position: fixed;
-    inset: 76px 0 0;
-    z-index: 30;
-    display: block;
-    border: 0;
-    border-radius: 0;
-    background: rgba(53, 44, 37, 0.34);
-  }
 }
 
 @media (max-width: 1040px) {
@@ -1684,22 +1598,6 @@ time,
 
   .assistant-mode-label {
     display: none;
-  }
-
-  .assistant-dock {
-    top: 80px;
-    right: 14px;
-    bottom: 14px;
-    width: calc(100% - 28px);
-  }
-
-  .assistant-drawer-backdrop {
-    inset: 68px 0 0;
-  }
-
-  .assistant-launcher {
-    right: 14px;
-    bottom: 14px;
   }
 }
 
