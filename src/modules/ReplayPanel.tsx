@@ -33,21 +33,7 @@ export function ReplayPanel() {
     () => replayStages.find((stage) => stage.id === focus.stageId) ?? replayStages[0],
     [focus.stageId],
   );
-  const activeStageIndex = Math.max(
-    0,
-    replayStages.findIndex((stage) => stage.id === activeStage.id),
-  );
-  const activeStageSpan = Math.max(1, activeStage.endMinute - activeStage.startMinute);
-  const activeStageFraction = Math.max(
-    0,
-    Math.min(1, (focus.timeMinute - activeStage.startMinute) / activeStageSpan),
-  );
-  const stageProgress = replayStages.length > 1
-    ? Math.min(
-      100,
-      ((activeStageIndex + activeStageFraction) / (replayStages.length - 1)) * 100,
-    )
-    : 100;
+  const stageProgress = Math.min(100, (focus.timeMinute / duration) * 100);
   const activeEvent = incidentEvents.find((event) => event.id === focus.eventId);
   const activeStageAnomalies = incidentEvents.filter(
     (event) => activeStage.eventIds.includes(event.id)
