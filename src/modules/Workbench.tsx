@@ -118,15 +118,17 @@ export function Workbench({ onBack }: { onBack: () => void }) {
             </>
           )}
         </div>
-        <AssistantPanel
-          onOpenDecision={openComparison}
-          onFocusEvidence={openEvidence}
-          onAgentActions={applyAgentActions}
-          onResponse={(response) => {
-            setAgentResponse(response);
-            focusEvidenceRefs(response.evidenceRefs, response.conclusion);
-          }}
-        />
+        <div hidden={activeTab !== 'investigate'}>
+          <AssistantPanel
+            onOpenDecision={openComparison}
+            onFocusEvidence={openEvidence}
+            onAgentActions={applyAgentActions}
+            onResponse={(response) => {
+              setAgentResponse(response);
+              focusEvidenceRefs(response.evidenceRefs, response.conclusion);
+            }}
+          />
+        </div>
       </div>
     </main>
   );
