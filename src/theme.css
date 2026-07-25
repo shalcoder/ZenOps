@@ -7,7 +7,7 @@
 :root {
   color: #2b211c;
   background: #fbf8ef;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --bg: #fbf8ef;
   --bg-raised: #f7f2e8;
   --panel: #fffdf7;
@@ -101,7 +101,7 @@ time,
 
 .brand-button small {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.87rem;
   letter-spacing: 0.01em;
 }
 
@@ -121,7 +121,7 @@ time,
 .header-context {
   gap: 18px;
   color: var(--muted-strong);
-  font-size: 0.8rem;
+  font-size: 0.90rem;
 }
 
 .live-indicator,
@@ -146,7 +146,7 @@ time,
   color: #7c2b20;
   background: #ffd8cf;
   border: 1px solid #f0c2b8;
-  font-size: 0.76rem;
+  font-size: 0.91rem;
 }
 
 .dashboard-page,
@@ -166,7 +166,7 @@ time,
 
 .section-kicker {
   color: #4f9dc5;
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
 }
@@ -202,7 +202,7 @@ time,
   color: var(--text);
   background: #fffdf7;
   box-shadow: 0 3px 0 #d4cbbc;
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   font-weight: 650;
 }
 
@@ -235,7 +235,7 @@ time,
 .secondary-button.compact {
   min-height: 38px;
   padding: 8px 14px;
-  font-size: 0.76rem;
+  font-size: 0.91rem;
 }
 
 .button-icon {
@@ -268,7 +268,7 @@ time,
 
 .metric-topline {
   color: var(--muted-strong);
-  font-size: 0.72rem;
+  font-size: 0.87rem;
   font-weight: 600;
   letter-spacing: 0.055em;
 }
@@ -364,7 +364,7 @@ time,
 .status-label,
 .dataset-label {
   border-radius: 7px;
-  font-size: 0.68rem;
+  font-size: 0.83rem;
   font-weight: 650;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -425,19 +425,37 @@ time,
   border: 1px solid #c7e0eb;
 }
 
+.signal-list {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #ded6c8;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
 .signal-list li {
   min-height: 76px;
-  border-bottom-color: var(--line);
+  background: #ffffff;
+  border-bottom: 1px solid #f0eafe;
+}
+
+.signal-list li:hover {
+  background: #f4f8fd;
 }
 
 .signal-icon {
-  color: var(--muted-strong);
-  background: #f2ede3;
-  border: 1px solid var(--line);
+  color: #1d7af2;
+  background: #eef6ff;
+  border: 1px solid #c6e0ff;
 }
 
 .signal-list strong {
-  color: var(--text);
+  color: #1c2730;
+  font-weight: 700;
+}
+
+.signal-list p {
+  color: #52606d;
 }
 
 .workbench-page {
@@ -1168,7 +1186,7 @@ time,
   width: auto;
   height: auto;
   color: #347d9f;
-  font-size: 0.68rem;
+  font-size: 0.83rem;
   font-weight: 750;
   transform: none;
 }
@@ -1217,7 +1235,7 @@ time,
   display: block;
   margin-bottom: 4px;
   color: #397d9f;
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1226,7 +1244,7 @@ time,
 .assistant-user-question p {
   margin: 0;
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 1.00rem;
   line-height: 1.5;
 }
 
@@ -1270,7 +1288,7 @@ time,
 
 .assistant-composer > label {
   color: #4f91b2;
-  font-size: 0.72rem;
+  font-size: 0.87rem;
   font-weight: 750;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1296,7 +1314,7 @@ time,
   outline: 0;
   background: transparent;
   font: inherit;
-  font-size: 0.92rem;
+  font-size: 1.02rem;
   line-height: 1.5;
 }
 
@@ -1306,7 +1324,7 @@ time,
 
 .assistant-composer > small {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.87rem;
 }
 
 .assistant-composer .primary-button {
@@ -1424,6 +1442,48 @@ time,
 .report-columns p,
 .approval-summary p {
   color: var(--muted-strong);
+}
+
+.approval-modal,
+.report-modal {
+  background: #ffffff;
+  border-color: #ded6c8;
+}
+
+.approval-modal > header,
+.approval-modal > footer {
+  background: #ffffff;
+  border-color: #eee8dd;
+}
+
+.approval-summary {
+  background: #eef6ff;
+  border-color: #c6e0ff;
+}
+
+.approval-summary p {
+  color: #475569;
+}
+
+.approval-modal dl {
+  background: #ffffff;
+}
+
+.approval-modal dl > div {
+  border-color: #f1ebd9;
+}
+
+.approval-warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.approval-warning strong {
+  color: #b45309;
+}
+
+.approval-warning p {
+  color: #78350f;
 }
 
 @media (max-width: 1260px) {
