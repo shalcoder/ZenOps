@@ -1312,29 +1312,48 @@ time,
 }
 
 .report-modal > header,
+.approval-modal,
+.report-modal {
+  background: #ffffff;
+  border-color: #ded6c8;
+}
+
+.approval-modal > header,
+.report-modal > header,
+.approval-modal > footer,
 .report-modal > footer {
-  border-color: var(--line);
-  background: #faf7f0;
+  background: #ffffff;
+  border-color: #eee8dd;
 }
 
-.report-modal h2,
-.report-summary h3 {
-  color: var(--text);
+.approval-summary {
+  background: #eef6ff;
+  border-color: #c6e0ff;
 }
 
-.report-summary,
-.report-columns section,
-.approval-summary,
-.approval-modal dl > div {
-  color: var(--text);
-  border-color: var(--line);
-  background: var(--panel);
-}
-
-.report-summary p,
-.report-columns p,
 .approval-summary p {
-  color: var(--muted-strong);
+  color: #475569;
+}
+
+.approval-modal dl {
+  background: #ffffff;
+}
+
+.approval-modal dl > div {
+  border-color: #f1ebd9;
+}
+
+.approval-warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.approval-warning strong {
+  color: #b45309;
+}
+
+.approval-warning p {
+  color: #78350f;
 }
 
 @media (max-width: 1260px) {
