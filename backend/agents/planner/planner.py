@@ -6,18 +6,10 @@ No analysis, no manufacturing facts — pure planning.
 """
 
 import re
+import json
 from backend.schemas.shared_models import AgentName, MCPServer
 from backend.schemas.planner_models import PlannerInput, ExecutionPlan, Task
-
-# Intent classification rules — keywords map to intent types
-INTENT_PATTERNS = {
-    "show_evidence": [r"show.*evidence", r"what happened", r"explain.*factor", r"why.*elevated", r"timeline"],
-    "explain_exclusion": [r"why.*ruled out", r"why not machine", r"machine.*cause", r"explain.*machine"],
-    "compare_options": [r"compare", r"option [ab]", r"vs\.?", r"versus", r"which.*better", r"difference"],
-    "constraint_query": [r"cannot change", r"can't change", r"no supplier", r"constraint", r"what.*should we do"],
-    "generate_report": [r"report", r"generate.*report", r"plant manager", r"executive.*summary"],
-    "simulate": [r"simulate", r"what if", r"what-if", r"if.*reduce", r"scenario"],
-}
+from backend.llm import call_llm
 
 INTENT_TO_AGENTS: dict[str, list[AgentName]] = {
     "show_evidence":     [AgentName.RESEARCH, AgentName.ANALYSIS, AgentName.EXECUTION],
@@ -74,14 +66,31 @@ INTENT_TO_TASKS: dict[str, list[dict]] = {
 }
 
 
-def classify_intent(query: str) -> str:
-    """Rules-based intent classifier."""
-    q = query.lower()
-    for intent, patterns in INTENT_PATTERNS.items():
-        for pattern in patterns:
-            if re.search(pattern, q):
-                return intent
-    return "show_evidence"
+def classify_intent_llm(query: str) -> str:
+    """Uses an LLM to classify intent."""
+    system_prompt = """You are a helpful planner agent for a manufacturing decision workbench.
+Classify the user's query into one of the following exact intents:
+- show_evidence (user wants to see what happened or what went wrong)
+- explain_exclusion (user wants to know why a factor like a machine was ruled out)
+- compare_options (user wants to compare different corrective actions)
+- constraint_query (user mentions a constraint like "cannot change supplier")
+- generate_report (user asks for a report or executive summary)
+- simulate (user asks "what if" or to simulate a scenario)
+
+Respond with ONLY a JSON object containing the intent. For example: {"intent": "show_evidence"}"""
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": query}
+    ]
+    
+    response = call_llm(messages, response_format={"type": "json_object"})
+    try:
+        data = json.loads(response)
+        return data.get("intent", "show_evidence")
+    except Exception:
+        # Fallback if LLM fails
+        return "show_evidence"
 
 
 class PlannerAgent:
@@ -92,7 +101,7 @@ class PlannerAgent:
     """
 
     def plan(self, inp: PlannerInput) -> ExecutionPlan:
-        intent = classify_intent(inp.user_query)
+        intent = classify_intent_llm(inp.user_query)
         task_specs = INTENT_TO_TASKS.get(intent, INTENT_TO_TASKS["show_evidence"])
 
         tasks = [

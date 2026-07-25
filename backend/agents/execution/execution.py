@@ -9,10 +9,16 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
+import sys
+import os
+import json
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+
 from backend.schemas.analysis_models import AnalysisResult
 from backend.schemas.execution_models import (
     ExecutionInput, ExecutionOutput, UIAction, GeneratedReport, Notification,
 )
+from backend.llm import call_llm
 
 INTENT_UI_ACTIONS: dict[str, list[dict]] = {
     "show_evidence": [
@@ -46,22 +52,20 @@ INTENT_UI_ACTIONS: dict[str, list[dict]] = {
     ],
 }
 
-INTENT_CONCLUSIONS: dict[str, str] = {
-    "show_evidence": "Queue delay has the strongest causal influence ({yield}% predicted yield recovery with reduced delay below 60 minutes).",
-    "explain_exclusion": "Machine 7 appeared in 81% of failed batches, but counterfactual simulation shows that reducing queue delay alone restores yield to 96%. Machine 7 replacement alone improves yield by only 2 points.",
-    "compare_options": "Reduce queue delay first — it matches humidity control yield at a fraction of the cost and can be deployed in ~2 hours.",
-    "constraint_query": "With supplier change frozen for 30 days, the best feasible action is reducing queue delay below 60 minutes — predicted yield: {yield}%, confidence: {confidence}%.",
-    "generate_report": "The plant-manager decision brief is ready for review. It packages the incident, evidence chain, scenarios, recommendation, impact, and approval record.",
-    "simulate": "Simulation result: reducing queue delay below 60 minutes increases predicted yield from 82% to {yield}% (confidence: {confidence}%).",
-}
-
-
-def _format_conclusion(template: str, top_rec) -> str:
-    if top_rec:
-        return (template
-                .replace("{yield}", str(top_rec.predicted_yield_pct))
-                .replace("{confidence}", str(top_rec.confidence_pct)))
-    return template
+def _generate_dynamic_conclusion(intent: str, top_rec, top_sim) -> str:
+    system_prompt = "You are a factory AI assistant. Write a single concise sentence summarizing the best action or conclusion."
+    user_prompt = f"Intent: {intent}. Top recommendation: {top_rec.title if top_rec else 'None'} (Yield {top_rec.predicted_yield_pct if top_rec else 0}%). Please generate a brief conclusion."
+    
+    response = call_llm([
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ])
+    
+    if response and not response.startswith("Error:"):
+        return response.strip()
+        
+    # Fallback
+    return f"Based on the analysis for {intent}, the recommended action is {top_rec.title if top_rec else 'to proceed with caution'}."
 
 
 class ExecutionAgent:
@@ -78,9 +82,8 @@ class ExecutionAgent:
         top_rec = analysis.recommendations[0] if analysis.recommendations else None
         top_sim = analysis.simulation_results[0] if analysis.simulation_results else None
 
-        # Generate conclusion
-        conclusion_template = INTENT_CONCLUSIONS.get(intent, INTENT_CONCLUSIONS["show_evidence"])
-        conclusion = _format_conclusion(conclusion_template, top_rec)
+        # Generate conclusion using LLM
+        conclusion = _generate_dynamic_conclusion(intent, top_rec, top_sim)
 
         # Build UI actions
         raw_actions = INTENT_UI_ACTIONS.get(intent, INTENT_UI_ACTIONS["show_evidence"])
