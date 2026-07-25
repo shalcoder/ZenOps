@@ -11,7 +11,7 @@
  * These aggregate data from other MCP servers (MES, Maintenance, Quality,
  * Materials, Simulation) to provide the Copilot with high-level orchestration.
  */
-import { ToolDecorator as Tool, ExecutionContext, z } from '@nitrostack/core';
+import { ToolDecorator as Tool, ExecutionContext, z } from '../../nitrostack.js';
 import {
   INCIDENT,
   TIMELINE_EVENTS,

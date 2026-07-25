@@ -8,23 +8,25 @@ A visual-first platform that helps manufacturing engineers diagnose incidents, r
 
 ## Run the integrated application
 
-ForgeOps now ships as one verified project: the React workbench calls a browser-safe HTTP bridge backed by the NitroStack MCP dataset and the integrated simulation engine.
+ForgeOps now ships as one verified project: the React workbench calls a four-role FastAPI agent orchestrator, which uses NitroCloud's hosted model and the deployed NitroStack MCP server. The MCP exposes 16 read-only manufacturing and simulation tools.
 
-Runtime note: the current hackathon build is one frontend plus one deterministic HTTP tool bridge with six MCP-compatible modules. It does not run four independent AI-agent processes, and the NitroStack MCP transport is a separate optional process. The UI reports this distinction explicitly.
+Runtime note: Planner, Research, Analysis, and Execution are four isolated LLM calls coordinated by one backend process. They are agent roles, not four operating-system processes. The Research and Analysis roles call the live MCP; deterministic logic is retained only as an explicitly labelled degraded fallback.
 
 ```powershell
 npm install
 npm install --prefix forgeops-mcp
+python -m pip install -r backend/requirements.txt
 ```
 
-Start the API and frontend in separate terminals:
+Start the bridge, agent orchestrator, and frontend in separate terminals:
 
 ```powershell
 npm run dev:api
+npm run dev:agents
 npm run dev
 ```
 
-Open `http://localhost:4173`. Vite proxies `/api` to `http://127.0.0.1:8787`; set `VITE_FORGEOPS_API_URL` only when the API is hosted elsewhere. The critical demo path still uses synchronized local fixtures if the API is unavailable.
+Open `http://localhost:4173`. Vite sends `/api/agent` and `/api/audit` to the agent backend on port 8000 and the remaining `/api` routes to the bridge on port 8787. NitroCloud keeps its model gateway credential server-side, so this repository needs no OpenAI, Gemini, or Anthropic key.
 
 Run the complete frontend, MCP-tool, and HTTP integration checks with:
 

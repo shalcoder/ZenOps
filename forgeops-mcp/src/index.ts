@@ -10,7 +10,7 @@
  */
 
 import 'dotenv/config';
-import { McpApplicationFactory } from '@nitrostack/core';
+import { McpApplicationFactory } from './nitrostack.js';
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {

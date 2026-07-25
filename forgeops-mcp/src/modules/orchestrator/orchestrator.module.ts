@@ -1,4 +1,4 @@
-import { Module } from '@nitrostack/core';
+import { Module } from '../../nitrostack.js';
 import { OrchestratorTools } from './orchestrator.tools.js';
 
 @Module({

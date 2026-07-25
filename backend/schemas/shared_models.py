@@ -35,7 +35,7 @@ class UIState(BaseModel):
     active_view: Optional[str] = None
     active_incident_id: Optional[str] = None
     active_batch_id: Optional[str] = None
-    highlighted_nodes: List[str] = []
+    highlighted_nodes: List[str] = Field(default_factory=list)
     pinned_timestamp: Optional[str] = None
 
 

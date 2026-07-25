@@ -2,7 +2,7 @@
 Research Agent Pydantic Models — Agent 2 interface contract.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from backend.schemas.planner_models import ExecutionPlan
 
@@ -25,13 +25,15 @@ class SensorReading(BaseModel):
 
 
 class EvidenceBundle(BaseModel):
-    batch_history: Dict[str, Any] = {}
-    machine_history: Dict[str, Any] = {}
-    sensor_readings: List[Dict[str, Any]] = []
-    quality_data: Dict[str, Any] = {}
-    maintenance_logs: List[Dict[str, Any]] = []
-    historical_incidents: List[Dict[str, Any]] = []
-    causal_graph: Dict[str, Any] = {}
-    timeline_events: List[Dict[str, Any]] = []
-    constraints: Dict[str, Any] = {}
-    retrieval_sources: List[str] = []
+    batch_history: Dict[str, Any] = Field(default_factory=dict)
+    machine_history: Dict[str, Any] = Field(default_factory=dict)
+    sensor_readings: List[Dict[str, Any]] = Field(default_factory=list)
+    quality_data: Dict[str, Any] = Field(default_factory=dict)
+    maintenance_logs: List[Dict[str, Any]] = Field(default_factory=list)
+    historical_incidents: List[Dict[str, Any]] = Field(default_factory=list)
+    causal_graph: Dict[str, Any] = Field(default_factory=dict)
+    timeline_events: List[Dict[str, Any]] = Field(default_factory=list)
+    constraints: Dict[str, Any] = Field(default_factory=dict)
+    retrieval_sources: List[str] = Field(default_factory=list)
+    evidence_by_tool: Dict[str, Any] = Field(default_factory=dict)
+    tool_trace: List[Dict[str, Any]] = Field(default_factory=list)

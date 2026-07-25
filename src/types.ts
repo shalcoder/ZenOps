@@ -133,9 +133,18 @@ export type ToolTraceStep = {
   id: string;
   server: string;
   tool: string;
-  status: 'queued' | 'running' | 'complete';
+  status: 'queued' | 'running' | 'complete' | 'error';
   durationMs: number;
   records: string[];
+};
+
+export type AgentTraceStep = {
+  agent: 'planner' | 'research' | 'analysis' | 'execution';
+  status: 'complete' | 'fallback';
+  durationMs: number;
+  model: string;
+  summary: string;
+  error?: string | null;
 };
 
 export type AssistantResponse = {
@@ -147,6 +156,9 @@ export type AssistantResponse = {
   assumptions: string[];
   actions: Array<'open_evidence' | 'run_comparison' | 'generate_report'>;
   toolTrace: ToolTraceStep[];
+  agentTrace?: AgentTraceStep[];
+  pipelineMode?: 'live_nitrocloud' | 'degraded_fallback';
+  model?: string;
 };
 
 export type FocusContext = {

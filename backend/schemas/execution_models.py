@@ -2,7 +2,7 @@
 Execution Agent Pydantic Models — Agent 4 interface contract.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from backend.schemas.analysis_models import AnalysisResult
 from backend.schemas.shared_models import UIState
@@ -11,7 +11,7 @@ from backend.schemas.shared_models import UIState
 class UIAction(BaseModel):
     action: str  # OPEN_TIMELINE | HIGHLIGHT_QUEUE_DELAY | OPEN_GRAPH | FOCUS_NODE | OPEN_SIMULATION
     target_id: Optional[str] = None
-    params: Dict[str, Any] = {}
+    params: Dict[str, Any] = Field(default_factory=dict)
 
 
 class GeneratedReport(BaseModel):
@@ -41,7 +41,11 @@ class ExecutionOutput(BaseModel):
     evidence_refs: List[str]
     assumptions: List[str]
     ui_actions: List[UIAction]
-    generated_reports: List[GeneratedReport] = []
-    notifications: List[Notification] = []
+    effect: str = ""
+    generated_reports: List[GeneratedReport] = Field(default_factory=list)
+    notifications: List[Notification] = Field(default_factory=list)
     actions_available: List[str]
-    tool_trace: List[Dict[str, Any]] = []
+    tool_trace: List[Dict[str, Any]] = Field(default_factory=list)
+    agent_trace: List[Dict[str, Any]] = Field(default_factory=list)
+    pipeline_mode: str = "degraded_fallback"
+    model: str = ""

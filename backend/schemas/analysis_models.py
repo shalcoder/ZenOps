@@ -2,7 +2,7 @@
 Analysis Agent Pydantic Models — Agent 3 interface contract.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from backend.schemas.planner_models import ExecutionPlan
 from backend.schemas.research_models import EvidenceBundle
@@ -28,7 +28,7 @@ class SimulationResult(BaseModel):
     implementation_effort: str
     assumptions: List[str]
     in_validated_range: bool
-    warnings: List[str] = []
+    warnings: List[str] = Field(default_factory=list)
 
 
 class Recommendation(BaseModel):

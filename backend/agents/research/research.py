@@ -1,69 +1,135 @@
-"""
-Agent 2 — Research Agent
-Retrieves all evidence from forgeops-mcp HTTP endpoints.
-No reasoning. No recommendations. Pure retrieval and normalization.
-"""
+"""Agent 2: choose and execute read-only evidence tools on the live NitroCloud MCP."""
 
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+from __future__ import annotations
 
-from backend.schemas.planner_models import ExecutionPlan, MCPServer
+from typing import Any
+
+from backend.llm.nitrochat_client import NitroChatClient
+from backend.mcp.nitro_mcp_client import NitroMCPClient
 from backend.schemas.research_models import ResearchInput, EvidenceBundle
-import backend.mcp.base_client as mcp
+
+
+TOOL_ARGUMENTS: dict[str, dict[str, Any]] = {
+    "get_incident_summary": {"incident_id": "INC-2407-001"},
+    "get_batch_history": {"batch_id": "B-2407-184"},
+    "get_production_path": {"batch_id": "B-2407-184"},
+    "get_queue_events": {"batch_id": "B-2407-184"},
+    "get_machine_alerts": {"machine_id": "MCH-B-007", "time_range": "incident"},
+    "get_maintenance_state": {"machine_id": "MCH-B-007"},
+    "get_defect_records": {"batch_id": "B-2407-184"},
+    "get_inspection_results": {"batch_id": "B-2407-184"},
+    "get_supplier_lot_info": {"lot_id": "LOT-SUP-2407-88"},
+    "get_material_constraints": {"material_type": "Bearing Steel"},
+    "get_timeline": {"batch_id": "B-2407-184"},
+    "get_causal_graph": {"batch_id": "B-2407-184"},
+    "get_recommendations": {"batch_id": "B-2407-184"},
+    "get_business_impact": {"batch_id": "B-2407-184"},
+}
+
+INTENT_TOOLS = {
+    "show_evidence": ["get_incident_summary", "get_batch_history", "get_queue_events", "get_inspection_results", "get_timeline", "get_causal_graph"],
+    "explain_exclusion": ["get_incident_summary", "get_queue_events", "get_machine_alerts", "get_maintenance_state", "get_causal_graph"],
+    "compare_options": ["get_incident_summary", "get_queue_events", "get_machine_alerts", "get_inspection_results", "get_causal_graph"],
+    "constraint_query": ["get_incident_summary", "get_supplier_lot_info", "get_material_constraints", "get_recommendations"],
+    "generate_report": ["get_incident_summary", "get_timeline", "get_causal_graph", "get_recommendations", "get_business_impact"],
+    "simulate": ["get_incident_summary", "get_batch_history", "get_queue_events"],
+}
 
 
 class ResearchAgent:
-    """
-    Agent 2 — Research Agent
-    Input: ResearchInput (execution plan + incident/batch IDs)
-    Output: EvidenceBundle (all evidence from all MCP servers)
-    """
+    def __init__(self, llm: NitroChatClient | None = None) -> None:
+        self.llm = llm or NitroChatClient()
+        self.last_trace: dict[str, Any] = {}
 
     def retrieve(self, inp: ResearchInput) -> EvidenceBundle:
-        plan = inp.execution_plan
-        required = set(plan.required_servers)
+        fallback_tools = INTENT_TOOLS.get(inp.execution_plan.intent, INTENT_TOOLS["show_evidence"])
+        call = self.llm.complete_json(
+            agent="Research",
+            system_prompt=(
+                "Select the minimum read-only MCP tools needed to answer the request. "
+                f"Allowed tools: {', '.join(TOOL_ARGUMENTS)}. Never select mutation tools. "
+                "Return {\"tool_names\": [string], \"research_goal\": string}."
+            ),
+            payload={
+                "query": inp.execution_plan.raw_query,
+                "intent": inp.execution_plan.intent,
+                "planned_servers": [value.value for value in inp.execution_plan.required_servers],
+            },
+        )
+        selected = call.data.get("tool_names", [])
+        if not isinstance(selected, list):
+            selected = []
+        tool_names = [name for name in selected if name in TOOL_ARGUMENTS][:8]
+        if "get_incident_summary" not in tool_names:
+            tool_names.insert(0, "get_incident_summary")
+        if len(tool_names) < 2:
+            tool_names = fallback_tools
+
         bundle = EvidenceBundle()
-        sources = []
+        try:
+            with NitroMCPClient() as client:
+                available = {tool.get("name") for tool in client.list_tools()}
+                for name in tool_names:
+                    if name not in available:
+                        continue
+                    args = dict(TOOL_ARGUMENTS[name])
+                    if "incident_id" in args:
+                        args["incident_id"] = inp.incident_id
+                    if "batch_id" in args:
+                        args["batch_id"] = inp.batch_id
+                    value, trace = client.call_tool(name, args)
+                    bundle.evidence_by_tool[name] = value
+                    bundle.tool_trace.append(trace)
+                    bundle.retrieval_sources.append(f"nitro-mcp:{name}")
+        except Exception as exc:
+            bundle.tool_trace.append({
+                "id": "mcp-connection",
+                "server": "NitroCloud MCP",
+                "tool": "initialize",
+                "status": "error",
+                "durationMs": 0,
+                "records": [],
+                "error": str(exc),
+            })
 
-        # Always retrieve core incident context
-        incident = mcp.get_incident()
-        bundle.batch_history = incident
-        sources.append("orchestrator:incident")
-
-        if MCPServer.MES in required or MCPServer.ORCHESTRATOR in required:
-            timeline = mcp.get_timeline()
-            bundle.timeline_events = timeline if isinstance(timeline, list) else []
-            sources.append("mes:timeline")
-
-        if MCPServer.MAINTENANCE in required:
-            # Pull maintenance-relevant events from timeline
-            maint_events = mcp.get_timeline(source_filter="maintenance")
-            bundle.maintenance_logs = maint_events if isinstance(maint_events, list) else []
-            sources.append("maintenance:alerts")
-
-        if MCPServer.QUALITY in required:
-            quality_events = mcp.get_timeline(source_filter="quality")
-            bundle.quality_data = {"inspection_events": quality_events}
-            sources.append("quality:inspections")
-
-        if MCPServer.SIMULATION in required or MCPServer.ORCHESTRATOR in required:
-            graph = mcp.get_causal_graph()
-            bundle.causal_graph = graph
-            sources.append("simulation:causal_graph")
-
-        if MCPServer.ORCHESTRATOR in required:
-            recs = mcp.get_recommendations()
-            bundle.historical_incidents = recs  # Reuse field for recommendations bundle
-            impact = mcp.get_business_impact()
-            bundle.constraints = {"business_impact": impact}
-            sources.append("orchestrator:recommendations")
-            sources.append("orchestrator:business_impact")
-
-        if MCPServer.MATERIALS in required:
-            bundle.constraints["supplier_freeze"] = True
-            bundle.constraints["no_supplier_change_days"] = 30
-            sources.append("materials:constraints")
-
-        bundle.retrieval_sources = sources
+        bundle.batch_history = _as_dict(
+            bundle.evidence_by_tool.get("get_batch_history")
+            or bundle.evidence_by_tool.get("get_incident_summary")
+        )
+        bundle.machine_history = _as_dict(bundle.evidence_by_tool.get("get_maintenance_state"))
+        bundle.quality_data = _as_dict(
+            bundle.evidence_by_tool.get("get_inspection_results")
+            or bundle.evidence_by_tool.get("get_defect_records")
+        )
+        bundle.causal_graph = _as_dict(bundle.evidence_by_tool.get("get_causal_graph"))
+        bundle.timeline_events = _as_list(bundle.evidence_by_tool.get("get_timeline"))
+        bundle.maintenance_logs = _as_list(bundle.evidence_by_tool.get("get_machine_alerts"))
+        bundle.historical_incidents = _as_list(bundle.evidence_by_tool.get("get_recommendations"))
+        bundle.constraints = {
+            "material": bundle.evidence_by_tool.get("get_material_constraints", {}),
+            "supplier": bundle.evidence_by_tool.get("get_supplier_lot_info", {}),
+            "business_impact": bundle.evidence_by_tool.get("get_business_impact", {}),
+        }
+        self.last_trace = {
+            "agent": "research",
+            "status": "complete" if call.live and bundle.retrieval_sources else "fallback",
+            "durationMs": call.latency_ms + sum(int(t.get("durationMs", 0)) for t in bundle.tool_trace),
+            "model": call.model,
+            "summary": str(call.data.get("research_goal", f"Retrieved {len(bundle.retrieval_sources)} evidence sources.")),
+            "error": call.error,
+        }
         return bundle
+
+
+def _as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {"data": value} if value is not None else {}
+
+
+def _as_list(value: Any) -> list[dict[str, Any]]:
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, dict)]
+    if isinstance(value, dict):
+        for key in ("events", "alerts", "recommendations", "items"):
+            if isinstance(value.get(key), list):
+                return [item for item in value[key] if isinstance(item, dict)]
+    return []

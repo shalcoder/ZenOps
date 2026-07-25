@@ -1,4 +1,4 @@
-import { Module } from '@nitrostack/core';
+import { Module } from '../../nitrostack.js';
 import { MaterialsTools } from './materials.tools.js';
 
 @Module({

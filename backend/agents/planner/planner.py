@@ -8,6 +8,7 @@ No analysis, no manufacturing facts — pure planning.
 import re
 from backend.schemas.shared_models import AgentName, MCPServer
 from backend.schemas.planner_models import PlannerInput, ExecutionPlan, Task
+from backend.llm.nitrochat_client import NitroChatClient
 
 # Intent classification rules — keywords map to intent types
 INTENT_PATTERNS = {
@@ -91,8 +92,37 @@ class PlannerAgent:
     Output: ExecutionPlan (intent, tasks, agents, servers, execution order)
     """
 
+    def __init__(self, llm: NitroChatClient | None = None) -> None:
+        self.llm = llm or NitroChatClient()
+        self.last_trace: dict = {}
+
     def plan(self, inp: PlannerInput) -> ExecutionPlan:
-        intent = classify_intent(inp.user_query)
+        fallback_intent = classify_intent(inp.user_query)
+        call = self.llm.complete_json(
+            agent="Planner",
+            system_prompt=(
+                "Classify the manufacturing request and create a short investigation plan. "
+                "Allowed intents: show_evidence, explain_exclusion, compare_options, "
+                "constraint_query, generate_report, simulate. Do not invent evidence. "
+                "Return {\"intent\": string, \"rationale\": string}."
+            ),
+            payload={
+                "query": inp.user_query,
+                "incident_id": inp.incident_id,
+                "batch_id": inp.batch_id,
+                "constraints": inp.constraints,
+            },
+        )
+        candidate = str(call.data.get("intent", ""))
+        intent = candidate if candidate in INTENT_TO_TASKS else fallback_intent
+        self.last_trace = {
+            "agent": "planner",
+            "status": "complete" if call.live else "fallback",
+            "durationMs": call.latency_ms,
+            "model": call.model,
+            "summary": str(call.data.get("rationale", "Rule-based plan used.")),
+            "error": call.error,
+        }
         task_specs = INTENT_TO_TASKS.get(intent, INTENT_TO_TASKS["show_evidence"])
 
         tasks = [

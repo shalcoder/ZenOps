@@ -5,6 +5,7 @@ End-to-end pipeline tests for all 4 golden-path queries.
 import sys
 import os
 import unittest
+os.environ["FORGEOPS_LIVE_AGENTS"] = "false"
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.pipeline import run_pipeline

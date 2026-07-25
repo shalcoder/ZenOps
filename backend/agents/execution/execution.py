@@ -13,6 +13,7 @@ from backend.schemas.analysis_models import AnalysisResult
 from backend.schemas.execution_models import (
     ExecutionInput, ExecutionOutput, UIAction, GeneratedReport, Notification,
 )
+from backend.llm.nitrochat_client import NitroChatClient
 
 INTENT_UI_ACTIONS: dict[str, list[dict]] = {
     "show_evidence": [
@@ -71,6 +72,10 @@ class ExecutionAgent:
     Output: ExecutionOutput (assistant message + UI actions + reports + notifications)
     """
 
+    def __init__(self, llm: NitroChatClient | None = None) -> None:
+        self.llm = llm or NitroChatClient()
+        self.last_trace: dict = {}
+
     def execute(self, inp: ExecutionInput) -> ExecutionOutput:
         analysis = inp.analysis
         intent = inp.intent
@@ -81,6 +86,23 @@ class ExecutionAgent:
         # Generate conclusion
         conclusion_template = INTENT_CONCLUSIONS.get(intent, INTENT_CONCLUSIONS["show_evidence"])
         conclusion = _format_conclusion(conclusion_template, top_rec)
+        call = self.llm.complete_json(
+            agent="Execution",
+            system_prompt=(
+                "Present the supplied analysis as a concise, professional decision. "
+                "Never claim an operational action was executed. Reports and notifications "
+                "are drafts requiring human approval. Return {\"conclusion\": string, "
+                "\"effect\": string, \"assumptions\": [string], "
+                "\"actions_available\": [\"open_evidence\"|\"run_comparison\"|\"generate_report\"]}."
+            ),
+            payload={
+                "query": inp.raw_query,
+                "intent": intent,
+                "analysis": analysis.model_dump(),
+            },
+        )
+        if isinstance(call.data.get("conclusion"), str):
+            conclusion = call.data["conclusion"].strip() or conclusion
 
         # Build UI actions
         raw_actions = INTENT_UI_ACTIONS.get(intent, INTENT_UI_ACTIONS["show_evidence"])
@@ -91,6 +113,8 @@ class ExecutionAgent:
 
         # Assumptions
         assumptions = top_sim.assumptions if top_sim else ["Machine 7 condition held constant", "No supplier change within 30 days"]
+        if isinstance(call.data.get("assumptions"), list):
+            assumptions = [str(item) for item in call.data["assumptions"] if str(item).strip()] or assumptions
 
         # Evidence refs
         evidence_refs = analysis.supporting_evidence
@@ -124,16 +148,34 @@ class ExecutionAgent:
             {"server": "Simulation", "tool": "compare_scenarios", "status": "complete", "durationMs": 342},
         ]
 
+        allowed_actions = {"open_evidence", "run_comparison", "generate_report"}
+        model_actions = call.data.get("actions_available", [])
+        actions_available = [str(item) for item in model_actions if str(item) in allowed_actions]
+        if not actions_available:
+            actions_available = ["open_evidence", "run_comparison", "generate_report"]
+        effect = str(call.data.get(
+            "effect",
+            "The recommendation is evidence-backed and remains subject to human approval before plant action.",
+        ))
+        self.last_trace = {
+            "agent": "execution",
+            "status": "complete" if call.live else "fallback",
+            "durationMs": call.latency_ms,
+            "model": call.model,
+            "summary": "Prepared the user-facing decision and approval-safe actions.",
+            "error": call.error,
+        }
         return ExecutionOutput(
             assistant_message=conclusion,
             conclusion=conclusion,
+            effect=effect,
             confidence=confidence,
             evidence_refs=evidence_refs,
             assumptions=assumptions,
             ui_actions=ui_actions,
             generated_reports=reports,
             notifications=notifications,
-            actions_available=["open_evidence", "run_comparison", "generate_report"],
+            actions_available=actions_available,
             tool_trace=tool_trace,
         )
 

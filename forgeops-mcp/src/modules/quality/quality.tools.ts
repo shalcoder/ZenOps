@@ -5,7 +5,7 @@
  *   - get_defect_records: Defect classes, severity, measurements
  *   - get_inspection_results: Inspection pass/fail, quality scores, criteria
  */
-import { ToolDecorator as Tool, ExecutionContext, z } from '@nitrostack/core';
+import { ToolDecorator as Tool, ExecutionContext, z } from '../../nitrostack.js';
 import { DEFECT_RECORDS, INSPECTION_RESULTS } from '../../data/incident-data.js';
 
 export class QualityTools {

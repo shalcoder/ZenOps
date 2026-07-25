@@ -1,159 +1,219 @@
-"""
-Agent 3 — Analysis Agent
-Transforms evidence into decisions.
-Wraps Role 3's diagnostic, simulation, and recommendation engines.
-"""
+"""Agent 3: run live counterfactual tools and interpret the evidence with NitroCloud."""
 
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+from __future__ import annotations
 
+from typing import Any
+
+from backend.llm.nitrochat_client import NitroChatClient
+from backend.mcp.nitro_mcp_client import NitroMCPClient
 from backend.schemas.analysis_models import (
-    AnalysisInput, AnalysisResult, RootCause, SimulationResult, Recommendation,
+    AnalysisInput, AnalysisResult, Recommendation, RootCause, SimulationResult,
 )
-import backend.mcp.base_client as mcp
+
+
+SCENARIOS = [
+    ("Reduce queue delay below 60 minutes", {"queue_delay_minutes": 30}),
+    ("Install humidity control", {"humidity_pct": 50}),
+    ("Replace Machine 7", {"replace_machine_7": True}),
+]
 
 
 class AnalysisAgent:
-    """
-    Agent 3 — Analysis Agent
-    Input: AnalysisInput (EvidenceBundle + ExecutionPlan)
-    Output: AnalysisResult (root causes, simulations, recommendations, business impact)
-    """
+    def __init__(self, llm: NitroChatClient | None = None) -> None:
+        self.llm = llm or NitroChatClient()
+        self.last_trace: dict[str, Any] = {}
+        self.tool_trace: list[dict[str, Any]] = []
 
     def analyze(self, inp: AnalysisInput) -> AnalysisResult:
-        evidence = inp.evidence
-        plan = inp.plan
-        intent = plan.intent
+        simulations = self._run_simulations(inp.plan.constraints)
+        evidence_payload = {
+            "query": inp.plan.raw_query,
+            "intent": inp.plan.intent,
+            "constraints": inp.plan.constraints,
+            "evidence": inp.evidence.evidence_by_tool,
+            "simulations": [item.model_dump() for item in simulations],
+        }
+        call = self.llm.complete_json(
+            agent="Analysis",
+            system_prompt=(
+                "Interpret only the supplied manufacturing evidence and simulations. "
+                "Do not invent measurements. Prefer interventions with strong recovery, "
+                "high confidence, low cost, and satisfied constraints. Return "
+                "{\"primary_cause\": string, \"contributing_factors\": [string], "
+                "\"causal_chain\": [string], \"overall_confidence\": number, "
+                "\"analysis_summary\": string}."
+            ),
+            payload=evidence_payload,
+        )
 
-        # Root Cause Analysis — derived from causal graph evidence
-        root_causes = self._extract_root_causes(evidence)
-
-        # Run simulations based on intent
-        sim_results = self._run_simulations(intent, plan.constraints)
-
-        # Rank recommendations
-        recommendations = self._rank_recommendations(sim_results)
-
-        # Business impact
-        business_impact = evidence.constraints.get("business_impact", {
+        root = RootCause(
+            pathway_id="PATH-01",
+            primary_cause=str(call.data.get(
+                "primary_cause",
+                "Extended queue delay under elevated humidity preceded the quality loss.",
+            )),
+            contributing_factors=_strings(
+                call.data.get("contributing_factors"),
+                ["Queue delay", "Elevated humidity", "Machine 7 thermal drift"],
+            ),
+            confidence_score=_confidence(call.data.get("overall_confidence"), 0.91),
+            causal_chain=_strings(
+                call.data.get("causal_chain"),
+                [
+                    "The batch remained in staging beyond the target window.",
+                    "Environmental exposure and downstream machine drift increased risk.",
+                    "Inspection recorded defects and final yield fell below baseline.",
+                ],
+            ),
+        )
+        recommendations = self._rank_recommendations(simulations)
+        impact = inp.evidence.constraints.get("business_impact") or {
             "monthly_loss_exposure_inr": 1800000,
             "monthly_loss_avoided_inr": 1500000,
             "downtime_reduction_pct": 41,
             "yield_improvement_pct": 14,
-        })
-
-        # Confidence scores per factor
-        confidence_scores = {
-            "humidity": 0.94,
-            "queue_delay": 0.91,
-            "machine_7": 0.42,
-            "overall": 0.91,
         }
-
-        # Evidence refs for the frontend
-        supporting_evidence = [
-            "timeline:evt_2291", "timeline:evt_2292",
-            "graph:node_queue_delay", "graph:node_humidity",
-            "sim:run_014",
+        overall = _confidence(call.data.get("overall_confidence"), 0.91)
+        refs = [
+            source.removeprefix("nitro-mcp:")
+            for source in inp.evidence.retrieval_sources
         ]
-
+        refs.extend(f"sim:{item.scenario_id}" for item in simulations)
+        self.last_trace = {
+            "agent": "analysis",
+            "status": "complete" if call.live else "fallback",
+            "durationMs": call.latency_ms + sum(int(t.get("durationMs", 0)) for t in self.tool_trace),
+            "model": call.model,
+            "summary": str(call.data.get("analysis_summary", root.primary_cause)),
+            "error": call.error,
+        }
         return AnalysisResult(
-            root_causes=root_causes,
-            simulation_results=sim_results,
+            root_causes=[root],
+            simulation_results=simulations,
             recommendations=recommendations,
-            confidence_scores=confidence_scores,
-            business_impact=business_impact,
-            supporting_evidence=supporting_evidence,
-            anomalies_detected=len([
-                e for e in evidence.timeline_events
-                if isinstance(e, dict) and e.get("severity") in ("warning", "critical")
-            ]),
+            confidence_scores={"overall": overall},
+            business_impact=impact if isinstance(impact, dict) else {},
+            supporting_evidence=list(dict.fromkeys(refs)),
+            anomalies_detected=sum(
+                1 for event in inp.evidence.timeline_events
+                if event.get("severity") in {"warning", "critical", "high"}
+            ),
         )
 
-    def _extract_root_causes(self, evidence) -> list[RootCause]:
-        graph = evidence.causal_graph
-        nodes = graph.get("nodes", []) if isinstance(graph, dict) else []
+    def _run_simulations(self, constraints: dict[str, Any]) -> list[SimulationResult]:
+        scenarios = list(SCENARIOS)
+        if not constraints.get("no_supplier_change") and not constraints.get("supplier_freeze"):
+            scenarios.append(("Change supplier", {"change_supplier": True}))
 
-        high_influence = [n for n in nodes if isinstance(n, dict) and n.get("influence", 0) >= 0.7]
+        output: list[SimulationResult] = []
+        try:
+            with NitroMCPClient() as client:
+                available = {tool.get("name") for tool in client.list_tools()}
+                for index, (name, parameters) in enumerate(scenarios, start=1):
+                    if "run_scenario" not in available:
+                        break
+                    raw, trace = client.call_tool(
+                        "run_scenario",
+                        {"scenario_name": name, "parameters": parameters},
+                    )
+                    self.tool_trace.append(trace)
+                    output.append(_simulation_from_raw(raw, name, parameters, index))
+        except Exception as exc:
+            self.tool_trace.append({
+                "id": "simulation-connection",
+                "server": "NitroCloud MCP",
+                "tool": "run_scenario",
+                "status": "error",
+                "durationMs": 0,
+                "records": [],
+                "error": str(exc),
+            })
 
-        if high_influence:
-            return [RootCause(
-                pathway_id="PATH-01",
-                primary_cause="Material moisture degradation during extended staging queue delay",
-                contributing_factors=[n.get("label", "") for n in high_influence],
-                confidence_score=0.94,
-                causal_chain=[
-                    "Material exposed to >70% RH during 85-min staging queue delay",
-                    "Moisture absorption degrades titanium resin matrix",
-                    "Machine 7 spindle thermal drift amplifies micro-fractures",
-                    "Batch rejected at 82% yield after final quality inspection",
-                ],
-            )]
-
-        # Deterministic fallback
-        return [RootCause(
-            pathway_id="PATH-01",
-            primary_cause="Elevated humidity combined with excessive queue delay",
-            contributing_factors=["Humidity (76% RH)", "Queue Delay (85 min)", "Machine 7 spindle drift"],
-            confidence_score=0.94,
-            causal_chain=[
-                "Humidity elevated above threshold (76% RH vs 60% RH limit)",
-                "Queue delay exceeded 60 minutes (85 minutes actual)",
-                "Machine 7 spindle thermal drift detected (28.4°C)",
-                "Defects detected — batch rejected at 82% yield",
-            ],
-        )]
-
-    def _run_simulations(self, intent: str, constraints: dict) -> list[SimulationResult]:
-        no_supplier = constraints.get("no_supplier_change", False) or constraints.get("supplier_freeze", False)
-
-        scenarios = [
-            {"name": "Reduce queue delay below 60 minutes", "inputs": {"queue_delay_minutes": 30, "recalibrate_machine_7": True}},
-            {"name": "Install desiccant humidity control", "inputs": {"humidity_pct": 50.0}},
-            {"name": "Replace Machine 7", "inputs": {"replace_machine_7": True}},
+        if output:
+            return output
+        return [
+            SimulationResult(
+                scenario_id=f"fallback-{index}",
+                scenario_name=name,
+                inputs=parameters,
+                baseline_yield=82.0,
+                predicted_yield=96.0 if index == 1 else 84.0,
+                yield_delta_pct=14.0 if index == 1 else 2.0,
+                confidence=0.90,
+                cost_estimate="low" if index == 1 else "high",
+                implementation_effort="2 hours" if index == 1 else "48 hours",
+                assumptions=["Live simulation tool was unavailable."],
+                in_validated_range=False,
+                warnings=["Fallback estimate; do not operationalize without validation."],
+            )
+            for index, (name, parameters) in enumerate(scenarios, start=1)
         ]
-        if not no_supplier:
-            scenarios.append({"name": "Change supplier", "inputs": {"change_supplier": True}})
 
-        results = []
-        for sc in scenarios:
-            raw = mcp.run_simulation(sc["inputs"], scenario_name=sc["name"], constraints=constraints)
-            results.append(SimulationResult(
-                scenario_id=raw.get("scenario_id", "sim_unknown"),
-                scenario_name=sc["name"],
-                inputs=sc["inputs"],
-                baseline_yield=raw.get("baseline_yield", 0.82),
-                predicted_yield=raw.get("predicted_yield", 0.82),
-                yield_delta_pct=raw.get("yield_delta_pct", 0.0),
-                confidence=raw.get("confidence", 0.0),
-                cost_estimate=raw.get("cost_estimate", "unknown"),
-                implementation_effort=raw.get("implementation_effort", "unknown"),
-                assumptions=raw.get("assumptions", []),
-                in_validated_range=raw.get("in_validated_range", True),
-                warnings=raw.get("warnings", []),
-            ))
-
-        return results
-
-    def _rank_recommendations(self, sim_results: list[SimulationResult]) -> list[Recommendation]:
-        ranked = sorted(sim_results, key=lambda r: r.yield_delta_pct, reverse=True)
-        recommendations = []
-        for i, sim in enumerate(ranked):
-            yield_gain = sim.predicted_yield - sim.baseline_yield
-            monthly_loss_avoided = round(1800000 * (yield_gain / 0.14), 0) if yield_gain > 0 else 0
+    @staticmethod
+    def _rank_recommendations(results: list[SimulationResult]) -> list[Recommendation]:
+        ranked = sorted(results, key=lambda item: item.yield_delta_pct * item.confidence, reverse=True)
+        recommendations: list[Recommendation] = []
+        for index, sim in enumerate(ranked, start=1):
             recommendations.append(Recommendation(
-                rank=i + 1,
+                rank=index,
                 title=sim.scenario_name,
                 score=round(sim.yield_delta_pct * sim.confidence, 2),
-                predicted_yield_pct=round(sim.predicted_yield * 100, 1),
-                yield_recovery_pct=sim.yield_delta_pct,
-                confidence_pct=int(sim.confidence * 100),
-                implementation_speed="Easy / ~2 hours" if sim.cost_estimate in ("low", "medium") else "Disruptive / ~48 hours",
-                cost_estimate=sim.cost_estimate.capitalize(),
+                predicted_yield_pct=round(_percent(sim.predicted_yield), 1),
+                yield_recovery_pct=round(sim.yield_delta_pct, 1),
+                confidence_pct=round(_confidence(sim.confidence, 0.8) * 100),
+                implementation_speed=sim.implementation_effort,
+                cost_estimate=sim.cost_estimate.title(),
                 business_impact={
-                    "monthly_loss_avoided_inr": monthly_loss_avoided,
-                    "calculation_basis": f"Based on {sim.scenario_id}",
+                    "monthly_loss_avoided_inr": round(1500000 * min(sim.yield_delta_pct / 14, 1), 0),
+                    "calculation_basis": sim.scenario_id,
                 },
             ))
         return recommendations
+
+
+def _simulation_from_raw(
+    raw: Any,
+    name: str,
+    inputs: dict[str, Any],
+    index: int,
+) -> SimulationResult:
+    value = raw if isinstance(raw, dict) else {}
+    nested = value.get("result") if isinstance(value.get("result"), dict) else value
+    baseline = float(nested.get("baseline_yield", nested.get("baselineYield", 82.0)))
+    predicted = float(nested.get("predicted_yield", nested.get("predictedYield", baseline)))
+    baseline_pct, predicted_pct = _percent(baseline), _percent(predicted)
+    return SimulationResult(
+        scenario_id=str(nested.get("scenario_id", nested.get("scenarioId", f"sim-{index:03d}"))),
+        scenario_name=str(nested.get("scenario_name", nested.get("scenarioName", name))),
+        inputs=inputs,
+        baseline_yield=baseline_pct,
+        predicted_yield=predicted_pct,
+        yield_delta_pct=float(nested.get("yield_delta_pct", nested.get("yieldDeltaPct", predicted_pct - baseline_pct))),
+        confidence=_confidence(nested.get("confidence"), 0.8),
+        cost_estimate=str(nested.get("cost_estimate", nested.get("cost", "unknown"))),
+        implementation_effort=str(nested.get("implementation_effort", nested.get("effort", "unknown"))),
+        assumptions=_strings(nested.get("assumptions"), []),
+        in_validated_range=bool(nested.get("in_validated_range", nested.get("within_validated_range", True))),
+        warnings=_strings(nested.get("warnings"), []),
+    )
+
+
+def _percent(value: float) -> float:
+    return value * 100 if value <= 1 else value
+
+
+def _confidence(value: Any, fallback: float) -> float:
+    try:
+        number = float(value)
+        if number > 1:
+            number /= 100
+        return min(max(number, 0), 1)
+    except (TypeError, ValueError):
+        return fallback
+
+
+def _strings(value: Any, fallback: list[str]) -> list[str]:
+    if isinstance(value, list):
+        result = [str(item) for item in value if str(item).strip()]
+        return result or fallback
+    return fallback

@@ -1,4 +1,4 @@
-import { HealthCheck, HealthCheckInterface, HealthCheckResult } from '@nitrostack/core';
+import { HealthCheck, HealthCheckInterface, HealthCheckResult } from '../nitrostack.js';
 
 /**
  * System Health Check

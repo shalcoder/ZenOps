@@ -7,7 +7,7 @@ const apiBaseUrl = (
   ?? ''
 ).replace(/\/$/, '');
 const simulationUrl = `${apiBaseUrl}/api/simulate`;
-const agentUrl = import.meta.env.VITE_ROLE1_AGENT_URL ?? `${apiBaseUrl}/api/agent/query`;
+const agentUrl = import.meta.env.VITE_ROLE1_AGENT_URL ?? `${apiBaseUrl}/api/agent/pipeline`;
 
 const toPercent = (value: number | undefined, fallback: number) => {
   if (value === undefined || Number.isNaN(value)) return fallback;
@@ -31,33 +31,45 @@ type Role3SimulationPayload = {
 
 export type RuntimeStatus = {
   online: boolean;
-  moduleCount: number;
-  agentProcesses: number;
+  toolCount: number;
+  agentRoles: number;
+  orchestratorProcesses: number;
+  llmBacked: boolean;
+  model: string;
   mcpServerAttached: boolean;
 };
 
 export async function getRuntimeStatus(): Promise<RuntimeStatus> {
   try {
-    const response = await fetch(`${apiBaseUrl}/api/health`);
+    const response = await fetch(`${apiBaseUrl}/api/agent/health`);
     if (!response.ok) throw new Error(`Health API returned ${response.status}`);
     const data = await response.json() as {
-      modules?: string[];
-      runtime?: {
-        agentProcesses?: number;
-        mcpServerAttached?: boolean;
+      agentRoles?: number;
+      orchestratorProcesses?: number;
+      llmBacked?: boolean;
+      model?: string;
+      mcp?: {
+        attached?: boolean;
+        toolCount?: number;
       };
     };
     return {
       online: true,
-      moduleCount: data.modules?.length ?? 0,
-      agentProcesses: data.runtime?.agentProcesses ?? 0,
-      mcpServerAttached: data.runtime?.mcpServerAttached ?? false,
+      toolCount: data.mcp?.toolCount ?? 0,
+      agentRoles: data.agentRoles ?? 0,
+      orchestratorProcesses: data.orchestratorProcesses ?? 0,
+      llmBacked: data.llmBacked ?? false,
+      model: data.model ?? '',
+      mcpServerAttached: data.mcp?.attached ?? false,
     };
   } catch {
     return {
       online: false,
-      moduleCount: 0,
-      agentProcesses: 0,
+      toolCount: 0,
+      agentRoles: 0,
+      orchestratorProcesses: 0,
+      llmBacked: false,
+      model: '',
       mcpServerAttached: false,
     };
   }
@@ -101,11 +113,17 @@ export async function runScenario(
 
 export async function askAgent(intent: keyof typeof assistantResponses): Promise<AssistantResponse> {
   const fallback = assistantResponses[intent] ?? assistantResponses.evidence;
+  const queries: Record<string, string> = {
+    evidence: 'Show me the evidence.',
+    machine: 'Why was Machine 7 ruled out?',
+    compare: 'Compare reducing queue delay with replacing Machine 7.',
+    report: 'Generate a report for the plant manager.',
+  };
   try {
     const response = await fetch(agentUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ intent, incident_id: 'INC-2407-001', batch_id: 'B-2407-184' }),
+      body: JSON.stringify({ query: queries[intent] ?? queries.evidence, incident_id: 'INC-2407-001', batch_id: 'B-2407-184' }),
     });
     if (!response.ok) throw new Error(`Tool API returned ${response.status}`);
     const data = await response.json() as Partial<AssistantResponse>;
@@ -114,6 +132,10 @@ export async function askAgent(intent: keyof typeof assistantResponses): Promise
       ...data,
       evidenceRefs: data.evidenceRefs ?? (data as { evidence_refs?: string[] }).evidence_refs ?? fallback.evidenceRefs,
       toolTrace: data.toolTrace ?? (data as { tool_trace?: AssistantResponse['toolTrace'] }).tool_trace ?? fallback.toolTrace,
+      agentTrace: data.agentTrace ?? (data as { agent_trace?: AssistantResponse['agentTrace'] }).agent_trace ?? [],
+      pipelineMode: data.pipelineMode ?? (data as { pipeline_mode?: AssistantResponse['pipelineMode'] }).pipeline_mode ?? 'degraded_fallback',
+      model: data.model ?? '',
+      actions: data.actions ?? (data as { actions_available?: AssistantResponse['actions'] }).actions_available ?? fallback.actions,
     };
   } catch (error) {
     return {
@@ -123,6 +145,9 @@ export async function askAgent(intent: keyof typeof assistantResponses): Promise
         ...fallback.assumptions,
         error instanceof Error ? error.message : 'MCP bridge unavailable',
       ],
+      agentTrace: [],
+      pipelineMode: 'degraded_fallback',
+      model: '',
     };
   }
 }

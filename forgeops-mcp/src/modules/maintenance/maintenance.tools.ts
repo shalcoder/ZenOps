@@ -5,7 +5,7 @@
  *   - get_machine_alerts: Machine alerts with vibration, temperature, conditions
  *   - get_maintenance_state: Current machine state, health score, service history
  */
-import { ToolDecorator as Tool, ExecutionContext, z } from '@nitrostack/core';
+import { ToolDecorator as Tool, ExecutionContext, z } from '../../nitrostack.js';
 import { MACHINE_ALERTS, MAINTENANCE_STATE } from '../../data/incident-data.js';
 
 export class MaintenanceTools {

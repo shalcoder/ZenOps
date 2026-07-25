@@ -5,7 +5,7 @@
  *   - run_scenario: Counterfactual simulation scenario runner
  *   - compare_scenarios: Side-by-side scenario comparison & deltas
  */
-import { ToolDecorator as Tool, ExecutionContext, z } from '@nitrostack/core';
+import { ToolDecorator as Tool, ExecutionContext, z } from '../../nitrostack.js';
 import { SimulationEngine } from '../../services/simulation-engine.js';
 
 export class SimulationTools {

@@ -17,6 +17,7 @@ from backend.agents.research.research import ResearchAgent
 from backend.agents.analysis.analysis import AnalysisAgent
 from backend.agents.execution.execution import ExecutionAgent
 from backend.database.audit_log import log_pipeline_run
+from backend.config import FORGEOPS_MODEL
 
 
 def run_pipeline(
@@ -63,6 +64,20 @@ def run_pipeline(
         intent=plan.intent,
         raw_query=user_query,
     ))
+    agent_trace = [
+        planner.last_trace,
+        researcher.last_trace,
+        analyst.last_trace,
+        executor.last_trace,
+    ]
+    output.agent_trace = agent_trace
+    output.tool_trace = evidence.tool_trace + analyst.tool_trace
+    output.pipeline_mode = (
+        "live_nitrocloud"
+        if all(step.get("status") == "complete" for step in agent_trace)
+        else "degraded_fallback"
+    )
+    output.model = FORGEOPS_MODEL
 
     # Audit trail
     log_pipeline_run(

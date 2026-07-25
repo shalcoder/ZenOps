@@ -5,7 +5,7 @@
  *   - get_supplier_lot_info: Supplier details, material specs, intake conditions
  *   - get_material_constraints: Availability, lead times, change freezes, alternatives
  */
-import { ToolDecorator as Tool, ExecutionContext, z } from '@nitrostack/core';
+import { ToolDecorator as Tool, ExecutionContext, z } from '../../nitrostack.js';
 import { SUPPLIER_LOT_INFO, MATERIAL_CONSTRAINTS } from '../../data/incident-data.js';
 
 export class MaterialsTools {

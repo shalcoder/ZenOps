@@ -20,9 +20,7 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
 
   useEffect(() => {
     let active = true;
-    getRuntimeStatus().then((result) => {
-      if (active) setRuntime(result);
-    });
+    getRuntimeStatus().then((result) => { if (active) setRuntime(result); });
     return () => { active = false; };
   }, []);
 
@@ -45,32 +43,34 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
             <div>
               <strong>Decision assistant</strong>
               <small className={runtime?.online ? 'online' : runtime ? 'offline' : 'checking'}>
-                <i /> {runtime?.online ? 'Tool API online' : runtime ? 'Local fixture mode' : 'Checking tool API'}
+                <i /> {runtime?.online ? 'Live agents online' : runtime ? 'Backend offline' : 'Checking agents'}
               </small>
             </div>
           </div>
           <span className="assistant-mode-label">
-            {runtime?.online ? `${runtime.moduleCount} tool modules · 0 agent processes` : 'Read-only demo'}
+            {runtime?.online
+              ? `${runtime.agentRoles} LLM roles · ${runtime.orchestratorProcesses} orchestrator · ${runtime.toolCount} MCP tools`
+              : 'Offline fallback'}
           </span>
         </header>
 
         <div className="assistant-context-strip">
           <span>Context</span>
           <strong>{focus.pinned ? `Pinned at +${focus.timeMinute} min` : focus.eventId ?? 'Incident overview'}</strong>
-          <small>{focus.graphNodeIds.length} graph node{focus.graphNodeIds.length === 1 ? '' : 's'} · {focus.evidenceIds.length} evidence refs</small>
+          <small>{focus.graphNodeIds.length} graph nodes · {focus.evidenceIds.length} evidence refs</small>
         </div>
 
         <div className="assistant-conversation" aria-live="polite">
           {!response && status !== 'loading' && (
             <div className="assistant-intro">
               <span className="assistant-orb small"><i /><i /></span>
-              <p>This deterministic assistant is anchored to <strong>INC-2407-001</strong>. It can explain the causal chain, compare interventions, focus evidence, and prepare a decision brief.</p>
+              <p>Four specialized NitroCloud agents plan, retrieve live MCP evidence, analyze counterfactuals, and prepare an approval-safe decision for <strong>INC-2407-001</strong>.</p>
             </div>
           )}
           {status === 'loading' && (
             <div className="assistant-thinking">
               <span className="assistant-orb small"><i /><i /></span>
-              <div><strong>Retrieving tool-backed evidence</strong><p>Checking MES, quality, maintenance, and simulation records…</p><span><i /><i /><i /></span></div>
+              <div><strong>Running the four-agent investigation</strong><p>Planning, calling MCP tools, analyzing scenarios, and preparing the decision...</p><span><i /><i /><i /></span></div>
             </div>
           )}
           {response && status === 'success' && (
@@ -84,9 +84,14 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
                   <span><i style={{ width: `${response.confidence * 100}%` }} /></span>
                   <strong>{Math.round(response.confidence * 100)}% confidence</strong>
                 </div>
+                <p className="output-footnote">
+                  {response.pipelineMode === 'live_nitrocloud'
+                    ? `Live NitroCloud reasoning · ${response.model}`
+                    : 'Degraded fallback mode · verify before acting'}
+                </p>
                 <div className="assistant-evidence-links">
                   {response.evidenceRefs.map((ref) => (
-                    <button key={ref} onClick={() => focusEvidenceRefs([ref], response.conclusion)}>{ref.replace('timeline:', '').replace('graph:', '').replace('sim:', '')} ↗</button>
+                    <button key={ref} onClick={() => focusEvidenceRefs([ref], response.conclusion)}>{ref} ↗</button>
                   ))}
                 </div>
                 <details className="assumption-details">
@@ -117,8 +122,15 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
         )}
 
         <div className="tool-trace">
+          {response?.agentTrace && response.agentTrace.length > 0 && (
+            <div className="assistant-context-strip">
+              <span>Agent run</span>
+              <strong>{response.agentTrace.map((step) => step.agent).join(' → ')}</strong>
+              <small>{response.agentTrace.map((step) => `${step.agent}: ${step.status}`).join(' · ')}</small>
+            </div>
+          )}
           <button onClick={() => setTraceOpen((value) => !value)} aria-expanded={traceOpen}>
-            <span><i /> Evidence tool trace</span>
+            <span><i /> Live MCP tool trace</span>
             <strong>{response?.toolTrace.length ?? 0} calls {traceOpen ? '⌃' : '⌄'}</strong>
           </button>
           {traceOpen && (
@@ -145,16 +157,14 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
             </header>
             <div className="report-summary">
               <span>Decision required</span>
-              <h3>Reduce the inter-stage queue delay below 60 minutes.</h3>
-              <p>Predicted yield improves from 82% to 96% with low implementation cost and approximately two hours of scheduling effort.</p>
+              <h3>{response?.conclusion ?? 'Review the agent recommendation.'}</h3>
+              <p>{response?.effect}</p>
             </div>
             <div className="report-columns">
-              <section><span>What happened</span><p>Batch B-2407-184 waited 198 minutes before Machine 7 while queue-area humidity was elevated. Temperature drift and defects followed; final yield was 82%.</p></section>
-              <section><span>Why this action</span><p>Queue-delay reduction produces a 14-point predicted recovery. Replacing Machine 7 alone produces only two points and adds significant downtime.</p></section>
-              <section><span>Business impact</span><p>Estimated ₹15L monthly loss avoided, 41% downtime reduction, and immediate payback through a scheduling change.</p></section>
-              <section><span>Evidence & confidence</span><p>96% confidence · 327 comparable batches · MES queue event · maintenance records · quality inspection · simulation run 014.</p></section>
+              <section><span>Evidence</span><p>{response?.evidenceRefs.join(' · ')}</p></section>
+              <section><span>Confidence</span><p>{Math.round((response?.confidence ?? 0) * 100)}% based on live MCP evidence and scenario analysis.</p></section>
             </div>
-            <div className="report-guardrail"><strong>Approval status</strong><p>Draft only. An authorized shift or plant manager must approve before any operational action or notification.</p></div>
+            <div className="report-guardrail"><strong>Approval status</strong><p>Draft only. An authorized manager must approve before any operational action or notification.</p></div>
             <footer>
               <button className="secondary-button" onClick={() => window.print()}>Print / save PDF</button>
               <button className="primary-button" onClick={() => setReportOpen(false)}>Return to workbench</button>

@@ -6,7 +6,7 @@
  *   - get_production_path: Stage-by-stage manufacturing path with anomalies
  *   - get_queue_events: Queue delays, wait times, anomalies
  */
-import { ToolDecorator as Tool, ExecutionContext, z } from '@nitrostack/core';
+import { ToolDecorator as Tool, ExecutionContext, z } from '../../nitrostack.js';
 import { BATCH_HISTORY, PRODUCTION_PATH, QUEUE_EVENTS } from '../../data/incident-data.js';
 
 export class MesTools {
