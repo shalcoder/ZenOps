@@ -135,11 +135,6 @@ export function AssistantPanel({
               ? `${runtime.agentRoles} LLM roles · ${runtime.orchestratorProcesses} orchestrator · ${runtime.toolCount} MCP tools`
               : 'Offline fallback'}
           </span>
-          <div className="assistant-header-context">
-            <span>Current context</span>
-            <strong>{focus.pinned ? `Pinned +${focus.timeMinute} min` : focus.eventId ?? 'Incident overview'}</strong>
-            <small>{focus.graphNodeIds.length} graph · {focus.evidenceIds.length} evidence</small>
-          </div>
         </header>
 
         <div className="assistant-context-strip">
