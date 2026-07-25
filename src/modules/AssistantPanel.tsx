@@ -143,14 +143,8 @@ export function AssistantPanel({
           <small>{focus.graphNodeIds.length} graph nodes · {focus.evidenceIds.length} evidence refs</small>
         </div>
 
-        <div className="assistant-conversation" aria-live="polite">
-          {!response && status !== 'loading' && (
-            <div className="assistant-intro">
-              <span className="assistant-orb small"><i /><i /></span>
-              <p>Ask any manufacturing question. Four NitroCloud roles will plan, retrieve MCP evidence, analyze scenarios, and prepare a decision.</p>
-            </div>
-          )}
-
+        {(question || status === 'loading' || (response && status === 'success')) && (
+          <div className="assistant-conversation" aria-live="polite">
           {question && (
             <div className="assistant-user-question">
               <span>You</span>
@@ -204,7 +198,8 @@ export function AssistantPanel({
               </div>
             </div>
           )}
-        </div>
+          </div>
+        )}
 
         <form className="assistant-composer" onSubmit={submit}>
           <label htmlFor="agent-question">Ask the agents</label>
