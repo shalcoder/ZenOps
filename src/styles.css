@@ -998,42 +998,6 @@ textarea {
 
 /* Timeline */
 
-.reference-strip {
-  height: 34px;
-  display: grid;
-  grid-template-columns: 175px 1fr 95px;
-  align-items: center;
-  gap: 12px;
-  padding: 0 18px;
-  background: rgba(91, 167, 255, 0.035);
-  border-bottom: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.909rem;
-  white-space: nowrap;
-}
-
-.reference-strip div {
-  height: 1px;
-  background: repeating-linear-gradient(90deg, rgba(91, 167, 255, 0.35) 0 5px, transparent 5px 10px);
-  position: relative;
-}
-
-.reference-strip div i {
-  position: absolute;
-  top: -3px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22455a;
-  border: 1px solid var(--blue);
-}
-
-.reference-strip strong {
-  color: var(--blue);
-  font-weight: 600;
-  text-align: right;
-}
-
 .timeline-scroll {
   overflow-x: auto;
   scrollbar-color: #29414a #0a151a;

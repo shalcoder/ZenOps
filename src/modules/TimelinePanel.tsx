@@ -15,7 +15,6 @@ export function TimelinePanel() {
   const { incidentEvents } = data;
   const [source, setSource] = useState('all');
   const [severity, setSeverity] = useState('all');
-  const [compare, setCompare] = useState(true);
 
   const visible = useMemo(() => incidentEvents.filter((event) => (
     (source === 'all' || event.category === source)
@@ -51,19 +50,8 @@ export function TimelinePanel() {
               <option value="critical">Critical</option>
             </select>
           </label>
-          <button className={`toggle-button${compare ? ' active' : ''}`} onClick={() => setCompare((value) => !value)} aria-pressed={compare}>
-            <i /> Healthy reference
-          </button>
         </div>
       </header>
-
-      {compare && (
-        <div className="reference-strip">
-          <span>Healthy batch B-2407-176</span>
-          <div><i style={{ left: '3%' }} /><i style={{ left: '28%' }} /><i style={{ left: '54%' }} /><i style={{ left: '77%' }} /><i style={{ left: '96%' }} /></div>
-          <strong>97.2% yield</strong>
-        </div>
-      )}
 
       <div className="timeline-scroll">
         <div className="timeline-track">

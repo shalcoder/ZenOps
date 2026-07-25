@@ -614,26 +614,6 @@ time,
   background: #64b8df;
 }
 
-.reference-strip {
-  padding: 14px 28px;
-  color: var(--muted-strong);
-  background: #f7f3eb;
-  border-bottom: 1px solid var(--line);
-}
-
-.reference-strip div {
-  border-color: #9fc8de;
-}
-
-.reference-strip div i {
-  background: #fffdf7;
-  border-color: #6caecf;
-}
-
-.reference-strip strong {
-  color: #397d9f;
-}
-
 .timeline-scroll {
   padding: 28px 28px 18px;
 }
