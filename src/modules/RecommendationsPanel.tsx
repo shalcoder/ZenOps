@@ -103,11 +103,6 @@ export function RecommendationsPanel({
             <span><small>Weekly savings</small><strong>{inr(selected.savingsPerWeekInr)}</strong></span>
             <span><small>Implementation</small><strong>{selected.effort}</strong></span>
           </div>
-          <div className="impact-basis">
-            <span>Calculation basis</span>
-            <p>{businessImpact.basis}</p>
-            <code>{selected.evidenceRefs.join(' · ')}</code>
-          </div>
           {approvalStatus === 'success' && <div className="approval-record"><i>✓</i><div><strong>Decision recorded · #{approvalId}</strong><p>Persisted in the ForgeOps audit API. No plant control was changed.</p></div></div>}
           {approvalStatus === 'error' && <div className="approval-record"><div><strong>Approval was not recorded</strong><p>The backend audit API could not be reached.</p></div></div>}
         </aside>
