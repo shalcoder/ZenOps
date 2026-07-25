@@ -144,7 +144,7 @@ time,
 
 .brand-button small {
   color: var(--muted);
-  font-size: 0.66rem;
+  font-size: 0.91rem;
   letter-spacing: 0.04em;
 }
 
@@ -176,7 +176,7 @@ time,
   align-items: center;
   gap: 16px;
   color: var(--muted-strong);
-  font-size: 0.78rem;
+  font-size: 1.03rem;
 }
 
 .live-indicator {
@@ -195,7 +195,7 @@ time,
 }
 
 .live-indicator.small {
-  font-size: 0.72rem;
+  font-size: 0.97rem;
 }
 
 .header-divider {
@@ -215,7 +215,7 @@ time,
   background: #173139;
   color: var(--teal);
   border: 1px solid #28505a;
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   font-weight: 700;
 }
 
@@ -246,7 +246,7 @@ span.avatar-button {
   color: var(--teal);
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: 0.66rem;
+  font-size: 0.91rem;
   font-weight: 500;
   margin: 0 0 8px;
 }
@@ -284,7 +284,7 @@ span.avatar-button {
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 700;
-  font-size: 0.78rem;
+  font-size: 1.03rem;
   transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
@@ -314,7 +314,7 @@ span.avatar-button {
   min-height: 34px;
   padding: 8px 12px;
   white-space: nowrap;
-  font-size: 0.72rem;
+  font-size: 0.97rem;
 }
 
 .button-icon {
@@ -359,7 +359,7 @@ span.avatar-button {
   justify-content: space-between;
   gap: 10px;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -367,7 +367,7 @@ span.avatar-button {
 .metric-delta {
   text-transform: none;
   letter-spacing: 0;
-  font-size: 0.68rem;
+  font-size: 0.93rem;
 }
 
 .metric-delta.negative { color: var(--red); }
@@ -392,7 +392,7 @@ span.avatar-button {
 .metric-card > small {
   display: block;
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.93rem;
   margin-top: 13px;
 }
 
@@ -433,7 +433,7 @@ span.avatar-button {
   flex-wrap: wrap;
   gap: 12px;
   color: var(--muted-strong);
-  font-size: 0.68rem;
+  font-size: 0.93rem;
   margin-top: 27px;
 }
 
@@ -509,7 +509,7 @@ textarea {
 select {
   min-height: 34px;
   padding: 7px 30px 7px 10px;
-  font-size: 0.7rem;
+  font-size: 0.95rem;
 }
 
 textarea {
@@ -572,7 +572,7 @@ textarea {
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.59rem;
+  font-size: 0.91rem;
   font-weight: 800;
 }
 
@@ -587,7 +587,7 @@ textarea {
 
 .incident-id {
   color: var(--muted);
-  font-size: 0.63rem;
+  font-size: 0.95rem;
 }
 
 .status-label {
@@ -597,12 +597,12 @@ textarea {
 
 .incident-main h3 {
   margin: 0 0 5px;
-  font-size: 0.93rem;
+  font-size: 1.03rem;
 }
 
 .incident-main > p {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.97rem;
   line-height: 1.5;
   margin-bottom: 10px;
 }
@@ -612,7 +612,7 @@ textarea {
   flex-wrap: wrap;
   gap: 6px 12px;
   color: var(--muted-strong);
-  font-size: 0.62rem;
+  font-size: 0.94rem;
 }
 
 .incident-meta span:not(:last-child)::after {
@@ -630,7 +630,7 @@ textarea {
 .incident-kpi span,
 .incident-exposure span {
   color: var(--muted);
-  font-size: 0.62rem;
+  font-size: 0.94rem;
 }
 
 .incident-kpi strong,
@@ -641,7 +641,7 @@ textarea {
 .incident-kpi small,
 .incident-exposure small {
   color: var(--muted);
-  font-size: 0.6rem;
+  font-size: 0.92rem;
 }
 
 .signal-panel {
@@ -692,7 +692,7 @@ textarea {
   place-items: center;
   border-radius: 8px;
   font-style: normal;
-  font-size: 0.8rem;
+  font-size: 1.00rem;
   font-weight: 800;
   color: #1d7af2;
   background: rgba(29, 122, 242, 0.1);
@@ -700,7 +700,7 @@ textarea {
 }
 
 .signal-list strong {
-  font-size: 0.92rem;
+  font-size: 1.02rem;
   font-family: 'Outfit', 'Inter', sans-serif;
   font-weight: 700;
   color: var(--text);
@@ -709,7 +709,7 @@ textarea {
 
 .signal-list p {
   color: var(--muted-strong);
-  font-size: 0.8rem;
+  font-size: 1.00rem;
   margin: 3px 0 0;
   line-height: 1.45;
 }
@@ -717,7 +717,7 @@ textarea {
 .signal-state {
   padding: 5px 9px;
   border-radius: 6px;
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -747,7 +747,7 @@ textarea {
   align-items: center;
   gap: 8px;
   color: var(--muted);
-  font-size: 0.66rem;
+  font-size: 0.91rem;
   font-family: 'Cascadia Code', Consolas, monospace;
   margin-bottom: 12px;
 }
@@ -788,7 +788,7 @@ textarea {
 .incident-command-title p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.69rem;
+  font-size: 0.94rem;
 }
 
 .incident-command-title p strong {
@@ -812,13 +812,13 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.57rem;
+  font-size: 0.94rem;
 }
 
 .command-status strong {
   max-width: 250px;
   color: var(--muted-strong);
-  font-size: 0.68rem;
+  font-size: 0.93rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -863,7 +863,7 @@ textarea {
   background: none;
   border-bottom: 2px solid transparent;
   padding: 0 18px;
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   font-weight: 700;
 }
 
@@ -921,14 +921,14 @@ textarea {
 
 .module-header h2 {
   margin: 0 0 3px;
-  font-size: 0.92rem;
+  font-size: 1.02rem;
   letter-spacing: -0.015em;
 }
 
 .module-header > div > span {
   display: block;
   color: var(--muted);
-  font-size: 0.63rem;
+  font-size: 0.95rem;
 }
 
 .mini-select {
@@ -938,7 +938,7 @@ textarea {
 
 .mini-select span {
   color: var(--muted);
-  font-size: 0.55rem;
+  font-size: 0.92rem;
   text-transform: uppercase;
 }
 
@@ -958,7 +958,7 @@ textarea {
   background: #0a171c;
   border: 1px solid var(--line);
   border-radius: 6px;
-  font-size: 0.62rem;
+  font-size: 0.94rem;
 }
 
 .toggle-button i {
@@ -1007,7 +1007,7 @@ textarea {
   background: rgba(91, 167, 255, 0.035);
   border-bottom: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.59rem;
+  font-size: 0.91rem;
 }
 
 .reference-strip div {
@@ -1068,7 +1068,7 @@ textarea {
 }
 
 .timeline-time {
-  font-size: 0.72rem;
+  font-size: 0.97rem;
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
   margin-bottom: 8px;
@@ -1109,14 +1109,14 @@ textarea {
   color: var(--muted-strong);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  font-size: 0.64rem;
+  font-size: 0.96rem;
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
 }
 
 .timeline-card strong {
   color: var(--text);
-  font-size: 0.86rem;
+  font-size: 0.96rem;
   font-family: 'Outfit', 'Inter', sans-serif;
   font-weight: 700;
   line-height: 1.35;
@@ -1125,12 +1125,12 @@ textarea {
 .timeline-card em {
   color: var(--muted-strong);
   font-style: normal;
-  font-size: 0.74rem;
+  font-size: 0.99rem;
 }
 
 .timeline-card > span {
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.93rem;
   font-weight: 500;
 }
 
@@ -1167,7 +1167,7 @@ textarea {
   padding: 0 20px;
   color: var(--muted-strong);
   border-top: 1px solid var(--line);
-  font-size: 0.76rem;
+  font-size: 1.01rem;
   font-weight: 500;
 }
 
@@ -1205,7 +1205,7 @@ textarea {
   align-items: center;
   gap: 6px;
   color: var(--muted);
-  font-size: 0.58rem;
+  font-size: 0.90rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -1236,7 +1236,7 @@ textarea {
 
 .replay-status-line > span:last-child {
   color: var(--muted);
-  font-size: 0.6rem;
+  font-size: 0.92rem;
   text-align: right;
 }
 
@@ -1291,7 +1291,7 @@ textarea {
 }
 
 .stage-node strong {
-  font-size: 0.56rem;
+  font-size: 0.93rem;
   line-height: 1.25;
 }
 
@@ -1351,7 +1351,7 @@ textarea {
   align-items: center;
   gap: 10px;
   color: var(--muted);
-  font-size: 0.53rem;
+  font-size: 0.90rem;
   margin: 5px 8px 0;
 }
 
@@ -1406,7 +1406,7 @@ textarea {
   color: #06201d;
   background: var(--teal);
   border-color: var(--teal);
-  font-size: 0.68rem;
+  font-size: 0.93rem;
 }
 
 .replay-slider {
@@ -1425,7 +1425,7 @@ textarea {
   background: #102027;
   border: 1px solid var(--line);
   border-radius: 6px;
-  font-size: 0.6rem;
+  font-size: 0.92rem;
 }
 
 .pin-button.active {
@@ -1445,18 +1445,18 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.51rem;
+  font-size: 0.88rem;
 }
 
 .stage-inspector h3 {
   margin: 4px 0;
-  font-size: 0.75rem;
+  font-size: 1.00rem;
 }
 
 .stage-inspector p {
   max-width: 520px;
   color: var(--muted);
-  font-size: 0.6rem;
+  font-size: 0.92rem;
   line-height: 1.45;
   margin: 0;
 }
@@ -1479,11 +1479,11 @@ textarea {
 
 .stage-metrics small {
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .stage-metrics strong {
-  font-size: 0.64rem;
+  font-size: 0.96rem;
 }
 
 .stage-metrics .warning strong { color: var(--amber); }
@@ -1568,7 +1568,7 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-size: 0.44rem;
+  font-size: 0.81rem;
 }
 
 .cause-node-top i {
@@ -1580,18 +1580,18 @@ textarea {
 
 .cause-node strong {
   color: var(--text);
-  font-size: 0.64rem;
+  font-size: 0.96rem;
 }
 
 .cause-node em {
   color: var(--teal);
   font-style: normal;
-  font-size: 0.61rem;
+  font-size: 0.93rem;
 }
 
 .cause-node small {
   color: var(--muted);
-  font-size: 0.45rem;
+  font-size: 0.82rem;
   line-height: 1.25;
 }
 
@@ -1623,7 +1623,7 @@ textarea {
   padding: 0 16px;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.52rem;
+  font-size: 0.89rem;
 }
 
 .graph-legend span {
@@ -1635,7 +1635,7 @@ textarea {
 .graph-legend strong {
   color: var(--teal);
   margin-left: auto;
-  font-size: 0.53rem;
+  font-size: 0.90rem;
 }
 
 .edge {
@@ -1697,7 +1697,7 @@ textarea {
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 0.5rem;
+  font-size: 0.87rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
 }
@@ -1708,12 +1708,12 @@ textarea {
 
 .evidence-card h3 {
   margin: 8px 0 5px;
-  font-size: 0.69rem;
+  font-size: 0.94rem;
 }
 
 .evidence-card p {
   color: var(--muted);
-  font-size: 0.57rem;
+  font-size: 0.94rem;
   line-height: 1.5;
   margin-bottom: 11px;
 }
@@ -1728,7 +1728,7 @@ textarea {
 .evidence-card code,
 .evidence-card time {
   color: #6d848b;
-  font-size: 0.47rem;
+  font-size: 0.84rem;
 }
 
 .evidence-empty {
@@ -1747,12 +1747,12 @@ textarea {
 
 .evidence-empty strong {
   color: var(--muted-strong);
-  font-size: 0.7rem;
+  font-size: 0.95rem;
 }
 
 .evidence-empty p {
   margin: 4px 0 0;
-  font-size: 0.56rem;
+  font-size: 0.93rem;
 }
 
 /* Simulator */
@@ -1808,11 +1808,11 @@ textarea {
 
 .scenario-presets strong {
   color: var(--muted-strong);
-  font-size: 0.6rem;
+  font-size: 0.92rem;
 }
 
 .scenario-presets small {
-  font-size: 0.51rem;
+  font-size: 0.88rem;
 }
 
 .scenario-presets button.active {
@@ -1852,7 +1852,7 @@ textarea {
 .parameter-grid label > span {
   display: flex;
   justify-content: space-between;
-  font-size: 0.59rem;
+  font-size: 0.91rem;
 }
 
 .parameter-grid output {
@@ -1867,7 +1867,7 @@ textarea {
 
 .parameter-grid small {
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .constraint-field {
@@ -1878,20 +1878,20 @@ textarea {
 
 .constraint-field > span {
   color: var(--muted-strong);
-  font-size: 0.58rem;
+  font-size: 0.90rem;
   font-weight: 700;
 }
 
 .constraint-field textarea {
   width: 100%;
   padding: 10px;
-  font-size: 0.61rem;
+  font-size: 0.93rem;
   line-height: 1.4;
 }
 
 .constraint-field small {
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .checkbox-row {
@@ -1915,12 +1915,12 @@ textarea {
 }
 
 .checkbox-row strong {
-  font-size: 0.57rem;
+  font-size: 0.94rem;
 }
 
 .checkbox-row small {
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .run-scenario-button {
@@ -1952,12 +1952,12 @@ textarea {
 .simulation-output-head span {
   color: var(--muted);
   text-transform: uppercase;
-  font-size: 0.49rem;
+  font-size: 0.86rem;
   letter-spacing: 0.08em;
 }
 
 .simulation-output-head h3 {
-  font-size: 0.74rem;
+  font-size: 0.99rem;
   margin: 5px 0 0;
 }
 
@@ -1995,7 +1995,7 @@ textarea {
 
 .yield-column > span {
   color: var(--muted);
-  font-size: 0.5rem;
+  font-size: 0.87rem;
 }
 
 .yield-column > div {
@@ -2018,7 +2018,7 @@ textarea {
 }
 
 .yield-column strong {
-  font-size: 0.8rem;
+  font-size: 1.00rem;
 }
 
 .yield-arrow {
@@ -2030,7 +2030,7 @@ textarea {
 }
 
 .yield-arrow small {
-  font-size: 0.51rem;
+  font-size: 0.88rem;
   white-space: nowrap;
 }
 
@@ -2050,11 +2050,11 @@ textarea {
 
 .output-metrics small {
   color: var(--muted);
-  font-size: 0.46rem;
+  font-size: 0.83rem;
 }
 
 .output-metrics strong {
-  font-size: 0.56rem;
+  font-size: 0.93rem;
 }
 
 .simulation-warning,
@@ -2071,14 +2071,14 @@ textarea {
 .approval-warning strong,
 .report-guardrail strong {
   color: var(--amber);
-  font-size: 0.54rem;
+  font-size: 0.91rem;
 }
 
 .simulation-warning p,
 .approval-warning p,
 .report-guardrail p {
   color: var(--muted-strong);
-  font-size: 0.51rem;
+  font-size: 0.88rem;
   line-height: 1.4;
   margin: 3px 0 0;
 }
@@ -2089,20 +2089,20 @@ textarea {
 
 .assumptions > strong {
   color: var(--muted-strong);
-  font-size: 0.53rem;
+  font-size: 0.90rem;
 }
 
 .assumptions ul {
   margin: 6px 0 0;
   padding-left: 15px;
   color: var(--muted);
-  font-size: 0.49rem;
+  font-size: 0.86rem;
   line-height: 1.5;
 }
 
 .output-footnote {
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
   margin: 11px 0 0;
 }
 
@@ -2176,7 +2176,7 @@ textarea {
 }
 
 .recommendation-title h3 {
-  font-size: 0.72rem;
+  font-size: 0.97rem;
   margin: 0;
 }
 
@@ -2187,13 +2187,13 @@ textarea {
   background: var(--teal-soft);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  font-size: 0.45rem;
+  font-size: 0.82rem;
   font-weight: 800;
 }
 
 .recommendation-select p {
   color: var(--muted);
-  font-size: 0.55rem;
+  font-size: 0.92rem;
   line-height: 1.5;
   margin: 6px 0 9px;
 }
@@ -2210,7 +2210,7 @@ textarea {
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--line);
-  font-size: 0.47rem;
+  font-size: 0.84rem;
 }
 
 .impact-score {
@@ -2218,13 +2218,13 @@ textarea {
   justify-items: center;
   gap: 2px;
   color: var(--green);
-  font-size: 0.63rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
 }
 
 .impact-score small {
   color: var(--muted);
-  font-size: 0.42rem;
+  font-size: 0.86rem;
 }
 
 .impact-score.impact-low { color: var(--red); }
@@ -2240,7 +2240,7 @@ textarea {
 
 .recommendation-actions > span {
   color: var(--muted);
-  font-size: 0.52rem;
+  font-size: 0.89rem;
 }
 
 .recommendation-actions .primary-button {
@@ -2251,7 +2251,7 @@ textarea {
   color: var(--teal);
   background: none;
   padding: 0;
-  font-size: 0.54rem;
+  font-size: 0.91rem;
 }
 
 .impact-panel {
@@ -2268,7 +2268,7 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.51rem;
+  font-size: 0.88rem;
 }
 
 .impact-hero strong {
@@ -2281,7 +2281,7 @@ textarea {
 
 .impact-hero small {
   color: var(--muted);
-  font-size: 0.52rem;
+  font-size: 0.89rem;
 }
 
 .impact-metrics {
@@ -2302,11 +2302,11 @@ textarea {
 
 .impact-metrics small {
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .impact-metrics strong {
-  font-size: 0.61rem;
+  font-size: 0.93rem;
 }
 
 .impact-basis {
@@ -2317,12 +2317,12 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .impact-basis p {
   color: var(--muted-strong);
-  font-size: 0.53rem;
+  font-size: 0.90rem;
   line-height: 1.45;
   margin: 5px 0 8px;
 }
@@ -2330,7 +2330,7 @@ textarea {
 .impact-basis code {
   display: block;
   color: #5f7880;
-  font-size: 0.43rem;
+  font-size: 0.80rem;
   line-height: 1.5;
 }
 
@@ -2358,12 +2358,12 @@ textarea {
 
 .approval-record strong {
   color: var(--green);
-  font-size: 0.58rem;
+  font-size: 0.90rem;
 }
 
 .approval-record p {
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
   margin: 2px 0 0;
 }
 
@@ -2403,7 +2403,7 @@ textarea {
 }
 
 .assistant-identity strong {
-  font-size: 0.69rem;
+  font-size: 0.94rem;
 }
 
 .assistant-identity small {
@@ -2411,7 +2411,7 @@ textarea {
   align-items: center;
   gap: 5px;
   color: var(--teal);
-  font-size: 0.49rem;
+  font-size: 0.86rem;
 }
 
 .assistant-identity small i {
@@ -2428,7 +2428,7 @@ textarea {
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-size: 0.43rem;
+  font-size: 0.80rem;
 }
 
 .assistant-orb {
@@ -2474,20 +2474,20 @@ textarea {
   color: var(--teal);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.46rem;
+  font-size: 0.83rem;
 }
 
 .assistant-context-strip strong {
   overflow: hidden;
   color: var(--muted-strong);
-  font-size: 0.56rem;
+  font-size: 0.93rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .assistant-context-strip small {
   color: var(--muted);
-  font-size: 0.47rem;
+  font-size: 0.84rem;
 }
 
 .assistant-conversation {
@@ -2507,7 +2507,7 @@ textarea {
 
 .assistant-intro p {
   color: var(--muted-strong);
-  font-size: 0.57rem;
+  font-size: 0.94rem;
   line-height: 1.55;
   margin: 2px 0 0;
 }
@@ -2522,12 +2522,12 @@ textarea {
 }
 
 .assistant-thinking strong {
-  font-size: 0.58rem;
+  font-size: 0.90rem;
 }
 
 .assistant-thinking p {
   color: var(--muted);
-  font-size: 0.51rem;
+  font-size: 0.88rem;
   line-height: 1.4;
   margin: 0;
 }
@@ -2562,18 +2562,18 @@ textarea {
   color: var(--teal);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.45rem;
+  font-size: 0.82rem;
 }
 
 .assistant-answer h3 {
-  font-size: 0.68rem;
+  font-size: 0.93rem;
   line-height: 1.4;
   margin: 5px 0;
 }
 
 .assistant-answer p {
   color: var(--muted-strong);
-  font-size: 0.54rem;
+  font-size: 0.91rem;
   line-height: 1.55;
   margin-bottom: 9px;
 }
@@ -2600,7 +2600,7 @@ textarea {
 
 .answer-confidence strong {
   color: var(--teal);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .assistant-evidence-links {
@@ -2621,7 +2621,7 @@ textarea {
 
 .assumption-details {
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .assumption-details summary {
@@ -2645,7 +2645,7 @@ textarea {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.45rem;
+  font-size: 0.82rem;
   margin-bottom: 2px;
 }
 
@@ -2659,7 +2659,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 6px;
   text-align: left;
-  font-size: 0.53rem;
+  font-size: 0.90rem;
 }
 
 .assistant-prompts button:hover {
@@ -2691,7 +2691,7 @@ textarea {
   padding: 0 13px;
   color: var(--muted);
   background: #09171b;
-  font-size: 0.5rem;
+  font-size: 0.87rem;
 }
 
 .tool-trace > button span {
@@ -2709,7 +2709,7 @@ textarea {
 
 .tool-trace > button strong {
   color: var(--muted-strong);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 .tool-trace ol {
@@ -2745,7 +2745,7 @@ textarea {
 
 .tool-trace li span {
   color: var(--muted);
-  font-size: 0.43rem;
+  font-size: 0.80rem;
 }
 
 .tool-trace li strong {
@@ -2755,18 +2755,18 @@ textarea {
 
 .tool-trace li small {
   color: #526b73;
-  font-size: 0.4rem;
+  font-size: 0.84rem;
 }
 
 .tool-trace li time {
   color: var(--muted);
-  font-size: 0.4rem;
+  font-size: 0.84rem;
 }
 
 .tool-trace .trace-empty {
   display: block;
   color: var(--muted);
-  font-size: 0.48rem;
+  font-size: 0.85rem;
 }
 
 /* Modals */
@@ -2823,7 +2823,7 @@ textarea {
   color: #1d7af2;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.68rem;
+  font-size: 0.93rem;
   font-weight: 700;
 }
 
@@ -2838,7 +2838,7 @@ textarea {
 
 .approval-summary p {
   color: var(--muted-strong);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   line-height: 1.5;
   margin: 0;
 }
@@ -2861,14 +2861,14 @@ textarea {
 
 .approval-modal dt {
   color: var(--muted-strong);
-  font-size: 0.78rem;
+  font-size: 1.03rem;
   font-weight: 600;
 }
 
 .approval-modal dd {
   margin: 0;
   color: var(--text);
-  font-size: 0.88rem;
+  font-size: 0.98rem;
   font-weight: 600;
 }
 
@@ -2883,7 +2883,7 @@ textarea {
 .approval-warning strong {
   display: block;
   color: var(--amber);
-  font-size: 0.78rem;
+  font-size: 1.03rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -2891,7 +2891,7 @@ textarea {
 .approval-warning p {
   margin: 0;
   color: var(--muted-strong);
-  font-size: 0.78rem;
+  font-size: 1.03rem;
   line-height: 1.45;
 }
 
@@ -2920,7 +2920,7 @@ textarea {
   color: var(--teal);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.51rem;
+  font-size: 0.88rem;
 }
 
 .report-summary h3 {
@@ -2930,7 +2930,7 @@ textarea {
 
 .report-summary p {
   color: var(--muted-strong);
-  font-size: 0.63rem;
+  font-size: 0.95rem;
   line-height: 1.55;
   margin: 0;
 }
@@ -2950,7 +2950,7 @@ textarea {
 
 .report-columns p {
   color: var(--muted-strong);
-  font-size: 0.57rem;
+  font-size: 0.94rem;
   line-height: 1.6;
   margin: 8px 0 0;
 }
