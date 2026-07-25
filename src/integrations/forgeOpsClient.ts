@@ -29,6 +29,40 @@ type Role3SimulationPayload = {
   warning?: string | null;
 };
 
+export type RuntimeStatus = {
+  online: boolean;
+  moduleCount: number;
+  agentProcesses: number;
+  mcpServerAttached: boolean;
+};
+
+export async function getRuntimeStatus(): Promise<RuntimeStatus> {
+  try {
+    const response = await fetch(`${apiBaseUrl}/api/health`);
+    if (!response.ok) throw new Error(`Health API returned ${response.status}`);
+    const data = await response.json() as {
+      modules?: string[];
+      runtime?: {
+        agentProcesses?: number;
+        mcpServerAttached?: boolean;
+      };
+    };
+    return {
+      online: true,
+      moduleCount: data.modules?.length ?? 0,
+      agentProcesses: data.runtime?.agentProcesses ?? 0,
+      mcpServerAttached: data.runtime?.mcpServerAttached ?? false,
+    };
+  } catch {
+    return {
+      online: false,
+      moduleCount: 0,
+      agentProcesses: 0,
+      mcpServerAttached: false,
+    };
+  }
+}
+
 export async function runScenario(
   scenarioKey: keyof typeof simulationPresets,
   inputs: Record<string, number | boolean>,
@@ -73,7 +107,7 @@ export async function askAgent(intent: keyof typeof assistantResponses): Promise
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ intent, incident_id: 'INC-2407-001', batch_id: 'B-2407-184' }),
     });
-    if (!response.ok) throw new Error(`Role 1 agent returned ${response.status}`);
+    if (!response.ok) throw new Error(`Tool API returned ${response.status}`);
     const data = await response.json() as Partial<AssistantResponse>;
     return {
       ...fallback,
@@ -84,7 +118,7 @@ export async function askAgent(intent: keyof typeof assistantResponses): Promise
   } catch (error) {
     return {
       ...fallback,
-      effect: `${fallback.effect} Live MCP bridge unavailable; using the synchronized handoff fixture.`,
+      effect: `${fallback.effect} Tool API unavailable; using the synchronized handoff fixture.`,
       assumptions: [
         ...fallback.assumptions,
         error instanceof Error ? error.message : 'MCP bridge unavailable',

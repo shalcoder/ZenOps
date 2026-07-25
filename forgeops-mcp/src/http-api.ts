@@ -152,6 +152,12 @@ async function route(request: IncomingMessage, response: ServerResponse) {
       service: 'forgeops-integrated-api',
       incidentId: INCIDENT.incident_id,
       modules: ['mes', 'maintenance', 'quality', 'materials', 'simulation', 'orchestrator'],
+      runtime: {
+        mode: 'deterministic-demo',
+        transport: 'http-tool-bridge',
+        agentProcesses: 0,
+        mcpServerAttached: false,
+      },
     },
     '/api/incident': INCIDENT,
     '/api/timeline': TIMELINE_EVENTS,

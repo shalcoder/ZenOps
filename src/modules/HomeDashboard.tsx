@@ -144,7 +144,7 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
               <p className="section-kicker">Signal stream</p>
               <h2>Recent alerts</h2>
             </div>
-            <span className="live-indicator small"><i /> Live</span>
+            <span className="dataset-label">Golden-path dataset</span>
           </div>
           <ol className="signal-list">
             <li>

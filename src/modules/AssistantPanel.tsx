@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFocusContext } from '../FocusContext';
-import { askAgent } from '../integrations/forgeOpsClient';
+import { askAgent, getRuntimeStatus, type RuntimeStatus } from '../integrations/forgeOpsClient';
 import type { AssistantResponse, LoadState } from '../types';
 
 const prompts = [
@@ -16,6 +16,15 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
   const [response, setResponse] = useState<AssistantResponse | null>(null);
   const [traceOpen, setTraceOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const [runtime, setRuntime] = useState<RuntimeStatus | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    getRuntimeStatus().then((result) => {
+      if (active) setRuntime(result);
+    });
+    return () => { active = false; };
+  }, []);
 
   const runPrompt = async (key: keyof typeof import('../mockData').assistantResponses) => {
     setStatus('loading');
@@ -32,10 +41,17 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
       <aside className="assistant-panel">
         <header className="assistant-header">
           <div className="assistant-identity">
-            <span className="assistant-orb"><i /><i /></span>
-            <div><strong>AI Engineer</strong><small><i /> MCP connected</small></div>
+            <span className="assistant-orb" aria-hidden="true"><i /><i /></span>
+            <div>
+              <strong>Decision assistant</strong>
+              <small className={runtime?.online ? 'online' : runtime ? 'offline' : 'checking'}>
+                <i /> {runtime?.online ? 'Tool API online' : runtime ? 'Local fixture mode' : 'Checking tool API'}
+              </small>
+            </div>
           </div>
-          <span className="assistant-mode-label">Read-only tools</span>
+          <span className="assistant-mode-label">
+            {runtime?.online ? `${runtime.moduleCount} tool modules · 0 agent processes` : 'Read-only demo'}
+          </span>
         </header>
 
         <div className="assistant-context-strip">
@@ -48,13 +64,13 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
           {!response && status !== 'loading' && (
             <div className="assistant-intro">
               <span className="assistant-orb small"><i /><i /></span>
-              <p>I’m anchored to <strong>INC-2407-001</strong>. I can explain the causal chain, compare interventions, focus evidence, and prepare a decision brief.</p>
+              <p>This deterministic assistant is anchored to <strong>INC-2407-001</strong>. It can explain the causal chain, compare interventions, focus evidence, and prepare a decision brief.</p>
             </div>
           )}
           {status === 'loading' && (
             <div className="assistant-thinking">
               <span className="assistant-orb small"><i /><i /></span>
-              <div><strong>Investigating across MCP tools</strong><p>Retrieving MES, quality, maintenance, and simulation evidence…</p><span><i /><i /><i /></span></div>
+              <div><strong>Retrieving tool-backed evidence</strong><p>Checking MES, quality, maintenance, and simulation records…</p><span><i /><i /><i /></span></div>
             </div>
           )}
           {response && status === 'success' && (
@@ -102,7 +118,7 @@ export function AssistantPanel({ onOpenDecision }: { onOpenDecision: () => void 
 
         <div className="tool-trace">
           <button onClick={() => setTraceOpen((value) => !value)} aria-expanded={traceOpen}>
-            <span><i /> MCP tool trace</span>
+            <span><i /> Evidence tool trace</span>
             <strong>{response?.toolTrace.length ?? 0} calls {traceOpen ? '⌃' : '⌄'}</strong>
           </button>
           {traceOpen && (

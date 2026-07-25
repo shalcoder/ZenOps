@@ -19,8 +19,17 @@ const address = server.address() as AddressInfo;
 const baseUrl = `http://127.0.0.1:${address.port}`;
 
 try {
-  const health = await expectJson('/api/health') as { status?: string; modules?: string[] };
-  if (health.status !== 'ok' || health.modules?.length !== 6) {
+  const health = await expectJson('/api/health') as {
+    status?: string;
+    modules?: string[];
+    runtime?: { agentProcesses?: number; mcpServerAttached?: boolean };
+  };
+  if (
+    health.status !== 'ok'
+    || health.modules?.length !== 6
+    || health.runtime?.agentProcesses !== 0
+    || health.runtime?.mcpServerAttached !== false
+  ) {
     throw new Error('Health response did not include all integrated modules');
   }
 

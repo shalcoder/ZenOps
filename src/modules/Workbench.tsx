@@ -47,7 +47,7 @@ export function Workbench({ onBack }: { onBack: () => void }) {
       <div className="workbench-tabs" role="tablist" aria-label="Workbench mode">
         <button className={activeTab === 'investigate' ? 'active' : ''} onClick={() => setActiveTab('investigate')}>01 · Investigate</button>
         <button className={activeTab === 'decide' ? 'active' : ''} onClick={() => setActiveTab('decide')}>02 · Decide</button>
-        <span className="contract-badge">MCP contract ready · B-2407-184</span>
+        <span className="contract-badge">Integrated tool API · 6 modules</span>
       </div>
 
       <div className="workbench-with-assistant">

@@ -10,6 +10,8 @@ A visual-first platform that helps manufacturing engineers diagnose incidents, r
 
 ForgeOps now ships as one verified project: the React workbench calls a browser-safe HTTP bridge backed by the NitroStack MCP dataset and the integrated simulation engine.
 
+Runtime note: the current hackathon build is one frontend plus one deterministic HTTP tool bridge with six MCP-compatible modules. It does not run four independent AI-agent processes, and the NitroStack MCP transport is a separate optional process. The UI reports this distinction explicitly.
+
 ```powershell
 npm install
 npm install --prefix forgeops-mcp

@@ -93,7 +93,7 @@ export function SimulatorPanel() {
           <label className="constraint-field">
             <span>Operational constraint</span>
             <textarea value={constraint} onChange={(event) => setConstraint(event.target.value)} rows={2} />
-            <small>Natural-language constraints route to Role 1’s orchestration service.</small>
+            <small>Natural-language constraints route through the integrated tool API.</small>
           </label>
           <label className="checkbox-row">
             <input type="checkbox" checked={supplierFreeze} onChange={(event) => setSupplierFreeze(event.target.checked)} />

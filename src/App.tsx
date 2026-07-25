@@ -28,9 +28,9 @@ function App() {
             </span>
           </button>
           <div className="header-context">
-            <span className="live-indicator"><i /> Plant Mumbai-1 · Live</span>
+            <span className="live-indicator"><i /> Plant Mumbai-1 · Demo dataset</span>
             <span className="header-divider" />
-            <span className="shift-label">Shift A · 14:32 IST</span>
+            <span className="shift-label">Incident INC-2407-001</span>
             <span className="avatar-button" aria-label="Signed in as Vaishak">VK</span>
           </div>
         </header>
