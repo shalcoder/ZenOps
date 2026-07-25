@@ -161,7 +161,7 @@ export function SimulatorPanel() {
 
           {preview.reasoning && (
             <div className="simulation-reasoning">
-              <strong>Why this result</strong>
+              <strong>Why?</strong>
               <p>{preview.reasoning}</p>
             </div>
           )}
