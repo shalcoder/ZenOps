@@ -59,9 +59,11 @@ INTENT_CONCLUSIONS: dict[str, str] = {
 
 def _format_conclusion(template: str, top_rec) -> str:
     if top_rec:
-        return (template
-                .replace("{yield}", str(top_rec.predicted_yield_pct))
-                .replace("{confidence}", str(top_rec.confidence_pct)))
+        return (
+            template
+            .replace("{yield}", str(top_rec.predicted_yield_pct))
+            .replace("{confidence}", str(top_rec.confidence_pct))
+        )
     return template
 
 

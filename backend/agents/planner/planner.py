@@ -76,7 +76,7 @@ INTENT_TO_TASKS: dict[str, list[dict]] = {
 
 
 def classify_intent(query: str) -> str:
-    """Rules-based intent classifier."""
+    """Rules-based fallback used when the NitroCloud model is unavailable."""
     q = query.lower()
     for intent, patterns in INTENT_PATTERNS.items():
         for pattern in patterns:
