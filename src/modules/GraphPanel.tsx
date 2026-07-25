@@ -1,6 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useLayoutEffect } from 'react';
 import { useFocusContext } from '../FocusContext';
 import { useWorkbenchData } from '../WorkbenchDataContext';
+
+interface EdgeCoord {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
 
 export function GraphPanel() {
   const { focus, focusGraphNode } = useFocusContext();
@@ -9,11 +16,58 @@ export function GraphPanel() {
   const [hideWeak, setHideWeak] = useState(true);
   const [afterIntervention, setAfterIntervention] = useState(false);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const nodeRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+  const [coords, setCoords] = useState<Record<string, EdgeCoord>>({});
+  const [dimensions, setDimensions] = useState({ width: 1000, height: 370 });
+
   const visibleEdges = useMemo(
     () => graphEdges.filter((edge) => !hideWeak || edge.strength >= 0.2),
-    [hideWeak],
+    [graphEdges, hideWeak],
   );
   const nodeById = (id: string) => graphNodes.find((node) => node.id === id)!;
+
+  const updateCoords = () => {
+    if (!containerRef.current) return;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    if (containerRect.width === 0 || containerRect.height === 0) return;
+
+    setDimensions({ width: containerRect.width, height: containerRect.height });
+
+    const newCoords: Record<string, EdgeCoord> = {};
+
+    visibleEdges.forEach((edge) => {
+      const fromEl = nodeRefs.current.get(edge.from);
+      const toEl = nodeRefs.current.get(edge.to);
+
+      if (fromEl && toEl) {
+        const fromRect = fromEl.getBoundingClientRect();
+        const toRect = toEl.getBoundingClientRect();
+
+        // Calculate exact anchor points relative to graph-canvas container
+        const x1 = fromRect.right - containerRect.left;
+        const y1 = fromRect.top + fromRect.height / 2 - containerRect.top;
+
+        const x2 = toRect.left - containerRect.left;
+        const y2 = toRect.top + toRect.height / 2 - containerRect.top;
+
+        newCoords[edge.id] = { x1, y1, x2, y2 };
+      }
+    });
+
+    setCoords(newCoords);
+  };
+
+  useLayoutEffect(() => {
+    updateCoords();
+    const ro = new ResizeObserver(() => updateCoords());
+    if (containerRef.current) ro.observe(containerRef.current);
+    window.addEventListener('resize', updateCoords);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', updateCoords);
+    };
+  }, [visibleEdges, graphNodes]);
 
   return (
     <section className="module-panel graph-panel">
@@ -29,35 +83,28 @@ export function GraphPanel() {
         </div>
       </header>
 
-      <div className={`graph-canvas${afterIntervention ? ' intervention' : ''}`}>
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <div ref={containerRef} className={`graph-canvas${afterIntervention ? ' intervention' : ''}`}>
+        <svg viewBox={`0 0 ${dimensions.width} ${dimensions.height}`} aria-hidden="true">
           <defs>
-            <marker id="arrow-observed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <marker id="arrow-observed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#889da5" />
             </marker>
-            <marker id="arrow-estimated" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <marker id="arrow-estimated" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--amber)" />
             </marker>
-            <marker id="arrow-simulated" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <marker id="arrow-simulated" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--teal)" />
             </marker>
           </defs>
           {visibleEdges.map((edge) => {
-            const from = nodeById(edge.from);
-            const to = nodeById(edge.to);
             const faded = afterIntervention && edge.from === 'node_queue_delay';
+            const c = coords[edge.id];
 
-            // Calculate anchor points (node width is ~15.2%, node center height offset is ~10.8%)
-            const nodeW = 15.2;
-            const nodeH = 10.8;
-
-            const x1 = from.position.x + nodeW;
-            const y1 = from.position.y + nodeH;
-            const x2 = to.position.x;
-            const y2 = to.position.y + nodeH;
-
-            const dx = Math.max(6, Math.abs(x2 - x1) * 0.45);
-            const pathData = `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`;
+            let pathData = '';
+            if (c) {
+              const dx = Math.max(25, Math.abs(c.x2 - c.x1) * 0.45);
+              pathData = `M ${c.x1} ${c.y1} C ${c.x1 + dx} ${c.y1}, ${c.x2 - dx} ${c.y2}, ${c.x2} ${c.y2}`;
+            }
 
             let markerUrl = 'url(#arrow-observed)';
             if (edge.evidenceType === 'model_estimated') markerUrl = 'url(#arrow-estimated)';
@@ -68,7 +115,7 @@ export function GraphPanel() {
                 key={edge.id}
                 d={pathData}
                 className={`${edge.evidenceType}${faded ? ' faded' : ''}`}
-                strokeWidth={Math.max(0.6, edge.strength * 1.5)}
+                strokeWidth={Math.max(1.5, edge.strength * 2.5)}
                 markerEnd={markerUrl}
               />
             );
@@ -81,6 +128,10 @@ export function GraphPanel() {
           return (
             <button
               key={node.id}
+              ref={(el) => {
+                if (el) nodeRefs.current.set(node.id, el);
+                else nodeRefs.current.delete(node.id);
+              }}
               className={`cause-node type-${node.type}${active ? ' active' : ''}${aiActive ? ' ai-active' : ''}${reduced ? ' reduced' : ''}`}
               style={{ left: `${node.position.x}%`, top: `${node.position.y}%` }}
               onClick={() => focusGraphNode(node.id)}

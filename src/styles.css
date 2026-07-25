@@ -1552,7 +1552,6 @@ textarea {
   display: grid;
   align-content: center;
   gap: 4px;
-  transform: translate(-5%, -5%);
   padding: 10px 12px;
   text-align: left;
   color: var(--muted-strong);
@@ -1560,12 +1559,11 @@ textarea {
   border: 1px solid #2b454d;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  transition: transform 150ms ease, border-color 150ms ease, opacity 150ms ease;
+  transition: border-color 150ms ease, opacity 150ms ease;
   overflow: hidden;
 }
 
 .cause-node:hover {
-  transform: translate(-5%, -8%);
   border-color: #4d6971;
 }
 
