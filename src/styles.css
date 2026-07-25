@@ -295,7 +295,8 @@ span.avatar-button {
 
 .primary-button:hover {
   background: #58e5cf;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(88, 229, 207, 0.2);
 }
 
 .secondary-button {
@@ -329,6 +330,7 @@ span.avatar-button {
 }
 
 .metric-card {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   min-height: 190px;
   padding: 20px;
   border: 1px solid var(--line);
@@ -375,7 +377,8 @@ span.avatar-button {
 .metric-delta.neutral { color: var(--blue); }
 .warning-text { color: var(--amber); }
 
-.metric-card > strong {
+.metric-card > strong {font-weight: 700;
+
   display: block;
   font-size: 2.295rem;
   letter-spacing: -0.055em;
@@ -522,6 +525,7 @@ textarea {
 }
 
 .incident-row {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   min-height: 144px;
   display: grid;
   grid-template-columns: 3px minmax(280px, 1fr) 105px 110px auto;
@@ -1564,6 +1568,9 @@ textarea {
 }
 
 .cause-node:hover {
+  transform: translate(-5%, -5%) scale(1.03) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  z-index: 10;
   border-color: #4d6971;
 }
 
@@ -3068,6 +3075,7 @@ textarea {
   }
 
   .incident-row {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
     grid-template-columns: 3px 1fr;
     padding-right: 12px;
   }
@@ -3178,4 +3186,46 @@ textarea {
   .report-modal > footer {
     display: none;
   }
+}
+
+/* UI Pitch Enhancements */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.metric-card:nth-child(1) { animation-delay: 0.05s; }
+.metric-card:nth-child(2) { animation-delay: 0.1s; }
+.metric-card:nth-child(3) { animation-delay: 0.15s; }
+.metric-card:nth-child(4) { animation-delay: 0.2s; }
+.incident-row:nth-child(1) { animation-delay: 0.1s; }
+.incident-row:nth-child(2) { animation-delay: 0.2s; }
+.incident-row:nth-child(3) { animation-delay: 0.3s; }
+
+.metric-card { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  border-color: rgba(57, 214, 190, 0.2);
+}
+
+.cause-link path {
+  stroke-dasharray: 4;
+  animation: flowDash 1s linear infinite;
 }
