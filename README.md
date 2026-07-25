@@ -6,6 +6,30 @@
 
 A visual-first platform that helps manufacturing engineers diagnose incidents, replay production, simulate corrective actions, and make evidence-backed decisions with an MCP-orchestrated AI engineering copilot.
 
+## Run the integrated application
+
+ForgeOps now ships as one verified project: the React workbench calls a browser-safe HTTP bridge backed by the NitroStack MCP dataset and the integrated simulation engine.
+
+```powershell
+npm install
+npm install --prefix forgeops-mcp
+```
+
+Start the API and frontend in separate terminals:
+
+```powershell
+npm run dev:api
+npm run dev
+```
+
+Open `http://localhost:4173`. Vite proxies `/api` to `http://127.0.0.1:8787`; set `VITE_FORGEOPS_API_URL` only when the API is hosted elsewhere. The critical demo path still uses synchronized local fixtures if the API is unavailable.
+
+Run the complete frontend, MCP-tool, and HTTP integration checks with:
+
+```powershell
+npm run verify
+```
+
 - **VISUAL FIRST<br>Workbench is the hero**
 - **AGENTIC<br>Copilot coordinates tools**
 - **DECISION READY<br>Evidence to action**

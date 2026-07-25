@@ -1,8 +1,13 @@
 import { assistantResponses, simulationPresets } from '../mockData';
 import type { AssistantResponse, SimulationResult } from '../types';
 
-const role3BaseUrl = import.meta.env.VITE_ROLE3_API_URL?.replace(/\/$/, '');
-const role1AgentUrl = import.meta.env.VITE_ROLE1_AGENT_URL;
+const apiBaseUrl = (
+  import.meta.env.VITE_FORGEOPS_API_URL
+  ?? import.meta.env.VITE_ROLE3_API_URL
+  ?? ''
+).replace(/\/$/, '');
+const simulationUrl = `${apiBaseUrl}/api/simulate`;
+const agentUrl = import.meta.env.VITE_ROLE1_AGENT_URL ?? `${apiBaseUrl}/api/agent/query`;
 
 const toPercent = (value: number | undefined, fallback: number) => {
   if (value === undefined || Number.isNaN(value)) return fallback;
@@ -30,13 +35,8 @@ export async function runScenario(
   constraints: Record<string, boolean>,
 ): Promise<SimulationResult> {
   const fallback = simulationPresets[scenarioKey] ?? simulationPresets.baseline;
-  if (!role3BaseUrl) {
-    await new Promise((resolve) => window.setTimeout(resolve, 650));
-    return fallback;
-  }
-
   try {
-    const response = await fetch(`${role3BaseUrl}/api/simulate`, {
+    const response = await fetch(simulationUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: fallback.scenarioName, inputs, constraints }),
@@ -67,13 +67,8 @@ export async function runScenario(
 
 export async function askAgent(intent: keyof typeof assistantResponses): Promise<AssistantResponse> {
   const fallback = assistantResponses[intent] ?? assistantResponses.evidence;
-  if (!role1AgentUrl) {
-    await new Promise((resolve) => window.setTimeout(resolve, 720));
-    return fallback;
-  }
-
   try {
-    const response = await fetch(role1AgentUrl, {
+    const response = await fetch(agentUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ intent, incident_id: 'INC-2407-001', batch_id: 'B-2407-184' }),
@@ -86,7 +81,14 @@ export async function askAgent(intent: keyof typeof assistantResponses): Promise
       evidenceRefs: data.evidenceRefs ?? (data as { evidence_refs?: string[] }).evidence_refs ?? fallback.evidenceRefs,
       toolTrace: data.toolTrace ?? (data as { tool_trace?: AssistantResponse['toolTrace'] }).tool_trace ?? fallback.toolTrace,
     };
-  } catch {
-    return fallback;
+  } catch (error) {
+    return {
+      ...fallback,
+      effect: `${fallback.effect} Live MCP bridge unavailable; using the synchronized handoff fixture.`,
+      assumptions: [
+        ...fallback.assumptions,
+        error instanceof Error ? error.message : 'MCP bridge unavailable',
+      ],
+    };
   }
 }

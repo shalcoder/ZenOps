@@ -18,12 +18,15 @@ Role 2 does **not** own MCP server implementation, simulation physics, canonical
 
 ## Branch and build
 
-- Local branch: `vaishak`
-- Upstream branch: `origin/Vaishak`
+- Source branch: `vaishak`
+- Integrated baseline: `Vishal` (already includes the Role 1 and Role 3 work)
+- Release target: `main`
 - Frontend: Vite + React + TypeScript
 - Install: `npm install`
-- Develop: `npm run dev`
-- Verify: `npm run build`
+- Install backend: `npm install --prefix forgeops-mcp`
+- Develop API: `npm run dev:api`
+- Develop frontend: `npm run dev`
+- Verify everything: `npm run verify`
 
 The application runs with deterministic golden-path fixtures if no backend is running. This is intentional for hackathon demo reliability.
 
@@ -42,12 +45,14 @@ The visual demo follows the product blueprint and Role 1's implemented dataset:
 
 Role 3's standalone `kv` fixture uses `BATCH-INC-2026-07`. Do not leak that identifier into UI components. Normalize it at the API boundary if the standalone Role 3 service becomes the incident source.
 
-## Role 1 integration (`Vishal`)
+## Unified Role 1 + Role 3 integration
 
-The frontend accepts an optional Role 1 agent endpoint through:
+`forgeops-mcp/src/http-api.ts` is the browser-safe boundary. It exposes the canonical incident, timeline, graph, recommendations, business impact, simulation, and orchestrated agent response without importing NitroStack server classes into the browser bundle.
+
+During local development Vite proxies `/api` to `http://127.0.0.1:8787`. For a separately hosted API, configure:
 
 ```env
-VITE_ROLE1_AGENT_URL=http://localhost:3000/api/agent/query
+VITE_FORGEOPS_API_URL=https://forgeops-api.example.com
 ```
 
 Request:
@@ -75,19 +80,7 @@ Expected response fields:
 }
 ```
 
-The adapter accepts either `evidence_refs` / `tool_trace` or camelCase equivalents. Role 1's current NitroStack handoff describes MCP/SSE tools but does not define a browser-safe agent query route. Keep the deterministic fallback until that HTTP route is exposed.
-
-## Role 3 integration (`kv`)
-
-The frontend can call the Role 3 Python REST service directly:
-
-```env
-VITE_ROLE3_API_URL=http://localhost:8080
-```
-
-Used route:
-
-- `POST /api/simulate`
+The agent endpoint is `POST /api/agent/query`. Simulation uses `POST /api/simulate`.
 
 The adapter normalizes:
 
@@ -95,19 +88,15 @@ The adapter normalizes:
 - `in_validated_range` and `within_validated_range`
 - Singular `warning` and plural `warnings`
 
-Role 3 remains responsible for simulation calculations and operating-range enforcement. The frontend only presents the returned result and adds a visible UI warning for values outside the published handoff ranges.
+The integrated Role 3 engine remains responsible for calculations and operating-range enforcement. The frontend only presents returned results and shows visible out-of-range warnings. `VITE_ROLE1_AGENT_URL` and `VITE_ROLE3_API_URL` remain accepted as backward-compatible overrides.
 
 ## Merge boundaries
 
-Recommended integration order on a temporary integration branch:
+The completed integration uses `Vishal` as the backend baseline because it already contains both Vishal's MCP work and kv's simulation work, then retains `main` history and merges `vaishak` once. Do not merge `kv` a second time.
 
-1. Merge `kv` for Role 3 data/simulation.
-2. Merge `Vishal` for `forgeops-mcp/`.
-3. Merge `Vaishak` for the frontend.
-4. Resolve duplicate blueprint/task documents by keeping the newest shared copy.
-5. Keep `forgeops-mcp/` owned by Role 1.
-6. Keep Python simulation files and `data/` owned by Role 3.
-7. Keep React `.tsx`, frontend CSS, Vite config, and browser adapters owned by Role 2.
+- `forgeops-mcp/`: Role 1 MCP modules plus the browser-safe integrated API.
+- `simulation/`, `data/`, and `test_role3_simulation.ts`: Role 3 standalone artifacts.
+- `src/`, root Vite configuration, and browser adapter: Role 2 frontend.
 
 Do not directly import NitroStack server classes into Vite browser code. Connect through an HTTP endpoint so server-only dependencies and secrets remain outside the frontend bundle.
 

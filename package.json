@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "npm --prefix forgeops-mcp run api",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verify": "npm run build && npm --prefix forgeops-mcp run verify"
   },
   "dependencies": {
     "react": "^18.3.1",

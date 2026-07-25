@@ -84,4 +84,9 @@ async function runTests() {
   if (failed > 0) process.exit(1);
 }
 
-runTests();
+runTests()
+  .then(() => process.exit(0))
+  .catch((error: unknown) => {
+    console.error('ForgeOps MCP verification suite crashed:', error);
+    process.exit(1);
+  });
