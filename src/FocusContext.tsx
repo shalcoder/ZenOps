@@ -124,7 +124,7 @@ export function FocusProvider({ children }: { children: React.ReactNode }) {
         ...incidentEvents.map((event) => event.offsetMinutes),
       );
       const safeMinute = Math.max(0, Math.min(duration, Math.round(minute)));
-      const stage = replayStages.find((item) => safeMinute >= item.startMinute && safeMinute <= item.endMinute)
+      const stage = [...replayStages].reverse().find((item) => safeMinute >= item.startMinute)
         ?? replayStages[replayStages.length - 1];
       const event = [...incidentEvents].reverse().find((item) => item.offsetMinutes <= safeMinute);
       const nodes = event?.graphNodeIds ?? [];

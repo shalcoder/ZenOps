@@ -33,6 +33,13 @@ export function ReplayPanel() {
     () => replayStages.find((stage) => stage.id === focus.stageId) ?? replayStages[0],
     [focus.stageId],
   );
+  const activeStageIndex = Math.max(
+    0,
+    replayStages.findIndex((stage) => stage.id === activeStage.id),
+  );
+  const stageProgress = replayStages.length > 1
+    ? (activeStageIndex / (replayStages.length - 1)) * 100
+    : 100;
   const activeEvent = incidentEvents.find((event) => event.id === focus.eventId);
   const activeStageAnomalies = incidentEvents.filter(
     (event) => activeStage.eventIds.includes(event.id)
@@ -90,7 +97,7 @@ export function ReplayPanel() {
         {overlay && (
           <div className={`reference-path ${activeStage.status}`}>
             <span>Stage condition</span>
-            <div><i style={{ width: `${Math.min(100, (focus.timeMinute / duration) * 100)}%` }} /></div>
+            <div><i style={{ width: `${stageProgress}%` }} /></div>
             <strong>{anomalyLabel} · {conditionLabel}</strong>
           </div>
         )}
