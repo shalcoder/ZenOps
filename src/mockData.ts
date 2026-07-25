@@ -60,6 +60,21 @@ export const incidents: Incident[] = [
     exposureInr: 120000,
     summary: 'A short furnace-zone excursion was detected and awaits engineering review.',
   },
+  {
+    id: 'INC-2407-004',
+    title: 'Lubrication interval approaching',
+    plant: 'Plant Mumbai-1',
+    line: 'Assembly Line 1',
+    product: 'Shaft Coupling SC-16',
+    batchId: 'B-2407-211',
+    severity: 'low',
+    status: 'monitoring',
+    detectedAt: at('13:06'),
+    baselineYield: 96.5,
+    currentYield: 95.8,
+    exposureInr: 60000,
+    summary: 'Spindle lubrication is due within the next two shifts; production remains stable.',
+  },
 ];
 
 export const featuredIncident = incidents[0];

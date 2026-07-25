@@ -33,7 +33,7 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
         <div>
           <p className="section-kicker">Production overview</p>
           <h1>Good afternoon, Vaishak.</h1>
-          <p>Three production signals need attention. One requires an evidence-backed decision.</p>
+          <p>Four production signals need attention. One requires an evidence-backed decision.</p>
         </div>
         <div className="hero-actions">
           <button className="secondary-button" onClick={() => window.print()}>
@@ -63,12 +63,12 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
           <small>Plant target 90%</small>
         </article>
         <article className="metric-card">
-          <div className="metric-topline"><span>Active incidents</span><span className="metric-delta neutral">3 open</span></div>
-          <strong>03</strong>
+          <div className="metric-topline"><span>Active incidents</span><span className="metric-delta neutral">4 open</span></div>
+          <strong>04</strong>
           <div className="severity-counts">
             <span><i className="dot critical" />1 high</span>
             <span><i className="dot warning" />1 medium</span>
-            <span><i className="dot info" />1 low</span>
+            <span><i className="dot info" />2 low</span>
           </div>
           <small>1 incident escalated</small>
         </article>
@@ -113,8 +113,11 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
           </div>
 
           <div className="incident-list">
-            {filtered.map((incident, index) => (
-              <article key={incident.id} className={`incident-row${index === 0 ? ' priority' : ''}`}>
+            {filtered.map((incident) => {
+              const isPriority = incident.id === data.incident.id;
+              const isDisplayOnly = incident.id === 'INC-2407-004';
+              return (
+              <article key={incident.id} className={`incident-row${isPriority ? ' priority' : ''}`}>
                 <div className={`severity-rail ${incident.severity}`} />
                 <div className="incident-main">
                   <div className="incident-title-row">
@@ -126,7 +129,7 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
                   </div>
                   <h3>{incident.title}</h3>
                   <p className="incident-summary-line">
-                    {incidentOneLiner(incident, index === 0)}
+                    {incidentOneLiner(incident, isPriority)}
                   </p>
                   <div className="incident-meta">
                     <span>{incident.plant}</span>
@@ -145,12 +148,17 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
                   <strong>{formatInr(incident.exposureInr)}</strong>
                   <small>per month</small>
                 </div>
-                <button className={index === 0 ? 'primary-button compact' : 'secondary-button compact'} onClick={onOpen}>
-                  {index === 0 ? 'Open workbench' : 'Review'}
+                <button
+                  className={isDisplayOnly ? 'secondary-button compact incident-static-button' : isPriority ? 'primary-button compact' : 'secondary-button compact'}
+                  onClick={isDisplayOnly ? undefined : onOpen}
+                  disabled={isDisplayOnly}
+                >
+                  {isDisplayOnly ? 'Logged' : isPriority ? 'Open workbench' : 'Review'}
                   <span>→</span>
                 </button>
               </article>
-            ))}
+              );
+            })}
             {filtered.length === 0 && <div className="empty-state">No incidents match these filters.</div>}
           </div>
         </div>
