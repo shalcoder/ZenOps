@@ -646,19 +646,26 @@ textarea {
   padding: 0;
   margin: 0;
   border: 1px solid var(--line);
-  border-radius: 10px;
-  background: rgba(13, 27, 32, 0.7);
+  border-radius: 12px;
+  background: var(--panel);
   overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .signal-list li {
   min-height: 76px;
   display: grid;
-  grid-template-columns: 38px 32px 1fr auto;
+  grid-template-columns: 42px 36px 1fr auto;
   align-items: center;
-  gap: 9px;
-  padding: 12px;
+  gap: 12px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--line);
+  background: var(--panel);
+  transition: background 0.15s ease;
+}
+
+.signal-list li:hover {
+  background: rgba(29, 122, 242, 0.05);
 }
 
 .signal-list li:last-child {
@@ -666,42 +673,51 @@ textarea {
 }
 
 .signal-time {
-  color: var(--muted);
-  font: 0.62rem 'Cascadia Code', Consolas, monospace;
+  color: var(--muted-strong);
+  font: 0.7rem 'Cascadia Code', Consolas, monospace;
+  font-weight: 600;
 }
 
 .signal-icon {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   display: grid;
   place-items: center;
-  border-radius: 6px;
+  border-radius: 8px;
   font-style: normal;
-  font-size: 0.63rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  color: var(--teal);
-  background: var(--teal-soft);
-  border: 1px solid rgba(57, 214, 190, 0.18);
+  color: #1d7af2;
+  background: rgba(29, 122, 242, 0.1);
+  border: 1px solid rgba(29, 122, 242, 0.25);
 }
 
 .signal-list strong {
-  font-size: 0.72rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text);
+  display: block;
 }
 
 .signal-list p {
-  color: var(--muted);
-  font-size: 0.62rem;
+  color: var(--muted-strong);
+  font-size: 0.72rem;
   margin: 3px 0 0;
+  line-height: 1.4;
 }
 
 .signal-state {
-  padding: 4px 6px;
-  background: rgba(255, 255, 255, 0.04);
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.signal-state.warning { color: var(--amber); }
-.signal-state.critical { color: var(--red); }
-.signal-state.info { color: var(--blue); }
+.signal-state.warning { color: #b45309; background: #fffbeb; border: 1px solid #fde68a; }
+.signal-state.critical { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; }
+.signal-state.info { color: #1d7af2; background: #eef6ff; border: 1px solid #c6e0ff; }
 
 .empty-state {
   padding: 40px;

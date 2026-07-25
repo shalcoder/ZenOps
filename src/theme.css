@@ -418,26 +418,37 @@ time,
   background: var(--panel);
 }
 
-.dataset-label {
-  padding: 6px 9px;
-  color: #55707e;
-  background: #e8f4f9;
-  border: 1px solid #c7e0eb;
+.signal-list {
+  background: #ffffff;
+  border: 1px solid #ded6c8;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
 }
 
 .signal-list li {
   min-height: 76px;
-  border-bottom-color: var(--line);
+  background: #ffffff;
+  border-bottom: 1px solid #f0eafe;
+}
+
+.signal-list li:hover {
+  background: #f4f8fd;
 }
 
 .signal-icon {
-  color: var(--muted-strong);
-  background: #f2ede3;
-  border: 1px solid var(--line);
+  color: #1d7af2;
+  background: #eef6ff;
+  border: 1px solid #c6e0ff;
 }
 
 .signal-list strong {
-  color: var(--text);
+  color: #1c2730;
+  font-weight: 700;
+}
+
+.signal-list p {
+  color: #52606d;
 }
 
 .workbench-page {
