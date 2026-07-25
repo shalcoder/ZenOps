@@ -144,12 +144,6 @@ export function GraphPanel() {
           );
         })}
       </div>
-      <div className="graph-legend">
-        <span><i className="edge observed" /> Observed</span>
-        <span><i className="edge estimated" /> Model-estimated</span>
-        <span><i className="edge simulated" /> Counterfactual</span>
-        {afterIntervention && <strong>Queue-delay influence reduced after intervention</strong>}
-      </div>
     </section>
   );
 }

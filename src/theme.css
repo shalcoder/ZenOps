@@ -671,8 +671,7 @@ time,
   color: var(--text);
 }
 
-.timeline-legend,
-.graph-legend {
+.timeline-legend {
   padding: 14px 28px;
   color: var(--muted);
   border-top: 1px solid var(--line);
@@ -892,18 +891,6 @@ time,
 .cause-node.reduced {
   background: #edf7f1;
   border-color: #97c8ae;
-}
-
-.edge {
-  border-color: #7b9cac;
-}
-
-.edge.estimated {
-  border-color: #b58a4b;
-}
-
-.edge.simulated {
-  border-color: #5898b8;
 }
 
 .evidence-grid {

@@ -1586,45 +1586,6 @@ textarea {
   border-style: dashed;
 }
 
-.graph-legend {
-  min-height: 42px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 16px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.891rem;
-}
-
-.graph-legend span {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.graph-legend strong {
-  color: var(--teal);
-  margin-left: auto;
-  font-size: 0.9rem;
-}
-
-.edge {
-  width: 18px;
-  height: 1px;
-  background: #71848b;
-}
-
-.edge.estimated {
-  height: 0;
-  border-top: 1px dashed var(--amber);
-}
-
-.edge.simulated {
-  height: 0;
-  border-top: 1px dotted var(--teal);
-}
-
 /* Evidence */
 
 .ai-focus-badge {
