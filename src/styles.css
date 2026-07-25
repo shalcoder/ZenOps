@@ -1664,6 +1664,10 @@ textarea {
   font-size: 0.936rem;
 }
 
+.evidence-card time {
+  margin-left: auto;
+}
+
 .evidence-empty {
   min-height: 105px;
   display: flex;

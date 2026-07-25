@@ -44,7 +44,6 @@ export function EvidencePanel() {
               <h3>{record.title}</h3>
               <p>{record.summary}</p>
               <footer>
-                <code>{record.recordId}</code>
                 <time>{formatTimestamp(record.timestamp)}</time>
               </footer>
             </article>
