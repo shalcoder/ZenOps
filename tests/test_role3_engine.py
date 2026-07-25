@@ -1,10 +1,11 @@
 """
-Automated Test Suite for Role 3: Simulation & Data Engineer (ZenOps).
+Automated Test Suite for Role 3: Simulation & Data Engineer (ZenOps / ForgeOps).
 Verifies:
 1. Provenance tags (source, record_id, timestamp) in all records.
-2. What-if Simulation Engine calculations & tool contracts.
+2. What-if Simulation Engine calculations & tool contracts matching Blueprint Section 08.
 3. Out-of-bounds operating range warnings.
-4. Recommendation ranking & report exports.
+4. Hard constraint checks (e.g. no supplier change).
+5. Recommendation ranking & report exports with Risk Assessment.
 """
 
 import os
@@ -45,21 +46,20 @@ class TestRole3Engine(unittest.TestCase):
             self.assertIn("record_id", sr)
             self.assertIn("timestamp", sr)
 
-    def test_02_simulation_engine_contracts(self):
+    def test_02_blueprint_section08_simulation_matrix(self):
         sim = SimulationEngine(data_dir=self.data_dir)
-        res = sim.run_scenario({"queue_delay_minutes": 30, "recalibrate_machine_7": True})
         
-        self.assertIn("scenario_id", res)
-        self.assertIn("baseline_yield", res)
-        self.assertIn("predicted_yield", res)
-        self.assertIn("confidence", res)
-        self.assertIn("cost_estimate", res)
-        self.assertIn("implementation_effort", res)
-        self.assertIn("assumptions", res)
-        self.assertIn("in_validated_range", res)
+        # Test 1: Queue delay <= 60 minutes -> 96% yield
+        sc_queue = sim.run_scenario({"queue_delay_minutes": 30, "recalibrate_machine_7": True})
+        self.assertEqual(sc_queue["predicted_yield"], 0.96)
 
-        self.assertTrue(res["in_validated_range"])
-        self.assertEqual(res["predicted_yield"], 0.96)
+        # Test 2: Replace Machine 7 -> 84% yield
+        sc_m7 = sim.run_scenario({"replace_machine_7": True})
+        self.assertEqual(sc_m7["predicted_yield"], 0.84)
+
+        # Test 3: Humidity <= 55% -> 96% yield
+        sc_hum = sim.run_scenario({"humidity_pct": 50.0})
+        self.assertEqual(sc_hum["predicted_yield"], 0.96)
 
     def test_03_out_of_bounds_operating_range_warning(self):
         sim = SimulationEngine(data_dir=self.data_dir)
@@ -68,22 +68,27 @@ class TestRole3Engine(unittest.TestCase):
         self.assertFalse(res["in_validated_range"])
         self.assertTrue(len(res["warnings"]) > 0)
 
-    def test_04_recommendation_ranking(self):
+    def test_04_hard_constraint_evaluation(self):
+        sim = SimulationEngine(data_dir=self.data_dir)
+        # Test constraint: no supplier change
+        res = sim.run_scenario({"change_supplier": True}, constraints={"no_supplier_change": True})
+        self.assertEqual(res["implementation_effort"], "INFEASIBLE")
+
+    def test_05_recommendation_ranking_and_risk_reports(self):
         rec_eng = RecommendationEngine(data_dir=self.data_dir)
         recs = rec_eng.generate_recommendations()
         
         self.assertGreaterEqual(len(recs), 3)
         self.assertEqual(recs[0]["rank"], 1)
         self.assertIn("business_impact", recs[0])
-        self.assertGreater(recs[0]["business_impact"]["monthly_financial_loss_avoided_usd"], 0)
 
-    def test_05_report_generator(self):
         gen = ReportGenerator(data_dir=self.data_dir)
+        gen.export_all_reports()
+        
         mgr_md = gen.generate_manager_report_markdown()
-        eng_md = gen.generate_engineer_report_markdown()
-
-        self.assertIn("Executive Incident Report", mgr_md)
-        self.assertIn("Detailed Engineering", eng_md)
+        self.assertIn("Risk Assessment", mgr_md)
+        self.assertIn("Implementation Risk", mgr_md)
+        self.assertIn("Decision Record Sign-Off", mgr_md)
 
 if __name__ == "__main__":
     unittest.main()

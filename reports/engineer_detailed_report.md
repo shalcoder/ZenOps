@@ -1,4 +1,4 @@
-# Detailed Engineering & Diagnostics Report - ZenOps
+# Detailed Engineering & Diagnostics Report - ForgeOps / ZenOps
 
 **Batch ID**: BATCH-INC-2026-07  
 **Plant**: Plant Alpha - Detroit | **Line**: Line 3  
@@ -25,21 +25,21 @@
 --- 
 
 ## 3. What-if Simulation Interventions Evaluated
-### Rank #1: Intervention A: Recalibrate Machine 7 + Cap Queue Delay at 30 mins
+### Rank #1: Action 1: Reduce queue delay below 60 minutes
 - **Predicted Yield**: 96.0%
 - **Validated Operating Range**: VALIDATED
-- **Assumptions**: Machine 7 spindle thermal drift recalibrated to nominal ±0.02mm, Queue delay reduced below 30 minutes via priority staging dispatch
+- **Assumptions**: Machine 7 spindle thermal drift recalibrated to nominal ±0.02mm, Queue delay reduced below 60 minutes via priority staging dispatch
 - **Inputs**: `{"queue_delay_minutes": 30, "recalibrate_machine_7": true}`
 
-### Rank #2: Intervention B: Activate Desiccant Dehumidifiers + Staging Queue Priority
-- **Predicted Yield**: 94.0%
+### Rank #2: Action 2: Install staging desiccant humidity control
+- **Predicted Yield**: 96.0%
 - **Validated Operating Range**: VALIDATED
-- **Assumptions**: Queue delay reduced below 30 minutes via priority staging dispatch, Desiccant dehumidification unit active in material staging area
-- **Inputs**: `{"queue_delay_minutes": 25, "humidity_pct": 45.0}`
+- **Assumptions**: Humidity reduced below 55% RH via staging desiccant climate unit
+- **Inputs**: `{"humidity_pct": 50.0}`
 
-### Rank #3: Intervention C: Complete Supplier Resin Changeover
-- **Predicted Yield**: 85.0%
+### Rank #3: Action 3: Replace Machine 7 CNC Unit
+- **Predicted Yield**: 84.0%
 - **Validated Operating Range**: VALIDATED
-- **Assumptions**: Switched resin supplier (Requires 30-day qualification audit)
-- **Inputs**: `{"change_supplier": true}`
+- **Assumptions**: Machine 7 replaced with brand new CNC unit; root cause primary queue delay unaddressed
+- **Inputs**: `{"replace_machine_7": true}`
 

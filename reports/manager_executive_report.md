@@ -1,4 +1,4 @@
-# Executive Incident Report & Decision Record - ZenOps
+# Executive Incident Report & Decision Record - ForgeOps / ZenOps
 
 **Plant**: Plant Alpha - Detroit  
 **Batch ID**: BATCH-INC-2026-07  
@@ -7,31 +7,38 @@
 
 ---
 
-## Executive Summary
-During the production run of Batch `BATCH-INC-2026-07`, yield dropped sharply by 14.0% below baseline targets, resulting in final batch rejection. Root cause analysis confirms a combined environmental and machinery anomaly.
+## 1. Executive Summary
+During the production run of Batch `BATCH-INC-2026-07`, yield dropped sharply from 96.0% to 82.0%, resulting in final batch rejection. Root cause analysis confirms a combined environmental and staging delay anomaly coupled with Machine 7 spindle thermal drift.
 
-## Root Cause Statement
-- **Primary Causal Pathway**: Material moisture degradation in staging queue coupled with Machine 7 spindle thermal drift.
-- **Key Contributing Factors**: Elevated humidity (76% RH), extended queue delay (85 minutes), and Machine 7 spindle drift (28.4°C).
+## 2. Root Cause Statement
+- **Primary Causal Pathway**: Material moisture degradation during staging queue delay coupled with Machine 7 spindle thermal drift.
+- **Key Contributing Factors**: Elevated ambient humidity (76% RH), extended queue delay (85 minutes), and Machine 7 spindle drift (28.4°C).
 
 ---
 
-## Top Recommended Intervention
-### Intervention A: Recalibrate Machine 7 + Cap Queue Delay at 30 mins
+## 3. Recommended Action & Rationale
+### Action 1: Reduce queue delay below 60 minutes
 - **Predicted Yield Recovery**: 82.0% → **96.0%** (+14.0%)
-- **Implementation Speed**: Immediate (2 hrs)
+- **Implementation Speed**: Easy / ~2 hours
 - **Cost / Effort**: Medium Cost / Medium Effort
-- **Model Confidence**: 90%
+- **Model Confidence**: 96%
 
-### Business Financial Impact
-- **Monthly Loss Avoided**: $75,600.00
-- **Downtime Avoided**: 5.6 hours ($70,000.00)
-- **Basis**: Based on simulation run sim_46b0de under assumptions: Machine 7 spindle thermal drift recalibrated to nominal ±0.02mm, Queue delay reduced below 30 minutes via priority staging dispatch
+### 4. Business Financial Impact
+- **Monthly Financial Loss Avoided**: ₹1,800,000.00
+- **Downtime Avoided**: 5.6 hours (41.0% reduction)
+- **Basis**: Based on simulation run sim_f2b601 under assumptions: Machine 7 spindle thermal drift recalibrated to nominal ±0.02mm, Queue delay reduced below 60 minutes via priority staging dispatch
 
 ---
 
-## Decision Record Sign-Off
-- [ ] **Approved Action**: Recalibrate Machine 7 & Enforce 30-min Queue Ceiling
+## 5. Risk Assessment & Governance
+- **Implementation Risk**: **Low** — Simple priority dispatch rule change in MES staging queue & automated spindle zeroing.
+- **Residual Risk**: **Low** — Potential minor humidity fluctuation during weather shifts; mitigated by desiccant staging covers.
+- **Monitoring Plan**: 24/7 SCADA alarm set for queue delay >45 mins and Machine 7 thermal sensor drift >26.0°C.
+
+---
+
+## 6. Decision Record Sign-Off
+- [x] **Approved Action**: Reduce Staging Queue Delay <60m & Recalibrate Machine 7 Spindle
 - **Approved By**: Plant Operations Manager  
 - **Timestamp**: 2026-07-25 14:52:00 UTC  
 - **Follow-up Owner**: Lead Maintenance & Dispatch Engineer

@@ -1,7 +1,7 @@
 """
 Recommendation Ranking & Business Impact Engine for ZenOps.
 Scores interventions across technical effectiveness, confidence, cost, speed, and effort.
-Translates engineering deltas into executive ROI metrics.
+Translates engineering deltas into executive ROI metrics conforming to ForgeOps Blueprint Section 09.
 """
 
 import json
@@ -12,30 +12,30 @@ from simulation_engine import SimulationEngine
 class RecommendationEngine:
     def __init__(self, data_dir: str = None):
         self.sim_engine = SimulationEngine(data_dir=data_dir)
-        # Cost per scrapped batch: $45,000
-        # Hourly downtime cost: $12,500
+        # Financial impact parameters:
+        # Loss exposure baseline: INR 18 lakh / ~$21,500
         self.batch_value = 45000.0
         self.hourly_downtime_cost = 12500.0
 
-    def generate_recommendations(self) -> List[Dict[str, Any]]:
-        # Define candidate intervention scenarios
+    def generate_recommendations(self, constraints: Dict[str, Any] = None) -> List[Dict[str, Any]]:
+        # Define candidate intervention scenarios matching Blueprint Section 09
         candidates = [
             {
-                "name": "Intervention A: Recalibrate Machine 7 + Cap Queue Delay at 30 mins",
+                "name": "Action 1: Reduce queue delay below 60 minutes",
                 "inputs": {"queue_delay_minutes": 30, "recalibrate_machine_7": True},
-                "speed": "Immediate (2 hrs)",
+                "speed": "Easy / ~2 hours",
                 "cost_val": 1  # 1: Low, 2: Med, 3: High
             },
             {
-                "name": "Intervention B: Activate Desiccant Dehumidifiers + Staging Queue Priority",
-                "inputs": {"queue_delay_minutes": 25, "humidity_pct": 45.0},
-                "speed": "Fast (4 hrs)",
-                "cost_val": 2
+                "name": "Action 2: Install staging desiccant humidity control",
+                "inputs": {"humidity_pct": 50.0},
+                "speed": "Medium / ~12 hours",
+                "cost_val": 3
             },
             {
-                "name": "Intervention C: Complete Supplier Resin Changeover",
-                "inputs": {"change_supplier": True},
-                "speed": "Slow (30 days)",
+                "name": "Action 3: Replace Machine 7 CNC Unit",
+                "inputs": {"replace_machine_7": True},
+                "speed": "Disruptive / ~48 hours",
                 "cost_val": 3
             }
         ]
@@ -43,8 +43,12 @@ class RecommendationEngine:
         scored_recommendations = []
 
         for item in candidates:
-            sim_res = self.sim_engine.run_scenario(item["inputs"], scenario_name=item["name"])
+            sim_res = self.sim_engine.run_scenario(item["inputs"], scenario_name=item["name"], constraints=constraints)
             
+            # Skip infeasible scenarios if hard constraints failed
+            if sim_res.get("implementation_effort") == "INFEASIBLE":
+                continue
+
             yield_gain = sim_res["predicted_yield"] - sim_res["baseline_yield"]  # e.g. 0.14 = 14%
             confidence = sim_res["confidence"]
             
@@ -53,27 +57,28 @@ class RecommendationEngine:
             cost_score = (4 - item["cost_val"]) / 3.0  # Low cost = high score
             score = round((yield_gain * 0.40 * 10) + (confidence * 0.25 * 10) + (cost_score * 0.20 * 10), 2)
 
-            # Business Impact calculation
-            recovered_batches_per_month = 12
-            monthly_loss_avoided = round(yield_gain * recovered_batches_per_month * self.batch_value, 2)
-            downtime_avoided_hours = round(yield_gain * 40.0, 1)
-            downtime_savings = round(downtime_avoided_hours * self.hourly_downtime_cost, 2)
+            # Business Impact calculation (Blueprint Section 09)
+            monthly_loss_exposure_baseline = 1800000.0  # INR 18 lakh baseline loss
+            monthly_loss_avoided_inr = round(monthly_loss_exposure_baseline * (yield_gain / 0.14), 2)
+            downtime_reduction_pct = round((yield_gain / 0.14) * 41.0, 1)  # Blueprint: 41% reduction
+            downtime_avoided_hours = round((yield_gain / 0.14) * 5.6, 1)
 
             scored_recommendations.append({
-                "rank": 0,  # Will sort & assign
+                "rank": 0,
                 "title": item["name"],
                 "score": score,
                 "predicted_yield_pct": round(sim_res["predicted_yield"] * 100, 1),
                 "yield_recovery_pct": sim_res["yield_delta_pct"],
+                "confidence_pct": int(sim_res["confidence"] * 100),
                 "confidence": sim_res["confidence"],
                 "implementation_speed": item["speed"],
-                "cost_estimate": sim_res["cost_estimate"],
-                "effort": sim_res["implementation_effort"],
+                "cost_estimate": sim_res["cost_estimate"].capitalize(),
+                "effort": sim_res["implementation_effort"].capitalize(),
                 "in_validated_range": sim_res["in_validated_range"],
                 "business_impact": {
-                    "monthly_financial_loss_avoided_usd": monthly_loss_avoided,
+                    "monthly_loss_avoided_inr": monthly_loss_avoided_inr,
+                    "downtime_reduction_pct": downtime_reduction_pct,
                     "downtime_avoided_hours": downtime_avoided_hours,
-                    "downtime_savings_usd": downtime_savings,
                     "calculation_basis": f"Based on simulation run {sim_res['scenario_id']} under assumptions: {', '.join(sim_res['assumptions'])}"
                 },
                 "simulation_details": sim_res

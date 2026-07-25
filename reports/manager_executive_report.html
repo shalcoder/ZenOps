@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ZenOps Executive Incident Report - BATCH-INC-2026-07</title>
+    <title>ForgeOps Executive Incident Report - BATCH-INC-2026-07</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #0f172a; color: #f8fafc; }
         .card { background-color: #1e293b; padding: 24px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 24px; }
@@ -14,12 +14,13 @@
         .metric-val { font-size: 24px; font-weight: bold; color: #4ade80; }
         .metric-lbl { font-size: 12px; color: #94a3b8; margin-top: 4px; }
         ul { line-height: 1.6; color: #cbd5e1; }
+        .risk-box { background: #0f172a; border-left: 4px solid #f59e0b; padding: 12px 16px; margin-top: 12px; }
         .signoff { background: #0284c7; padding: 16px; border-radius: 8px; font-weight: 500; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>Executive Incident Report & Decision Record <span class="badge">REJECTED</span></h1>
+        <h1>ForgeOps Executive Incident Report <span class="badge">REJECTED</span></h1>
         <p><strong>Batch ID:</strong> BATCH-INC-2026-07 | <strong>Plant:</strong> Plant Alpha - Detroit</p>
         <p><strong>Yield Delta:</strong> Baseline 96.0% → Actual 82.0% (<span style="color:#f87171">-14.0% Loss</span>)</p>
     </div>
@@ -33,26 +34,35 @@
     </div>
 
     <div class="card">
-        <h2>Top Recommended Action: Intervention A: Recalibrate Machine 7 + Cap Queue Delay at 30 mins</h2>
+        <h2>Top Recommended Action: Action 1: Reduce queue delay below 60 minutes</h2>
         <div class="metric-grid">
             <div class="metric-item">
                 <div class="metric-val">96.0%</div>
                 <div class="metric-lbl">Predicted Yield</div>
             </div>
             <div class="metric-item">
-                <div class="metric-val">$75,600</div>
+                <div class="metric-val">₹1,800,000</div>
                 <div class="metric-lbl">Monthly Loss Avoided</div>
             </div>
             <div class="metric-item">
                 <div class="metric-val">5.6 hrs</div>
-                <div class="metric-lbl">Downtime Avoided</div>
+                <div class="metric-lbl">Downtime Avoided (41.0% ↓)</div>
             </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Risk Assessment & Governance</h2>
+        <div class="risk-box">
+            <p><strong>Implementation Risk:</strong> Low (MES priority dispatch adjustment & zero-point machine calibration)</p>
+            <p><strong>Residual Risk:</strong> Low (Covered staging desiccant guards active)</p>
+            <p><strong>Monitoring Plan:</strong> Continuous SCADA alarms set for queue >45 mins and temp >26.0°C</p>
         </div>
     </div>
 
     <div class="card signoff">
         <h3>Decision Sign-Off Record</h3>
-        <p>✔ Approved Action: Recalibrate Machine 7 & Enforce 30-min Queue Ceiling</p>
+        <p>✔ Approved Action: Reduce Queue Delay <60m & Recalibrate Machine 7</p>
         <p>Approved By: Plant Operations Manager | Timestamp: 2026-07-25 14:52:00 UTC</p>
     </div>
 </body>

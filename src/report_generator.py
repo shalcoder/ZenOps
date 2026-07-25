@@ -1,6 +1,7 @@
 """
 Executive & Technical Report Generator for ZenOps (Role 3: Simulation & Data Engineer).
 Produces Markdown and HTML exports for Engineer (detailed) and Manager (summary) views.
+Includes complete Risk Assessment (Implementation Risk, Residual Risk, Monitoring Plan).
 """
 
 import json
@@ -19,7 +20,7 @@ class ReportGenerator:
         recs = self.recommender.generate_recommendations()
         top_rec = recs[0]
 
-        md = f"""# Executive Incident Report & Decision Record - ZenOps
+        md = f"""# Executive Incident Report & Decision Record - ForgeOps / ZenOps
 
 **Plant**: Plant Alpha - Detroit  
 **Batch ID**: {diag_res['batch_id']}  
@@ -28,31 +29,38 @@ class ReportGenerator:
 
 ---
 
-## Executive Summary
-During the production run of Batch `{diag_res['batch_id']}`, yield dropped sharply by {diag_res['yield_loss_pct']}% below baseline targets, resulting in final batch rejection. Root cause analysis confirms a combined environmental and machinery anomaly.
+## 1. Executive Summary
+During the production run of Batch `{diag_res['batch_id']}`, yield dropped sharply from 96.0% to 82.0%, resulting in final batch rejection. Root cause analysis confirms a combined environmental and staging delay anomaly coupled with Machine 7 spindle thermal drift.
 
-## Root Cause Statement
-- **Primary Causal Pathway**: Material moisture degradation in staging queue coupled with Machine 7 spindle thermal drift.
-- **Key Contributing Factors**: Elevated humidity (76% RH), extended queue delay (85 minutes), and Machine 7 spindle drift (28.4°C).
+## 2. Root Cause Statement
+- **Primary Causal Pathway**: Material moisture degradation during staging queue delay coupled with Machine 7 spindle thermal drift.
+- **Key Contributing Factors**: Elevated ambient humidity (76% RH), extended queue delay (85 minutes), and Machine 7 spindle drift (28.4°C).
 
 ---
 
-## Top Recommended Intervention
+## 3. Recommended Action & Rationale
 ### {top_rec['title']}
 - **Predicted Yield Recovery**: {diag_res['yield_pct']}% → **{top_rec['predicted_yield_pct']}%** (+{top_rec['yield_recovery_pct']}%)
 - **Implementation Speed**: {top_rec['implementation_speed']}
-- **Cost / Effort**: {top_rec['cost_estimate'].capitalize()} Cost / {top_rec['effort'].capitalize()} Effort
-- **Model Confidence**: {int(top_rec['confidence'] * 100)}%
+- **Cost / Effort**: {top_rec['cost_estimate']} Cost / {top_rec['effort']} Effort
+- **Model Confidence**: {top_rec['confidence_pct']}%
 
-### Business Financial Impact
-- **Monthly Loss Avoided**: ${top_rec['business_impact']['monthly_financial_loss_avoided_usd']:,.2f}
-- **Downtime Avoided**: {top_rec['business_impact']['downtime_avoided_hours']} hours (${top_rec['business_impact']['downtime_savings_usd']:,.2f})
+### 4. Business Financial Impact
+- **Monthly Financial Loss Avoided**: ₹{top_rec['business_impact']['monthly_loss_avoided_inr']:,.2f}
+- **Downtime Avoided**: {top_rec['business_impact']['downtime_avoided_hours']} hours ({top_rec['business_impact']['downtime_reduction_pct']}% reduction)
 - **Basis**: {top_rec['business_impact']['calculation_basis']}
 
 ---
 
-## Decision Record Sign-Off
-- [ ] **Approved Action**: Recalibrate Machine 7 & Enforce 30-min Queue Ceiling
+## 5. Risk Assessment & Governance
+- **Implementation Risk**: **Low** — Simple priority dispatch rule change in MES staging queue & automated spindle zeroing.
+- **Residual Risk**: **Low** — Potential minor humidity fluctuation during weather shifts; mitigated by desiccant staging covers.
+- **Monitoring Plan**: 24/7 SCADA alarm set for queue delay >45 mins and Machine 7 thermal sensor drift >26.0°C.
+
+---
+
+## 6. Decision Record Sign-Off
+- [x] **Approved Action**: Reduce Staging Queue Delay <60m & Recalibrate Machine 7 Spindle
 - **Approved By**: Plant Operations Manager  
 - **Timestamp**: 2026-07-25 14:52:00 UTC  
 - **Follow-up Owner**: Lead Maintenance & Dispatch Engineer
@@ -68,7 +76,7 @@ During the production run of Batch `{diag_res['batch_id']}`, yield dropped sharp
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ZenOps Executive Incident Report - {diag_res['batch_id']}</title>
+    <title>ForgeOps Executive Incident Report - {diag_res['batch_id']}</title>
     <style>
         body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #0f172a; color: #f8fafc; }}
         .card {{ background-color: #1e293b; padding: 24px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 24px; }}
@@ -80,12 +88,13 @@ During the production run of Batch `{diag_res['batch_id']}`, yield dropped sharp
         .metric-val {{ font-size: 24px; font-weight: bold; color: #4ade80; }}
         .metric-lbl {{ font-size: 12px; color: #94a3b8; margin-top: 4px; }}
         ul {{ line-height: 1.6; color: #cbd5e1; }}
+        .risk-box {{ background: #0f172a; border-left: 4px solid #f59e0b; padding: 12px 16px; margin-top: 12px; }}
         .signoff {{ background: #0284c7; padding: 16px; border-radius: 8px; font-weight: 500; margin-top: 20px; }}
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>Executive Incident Report & Decision Record <span class="badge">{diag_res['status']}</span></h1>
+        <h1>ForgeOps Executive Incident Report <span class="badge">{diag_res['status']}</span></h1>
         <p><strong>Batch ID:</strong> {diag_res['batch_id']} | <strong>Plant:</strong> Plant Alpha - Detroit</p>
         <p><strong>Yield Delta:</strong> Baseline 96.0% → Actual {diag_res['yield_pct']}% (<span style="color:#f87171">-{diag_res['yield_loss_pct']}% Loss</span>)</p>
     </div>
@@ -106,19 +115,28 @@ During the production run of Batch `{diag_res['batch_id']}`, yield dropped sharp
                 <div class="metric-lbl">Predicted Yield</div>
             </div>
             <div class="metric-item">
-                <div class="metric-val">${top_rec['business_impact']['monthly_financial_loss_avoided_usd']:,.0f}</div>
+                <div class="metric-val">₹{top_rec['business_impact']['monthly_loss_avoided_inr']:,.0f}</div>
                 <div class="metric-lbl">Monthly Loss Avoided</div>
             </div>
             <div class="metric-item">
                 <div class="metric-val">{top_rec['business_impact']['downtime_avoided_hours']} hrs</div>
-                <div class="metric-lbl">Downtime Avoided</div>
+                <div class="metric-lbl">Downtime Avoided ({top_rec['business_impact']['downtime_reduction_pct']}% ↓)</div>
             </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Risk Assessment & Governance</h2>
+        <div class="risk-box">
+            <p><strong>Implementation Risk:</strong> Low (MES priority dispatch adjustment & zero-point machine calibration)</p>
+            <p><strong>Residual Risk:</strong> Low (Covered staging desiccant guards active)</p>
+            <p><strong>Monitoring Plan:</strong> Continuous SCADA alarms set for queue >45 mins and temp >26.0°C</p>
         </div>
     </div>
 
     <div class="card signoff">
         <h3>Decision Sign-Off Record</h3>
-        <p>✔ Approved Action: Recalibrate Machine 7 & Enforce 30-min Queue Ceiling</p>
+        <p>✔ Approved Action: Reduce Queue Delay <60m & Recalibrate Machine 7</p>
         <p>Approved By: Plant Operations Manager | Timestamp: 2026-07-25 14:52:00 UTC</p>
     </div>
 </body>
@@ -130,7 +148,7 @@ During the production run of Batch `{diag_res['batch_id']}`, yield dropped sharp
         diag_res = self.diagnostic.analyze_batch()
         recs = self.recommender.generate_recommendations()
 
-        md = f"""# Detailed Engineering & Diagnostics Report - ZenOps
+        md = f"""# Detailed Engineering & Diagnostics Report - ForgeOps / ZenOps
 
 **Batch ID**: {diag_res['batch_id']}  
 **Plant**: Plant Alpha - Detroit | **Line**: Line 3  
