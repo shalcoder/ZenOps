@@ -97,6 +97,7 @@ export type SimulationResult = {
   cost: string;
   effort: string;
   assumptions: string[];
+  reasoning?: string;
   inValidatedRange: boolean;
   warnings: string[];
   evidenceRefs: string[];

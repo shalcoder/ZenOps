@@ -11,11 +11,21 @@ const presets: Array<{ key: ScenarioKey; label: string; description: string }> =
   { key: 'replace_machine_7', label: 'Replace Machine 7', description: '2–3 days downtime' },
 ];
 
+const presetInputs: Record<ScenarioKey, {
+  queueDelay: number;
+  humidity: number;
+  temperature: number;
+}> = {
+  reduce_queue_delay: { queueDelay: 45, humidity: 68.5, temperature: 24 },
+  humidity_control: { queueDelay: 198, humidity: 50, temperature: 31.5 },
+  replace_machine_7: { queueDelay: 198, humidity: 68.5, temperature: 31.5 },
+};
+
 export function SimulatorPanel() {
   const { data } = useWorkbenchData();
   const [selected, setSelected] = useState<ScenarioKey>('reduce_queue_delay');
   const [queueDelay, setQueueDelay] = useState(45);
-  const [humidity, setHumidity] = useState(50);
+  const [humidity, setHumidity] = useState(68.5);
   const [temperature, setTemperature] = useState(24);
   const [supplierFreeze, setSupplierFreeze] = useState(true);
   const [constraint, setConstraint] = useState('We cannot change suppliers for another month.');
@@ -30,12 +40,19 @@ export function SimulatorPanel() {
         humidity_pct: humidity,
         temperature_c: temperature,
         replace_machine_7: selected === 'replace_machine_7',
-      }, { no_supplier_change: supplierFreeze });
-      const outOfRange = queueDelay > 120 || humidity > 75 || temperature > 28;
+      }, {
+        no_supplier_change: supplierFreeze,
+        constraint_text: constraint.trim(),
+      });
+      const outOfRange = queueDelay > 240 || humidity > 75 || temperature > 32;
       setResult(outOfRange ? {
         ...response,
         inValidatedRange: false,
-        warnings: [...response.warnings, 'One or more requested values are outside Role 3’s validated operating range.'],
+        confidence: Math.min(response.confidence, 0.55),
+        warnings: Array.from(new Set([
+          ...response.warnings,
+          'One or more requested values are outside the validated operating range; treat this estimate as directional only.',
+        ])),
       } : response);
       setStatus('success');
     } catch {
@@ -61,7 +78,15 @@ export function SimulatorPanel() {
               <button
                 key={preset.key}
                 className={selected === preset.key ? 'active' : ''}
-                onClick={() => { setSelected(preset.key); setResult(null); setStatus('idle'); }}
+                onClick={() => {
+                  const next = presetInputs[preset.key];
+                  setSelected(preset.key);
+                  setQueueDelay(next.queueDelay);
+                  setHumidity(next.humidity);
+                  setTemperature(next.temperature);
+                  setResult(null);
+                  setStatus('idle');
+                }}
                 role="radio"
                 aria-checked={selected === preset.key}
               >
@@ -74,18 +99,18 @@ export function SimulatorPanel() {
           <div className="parameter-grid">
             <label className={selected === 'reduce_queue_delay' ? 'emphasized' : ''}>
               <span><strong>Queue delay</strong><output>{queueDelay} min</output></span>
-              <input type="range" min="0" max="150" value={queueDelay} onChange={(event) => setQueueDelay(Number(event.target.value))} />
-              <small>Validated 0–120 · target below 60</small>
+              <input type="range" min="0" max="240" value={queueDelay} onChange={(event) => setQueueDelay(Number(event.target.value))} />
+              <small>Validated 0–240 · target below 60</small>
             </label>
             <label className={selected === 'humidity_control' ? 'emphasized' : ''}>
               <span><strong>Humidity</strong><output>{humidity}% RH</output></span>
-              <input type="range" min="30" max="85" value={humidity} onChange={(event) => setHumidity(Number(event.target.value))} />
+              <input type="range" min="30" max="85" step="0.5" value={humidity} onChange={(event) => setHumidity(Number(event.target.value))} />
               <small>Validated 30–75 · nominal 45</small>
             </label>
             <label>
               <span><strong>Temperature</strong><output>{temperature}°C</output></span>
-              <input type="range" min="18" max="32" value={temperature} onChange={(event) => setTemperature(Number(event.target.value))} />
-              <small>Validated 18–28 · nominal 22</small>
+              <input type="range" min="18" max="35" step="0.5" value={temperature} onChange={(event) => setTemperature(Number(event.target.value))} />
+              <small>Validated 18–32 · nominal 22</small>
             </label>
           </div>
 
@@ -120,7 +145,7 @@ export function SimulatorPanel() {
               <div><i style={{ height: `${preview.baselineYield}%` }} /></div>
               <strong>{preview.baselineYield}%</strong>
             </div>
-            <div className="yield-arrow">→<small>+{(preview.predictedYield - preview.baselineYield).toFixed(0)} pts</small></div>
+            <div className="yield-arrow">→<small>{preview.predictedYield >= preview.baselineYield ? '+' : ''}{(preview.predictedYield - preview.baselineYield).toFixed(1)} pts</small></div>
             <div className="yield-column predicted">
               <span>Predicted</span>
               <div><i style={{ height: `${preview.predictedYield}%` }} /></div>
@@ -134,8 +159,17 @@ export function SimulatorPanel() {
             <span><small>Effort</small><strong>{preview.effort}</strong></span>
           </div>
 
+          {preview.reasoning && (
+            <div className="simulation-reasoning">
+              <strong>Why this result</strong>
+              <p>{preview.reasoning}</p>
+            </div>
+          )}
           {preview.warnings.length > 0 && (
-            <div className="simulation-warning"><strong>Guardrail</strong><p>{preview.warnings[0]}</p></div>
+            <div className="simulation-warning">
+              <strong>Guardrail</strong>
+              {preview.warnings.slice(0, 2).map((warning) => <p key={warning}>{warning}</p>)}
+            </div>
           )}
           <div className="assumptions">
             <strong>Assumptions</strong>

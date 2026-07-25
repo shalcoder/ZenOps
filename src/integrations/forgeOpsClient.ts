@@ -32,6 +32,7 @@ type Role3SimulationPayload = {
   cost_estimate?: string;
   implementation_effort?: string;
   assumptions?: string[];
+  reasoning?: string;
   in_validated_range?: boolean;
   within_validated_range?: boolean;
   warnings?: string[];
@@ -103,7 +104,7 @@ export async function getWorkbenchData(): Promise<WorkbenchSnapshot> {
 export async function runScenario(
   scenarioKey: keyof typeof simulationPresets,
   inputs: Record<string, number | boolean>,
-  constraints: Record<string, boolean>,
+  constraints: Record<string, string | number | boolean>,
 ): Promise<SimulationResult> {
   const fallback = simulationPresets[scenarioKey] ?? simulationPresets.baseline;
   try {
@@ -125,6 +126,7 @@ export async function runScenario(
       cost: data.cost_estimate ?? fallback.cost,
       effort: data.implementation_effort ?? fallback.effort,
       assumptions: data.assumptions ?? fallback.assumptions,
+      reasoning: data.reasoning ?? fallback.reasoning,
       inValidatedRange: data.in_validated_range ?? data.within_validated_range ?? fallback.inValidatedRange,
       warnings,
     };

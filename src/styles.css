@@ -2005,6 +2005,26 @@ textarea {
   font-size: 0.927rem;
 }
 
+.simulation-reasoning {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.simulation-reasoning strong {
+  color: var(--text);
+  font-size: 0.909rem;
+}
+
+.simulation-reasoning p {
+  margin: 4px 0 0;
+  color: var(--muted-strong);
+  font-size: 0.882rem;
+  line-height: 1.45;
+}
+
 .simulation-warning,
 .approval-warning,
 .report-guardrail {

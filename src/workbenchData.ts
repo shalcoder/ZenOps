@@ -324,6 +324,7 @@ function normalizeSimulations(rows: Json[]): Record<string, SimulationResult> {
       cost: String(row.cost_estimate ?? row.cost ?? 'Unknown'),
       effort: String(row.implementation_effort ?? row.effort ?? 'Review required'),
       assumptions: Array.isArray(row.assumptions) ? row.assumptions.map(String) : [],
+      reasoning: row.reasoning ? String(row.reasoning) : undefined,
       inValidatedRange: Boolean(row.in_validated_range ?? row.within_validated_range ?? true),
       warnings: Array.isArray(row.warnings)
         ? row.warnings.map(String)

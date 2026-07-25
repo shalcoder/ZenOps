@@ -16,6 +16,7 @@ from backend.pipeline import run_pipeline
 from backend.database.audit_log import get_audit_log, log_decision_approval
 from backend.config import FORGEOPS_MCP_URL, FORGEOPS_MODEL, LIVE_AGENTS_ENABLED
 from backend.mcp.nitro_mcp_client import NitroMCPClient
+from backend.simulation_reasoning import reconcile_simulation
 from backend.workbench import load_live_workbench
 
 app = FastAPI(
@@ -123,10 +124,16 @@ def simulate(req: SimulationRequest):
             },
         )
     result = value.get("result", value) if isinstance(value, dict) else {}
+    result = reconcile_simulation(
+        req.name,
+        req.inputs,
+        req.constraints,
+        result if isinstance(result, dict) else {},
+    )
     return {
         **result,
         "tool_trace": trace,
-        "source": "nitrocloud_mcp",
+        "source": "nitrocloud_mcp_with_parameter_reasoning",
     }
 
 
