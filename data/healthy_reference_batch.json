@@ -1,0 +1,104 @@
+{
+  "batch": {
+    "batch_id": "BATCH-REF-2026-06",
+    "product": "Precision Alloy Casing X4",
+    "line": "Line 3",
+    "plant": "Plant Alpha - Detroit",
+    "start_time": "2026-07-24T06:00:00Z",
+    "end_time": "2026-07-24T12:30:00Z",
+    "yield_pct": 97.2,
+    "baseline_yield_pct": 96.0,
+    "status": "APPROVED",
+    "source": "MES_PROD_DB",
+    "record_id": "REC-BATCH-REF-06",
+    "timestamp": "2026-07-24T12:30:00Z"
+  },
+  "materials": {
+    "material_id": "MAT-LOT-8830",
+    "material_name": "High-Grade Titanium Resin Blend",
+    "supplier": "AeroMaterials Corp",
+    "lot_number": "LOT-8830-A",
+    "formulation": "v3.2-Standard",
+    "storage_condition": "Climate-controlled staging (42% RH)",
+    "source": "ERP_INV_SYS",
+    "record_id": "REC-MAT-8830",
+    "timestamp": "2026-07-24T05:45:00Z"
+  },
+  "machine": {
+    "machine_id": "M7-CNC-MILL",
+    "name": "Machine 7 - Multi-Axis CNC Mill",
+    "line": "Line 3",
+    "maintenance_state": "HEALTHY",
+    "alert_history": [],
+    "source": "SCADA_MNT_LOG",
+    "record_id": "REC-M7-STATE-REF",
+    "timestamp": "2026-07-24T06:00:00Z"
+  },
+  "sensor_readings": [
+    {
+      "reading_id": "SR-REF-01",
+      "batch_id": "BATCH-REF-2026-06",
+      "timestamp": "2026-07-24T06:30:00Z",
+      "humidity_pct": 42.0,
+      "temperature_c": 21.8,
+      "pressure_bar": 4.0,
+      "queue_delay_minutes": 12.0,
+      "cycle_time_seconds": 52.0,
+      "source": "SCADA_IOT_SENSORS",
+      "record_id": "REC-SR-REF-01"
+    },
+    {
+      "reading_id": "SR-REF-02",
+      "batch_id": "BATCH-REF-2026-06",
+      "timestamp": "2026-07-24T09:00:00Z",
+      "humidity_pct": 43.1,
+      "temperature_c": 22.0,
+      "pressure_bar": 4.0,
+      "queue_delay_minutes": 14.0,
+      "cycle_time_seconds": 53.0,
+      "source": "SCADA_IOT_SENSORS",
+      "record_id": "REC-SR-REF-02"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVT-REF-01",
+      "batch_id": "BATCH-REF-2026-06",
+      "source_system": "MES",
+      "event_type": "BATCH_STARTED",
+      "timestamp": "2026-07-24T06:00:00Z",
+      "stage": "Staging",
+      "severity": "INFO",
+      "value": "Nominal startup",
+      "confidence": 1.0,
+      "source": "MES_DB",
+      "record_id": "REC-EVT-REF-01"
+    },
+    {
+      "event_id": "EVT-REF-02",
+      "batch_id": "BATCH-REF-2026-06",
+      "source_system": "MES",
+      "event_type": "BATCH_COMPLETED",
+      "timestamp": "2026-07-24T12:30:00Z",
+      "stage": "Disposition",
+      "severity": "INFO",
+      "value": "Batch approved; Yield 97.2%",
+      "confidence": 1.0,
+      "source": "MES_DB",
+      "record_id": "REC-EVT-REF-02"
+    }
+  ],
+  "quality_records": [
+    {
+      "inspection_id": "INSP-REF-8820",
+      "batch_id": "BATCH-REF-2026-06",
+      "stage": "Final Inspection",
+      "defect_code": null,
+      "pass_fail": "PASS",
+      "severity": "NONE",
+      "source": "QUALITY_LAB",
+      "record_id": "REC-INSP-REF-8820",
+      "timestamp": "2026-07-24T12:10:00Z"
+    }
+  ]
+}

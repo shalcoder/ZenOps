@@ -1,0 +1,26 @@
+{
+  "queue_delay_minutes": {
+    "min_valid": 0.0,
+    "max_valid": 120.0,
+    "nominal": 15.0,
+    "unit": "minutes"
+  },
+  "humidity_pct": {
+    "min_valid": 30.0,
+    "max_valid": 75.0,
+    "nominal": 45.0,
+    "unit": "%"
+  },
+  "temperature_c": {
+    "min_valid": 18.0,
+    "max_valid": 28.0,
+    "nominal": 22.0,
+    "unit": "\u00b0C"
+  },
+  "cycle_time_seconds": {
+    "min_valid": 40.0,
+    "max_valid": 100.0,
+    "nominal": 55.0,
+    "unit": "seconds"
+  }
+}
