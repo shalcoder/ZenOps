@@ -25,7 +25,6 @@ export function TimelinePanel() {
     <section className="module-panel timeline-panel">
       <header className="module-header">
         <div>
-          <p className="section-kicker">Module 01</p>
           <h2>Incident timeline</h2>
           <span>Unified events across MES, sensors, maintenance, and quality</span>
         </div>

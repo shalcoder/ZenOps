@@ -49,7 +49,6 @@ export function SimulatorPanel() {
     <section id="scenario-comparison" className="module-panel simulator-panel">
       <header className="module-header">
         <div>
-          <p className="section-kicker">Module 04</p>
           <h2>What-if simulator</h2>
           <span>Test interventions against the 82% incident baseline</span>
         </div>

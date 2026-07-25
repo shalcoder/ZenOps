@@ -47,7 +47,6 @@ export function RecommendationsPanel({
         <div className="module-panel recommendations-panel">
           <header className="module-header">
             <div>
-              <p className="section-kicker">Modules 05 + 06</p>
               <h2>Ranked recommendations</h2>
               <span>Technical effect, feasibility, cost, and business impact</span>
             </div>

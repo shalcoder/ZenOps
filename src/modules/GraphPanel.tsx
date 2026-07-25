@@ -73,7 +73,6 @@ export function GraphPanel() {
     <section className="module-panel graph-panel">
       <header className="module-header compact-header">
         <div>
-          <p className="section-kicker">Module 03</p>
           <h2>Root cause graph</h2>
           <span>Influence, evidence type, and confidence</span>
         </div>

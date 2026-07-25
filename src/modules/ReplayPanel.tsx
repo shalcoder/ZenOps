@@ -58,7 +58,6 @@ export function ReplayPanel() {
     <section className="module-panel replay-panel">
       <header className="module-header compact-header">
         <div>
-          <p className="section-kicker">Module 02</p>
           <h2>Replay production</h2>
           <span>Reconstruction from live MCP timeline · {formatDuration(duration)}</span>
         </div>
