@@ -34,6 +34,18 @@ export function ReplayPanel() {
     [focus.stageId],
   );
   const activeEvent = incidentEvents.find((event) => event.id === focus.eventId);
+  const activeStageAnomalies = incidentEvents.filter(
+    (event) => activeStage.eventIds.includes(event.id)
+      && (event.severity === 'warning' || event.severity === 'critical'),
+  );
+  const anomalyLabel = activeStageAnomalies.length
+    ? `${activeStageAnomalies.length} anomal${activeStageAnomalies.length === 1 ? 'y' : 'ies'}`
+    : 'No anomalies';
+  const conditionLabel = activeStage.status === 'failure'
+    ? 'Critical'
+    : activeStage.status === 'warning'
+      ? 'Warning'
+      : 'Normal';
 
   return (
     <section className="module-panel replay-panel">
@@ -44,7 +56,7 @@ export function ReplayPanel() {
           <span>Reconstruction from live MCP timeline · {formatDuration(duration)}</span>
         </div>
         <button className={`toggle-button${overlay ? ' active' : ''}`} onClick={() => setOverlay((value) => !value)} aria-pressed={overlay}>
-          <i /> Reference overlay
+          <i /> Anomaly overlay
         </button>
       </header>
 
@@ -76,10 +88,10 @@ export function ReplayPanel() {
           })}
         </div>
         {overlay && (
-          <div className="reference-path">
-            <span>Healthy reference</span>
+          <div className={`reference-path ${activeStage.status}`}>
+            <span>Stage condition</span>
             <div><i style={{ width: `${Math.min(100, (focus.timeMinute / duration) * 100)}%` }} /></div>
-            <strong>No anomalies · 97.2%</strong>
+            <strong>{anomalyLabel} · {conditionLabel}</strong>
           </div>
         )}
       </div>

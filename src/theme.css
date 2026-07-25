@@ -784,6 +784,22 @@ time,
   color: #438c69;
 }
 
+.reference-path.warning > div i {
+  background: #d6a351;
+}
+
+.reference-path.warning strong {
+  color: #9a671e;
+}
+
+.reference-path.failure > div i {
+  background: #cf5f68;
+}
+
+.reference-path.failure strong {
+  color: #a33f48;
+}
+
 .transport-controls {
   padding: 18px 28px;
   border-top: 1px solid var(--line);
