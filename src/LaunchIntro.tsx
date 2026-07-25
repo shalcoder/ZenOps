@@ -10,8 +10,8 @@ export function LaunchIntro({ onComplete }: LaunchIntroProps) {
 
   useEffect(() => {
     const readyTimer = window.setTimeout(() => setReady(true), 2920);
-    const exitTimer = window.setTimeout(() => setExiting(true), 3450);
-    const completeTimer = window.setTimeout(onComplete, 3920);
+    const exitTimer = window.setTimeout(() => setExiting(true), 5200);
+    const completeTimer = window.setTimeout(onComplete, 5670);
 
     return () => {
       window.clearTimeout(readyTimer);
