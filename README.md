@@ -33,39 +33,53 @@ Every conclusion includes transparent evidence references, assumptions, agent ex
 
 ```mermaid
 graph TD
-    classDef user fill:#2C3E50,stroke:#1A252F,color:#fff,stroke-width:2px,rx:10px;
-    classDef frontend fill:#3498DB,stroke:#2980B9,color:#fff,stroke-width:2px,rx:5px;
-    classDef agent fill:#1ABC9C,stroke:#16A085,color:#fff,stroke-width:2px,rx:5px;
-    classDef mcp fill:#E67E22,stroke:#D35400,color:#fff,stroke-width:2px,rx:5px;
-    classDef model fill:#9B59B6,stroke:#8E44AD,color:#fff,stroke-width:2px,rx:5px;
+    classDef frontend fill:#dae8fc,stroke:#6c8ebf,color:#000
+    classDef orch fill:#f5f5f5,stroke:#666,color:#000,font-weight:bold
+    classDef agent fill:#d5e8d4,stroke:#82b366,color:#000
+    classDef nitro fill:#e1d5e7,stroke:#9673a6,color:#000
+    classDef mcp fill:#ffe6cc,stroke:#d79b00,color:#000
+    classDef tool fill:#fff2cc,stroke:#d6b656,color:#000
 
-    UI["💻 ForgeOps Frontend<br>(React / Vite)"]:::frontend
-    Orch["⚙️ Python Orchestrator<br>(FastAPI)"]:::agent
+    UI["<b>ForgeOps Frontend</b><br>Questions • Evidence • Simulation •<br>Decisions"]:::frontend
+    Orch["<b>Python Orchestrator</b><br>Plans and controls run"]:::orch
     
-    subgraph "4-Agent Pipeline"
-        Planner["1️⃣ Planner Agent<br>(Investigation Strategy)"]:::agent
-        Research["2️⃣ Research Agent<br>(Evidence Retrieval)"]:::agent
-        Analysis["3️⃣ Analysis Agent<br>(Causes & Scenarios)"]:::agent
-        Execution["4️⃣ Execution Agent<br>(Final Decision & Impact)"]:::agent
-    end
+    Planner["<b>Planner</b><br>Investigation strategy"]:::agent
+    Research["<b>Research</b><br>Evidence retrieval"]:::agent
+    Analysis["<b>Analysis</b><br>Causes and scenarios"]:::agent
     
-    Nitro["🧠 NitroCloud AI Layer<br>(NitroChat / Gemini)"]:::model
-    MCP["🔌 ForgeOps MCP Server<br>(TypeScript)"]:::mcp
+    Execution["<b>Execution</b><br>Final decision and impact"]:::agent
     
-    Tools["MES | Sensors | Maintenance | Suppliers | Quality | Simulations"]:::mcp
+    Nitro["<b>NitroCloud AI Layer</b><br>Deployed NitroChat<br>Configured Gemini"]:::nitro
+    MCP["<b>ForgeOps MCP Server</b><br>Controlled tools and manufacturing<br>records"]:::mcp
+    
+    MES["MES"]:::tool
+    Maint["Maintenance"]:::tool
+    Qual["Quality"]:::tool
+    
+    Sens["Sensors"]:::tool
+    Supp["Suppliers"]:::tool
+    Sim["Simulations"]:::tool
 
-    UI -->|"Query & UI State"| Orch
+    UI --> Orch
+    
     Orch --> Planner
-    Planner --> Research
-    Research --> Analysis
+    Orch --> Research
+    Orch --> Analysis
+    
+    Planner --> Execution
+    Research --> Execution
     Analysis --> Execution
-    Execution -->|"Structured Audit & Trace"| UI
     
-    Execution -.->|"Inference"| Nitro
-    Research -.->|"Tool Execution"| MCP
-    Analysis -.->|"Tool Execution"| MCP
+    Execution --> Nitro
+    Execution --> MCP
     
-    MCP --- Tools
+    MCP --> MES
+    MCP --> Maint
+    MCP --> Qual
+    
+    MES --> Sens
+    Maint --> Supp
+    Qual --> Sim
 ```
 
 ---
