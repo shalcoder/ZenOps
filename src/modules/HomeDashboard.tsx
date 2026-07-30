@@ -32,7 +32,7 @@ export function HomeDashboard({ onOpen }: { onOpen: () => void }) {
       <section className="dashboard-hero">
         <div>
           <p className="section-kicker">Production overview</p>
-          <h1>Good afternoon, Vaishak.</h1>
+          <h1>Good afternoon, Keerthi.</h1>
           <p>Four production signals need attention. One requires an evidence-backed decision.</p>
         </div>
         <div className="hero-actions">
